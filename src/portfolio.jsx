@@ -9,7 +9,6 @@ import { useState, useEffect, useRef } from "react";
 import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-dom";
 import { useForm, ValidationError } from "@formspree/react";
 
-// ── Colours ───────────────────────────────────────────────────────────────────
 const C = {
   bg: "#F2F2F2", surface: "#ffffff", border: "#d0d0d0", border2: "#e8e8e8",
   green: "#174D38", greenL: "#1e6347", greenMid: "#2d7a57", greenBg: "#e4ede8",
@@ -64,7 +63,7 @@ const PROJECTS = [
   },
 ];
 
-// ── Shared helpers ────────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────────
 function useInView(threshold = 0.1) {
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
@@ -76,17 +75,29 @@ function useInView(threshold = 0.1) {
   return [ref, inView];
 }
 
+function useMobile(bp = 768) {
+  const [mobile, setMobile] = useState(typeof window !== "undefined" ? window.innerWidth < bp : false);
+  useEffect(() => {
+    const h = () => setMobile(window.innerWidth < bp);
+    window.addEventListener("resize", h);
+    return () => window.removeEventListener("resize", h);
+  }, [bp]);
+  return mobile;
+}
+
 const rv = (inView, delay = 0) => ({
   opacity: inView ? 1 : 0,
   transform: inView ? "translateY(0)" : "translateY(28px)",
   transition: `opacity 0.7s ease ${delay}s, transform 0.7s ease ${delay}s`,
 });
 
-// ── Cursor ────────────────────────────────────────────────────────────────────
+// ── Cursor (desktop only) ─────────────────────────────────────────────────────
 function Cursor() {
   const dot = useRef(null), ring = useRef(null);
   const mouse = useRef({ x: -999, y: -999 }), pos = useRef({ x: -999, y: -999 });
+  const mobile = useMobile();
   useEffect(() => {
+    if (mobile) return;
     const move = e => { mouse.current = { x: e.clientX, y: e.clientY }; };
     document.addEventListener("mousemove", move);
     document.body.style.cursor = "none";
@@ -106,7 +117,8 @@ function Cursor() {
     const mo = new MutationObserver(attach);
     mo.observe(document.body, { childList: true, subtree: true });
     return () => { document.removeEventListener("mousemove", move); cancelAnimationFrame(raf); document.body.style.cursor = "auto"; mo.disconnect(); };
-  }, []);
+  }, [mobile]);
+  if (mobile) return null;
   return (
     <>
       <div ref={dot} style={{ position: "fixed", width: 10, height: 10, background: C.red, borderRadius: "50%", pointerEvents: "none", zIndex: 9999, transform: "translate(-50%,-50%)", transition: "transform .15s" }} />
@@ -118,8 +130,10 @@ function Cursor() {
 // ── Nav ───────────────────────────────────────────────────────────────────────
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
   const isHome = location.pathname === "/";
+  const mobile = useMobile();
 
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 50);
@@ -127,41 +141,71 @@ function Nav() {
     return () => window.removeEventListener("scroll", h);
   }, []);
 
-  const navBg = scrolled || !isHome ? "rgba(242,242,242,.95)" : "transparent";
-  const navBorder = scrolled || !isHome ? `1px solid ${C.border}` : "none";
-  const navBlur = scrolled || !isHome ? "blur(12px)" : "none";
+  // Close menu on route change
+  useEffect(() => { setMenuOpen(false); }, [location]);
 
-  const anchorStyle = {
+  const navBg = scrolled || !isHome || menuOpen ? "rgba(242,242,242,.97)" : "transparent";
+  const navBorder = scrolled || !isHome ? `1px solid ${C.border}` : "none";
+
+  const linkStyle = {
     color: C.muted, textDecoration: "none", fontSize: ".68rem",
     letterSpacing: ".16em", textTransform: "uppercase",
     fontFamily: "'DM Mono',monospace", transition: "color .2s",
   };
 
+  const mobileLinkStyle = {
+    ...linkStyle, fontSize: ".9rem", padding: "1rem 0",
+    borderBottom: `1px solid ${C.border2}`, display: "block", color: C.dark,
+  };
+
   return (
-    <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 200, height: 60, padding: "0 3rem", display: "flex", alignItems: "center", justifyContent: "space-between", background: navBg, backdropFilter: navBlur, borderBottom: navBorder, transition: "all .4s" }}>
-      <Link to="/" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "1.6rem", letterSpacing: ".05em", background: `linear-gradient(135deg,${C.green},${C.red})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", textDecoration: "none" }}>PC</Link>
-      <div style={{ display: "flex", gap: "2.5rem", alignItems: "center" }}>
-        {/* About is a separate page via router */}
-        <Link to="/about" style={{ ...anchorStyle, color: location.pathname === "/about" ? C.dark : C.muted }}
-          onMouseEnter={e => e.target.style.color = C.dark}
-          onMouseLeave={e => e.target.style.color = location.pathname === "/about" ? C.dark : C.muted}>About</Link>
-        {/* Projects and Contact scroll to sections on the home page */}
-        {isHome ? (
-          <>
-            <a href="#projects" style={anchorStyle} onMouseEnter={e => e.target.style.color = C.dark} onMouseLeave={e => e.target.style.color = C.muted}>Projects</a>
-            <a href="#contact" style={anchorStyle} onMouseEnter={e => e.target.style.color = C.dark} onMouseLeave={e => e.target.style.color = C.muted}>Contact</a>
-          </>
+    <>
+      <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 200, height: 60, padding: "0 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", background: navBg, backdropFilter: "blur(12px)", borderBottom: navBorder, transition: "all .4s" }}>
+        <Link to="/" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "1.6rem", letterSpacing: ".05em", background: `linear-gradient(135deg,${C.green},${C.red})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", textDecoration: "none" }}>PC</Link>
+
+        {mobile ? (
+          // Hamburger
+          <button onClick={() => setMenuOpen(o => !o)} style={{ background: "none", border: "none", cursor: "pointer", padding: ".5rem", display: "flex", flexDirection: "column", gap: "5px" }}>
+            <span style={{ display: "block", width: 22, height: 2, background: menuOpen ? C.red : C.dark, transition: "all .3s", transform: menuOpen ? "rotate(45deg) translate(5px,5px)" : "none" }} />
+            <span style={{ display: "block", width: 22, height: 2, background: menuOpen ? C.red : C.dark, transition: "all .3s", opacity: menuOpen ? 0 : 1 }} />
+            <span style={{ display: "block", width: 22, height: 2, background: menuOpen ? C.red : C.dark, transition: "all .3s", transform: menuOpen ? "rotate(-45deg) translate(5px,-5px)" : "none" }} />
+          </button>
         ) : (
-          <>
-            <Link to="/#projects" style={anchorStyle} onMouseEnter={e => e.target.style.color = C.dark} onMouseLeave={e => e.target.style.color = C.muted}>Projects</Link>
-            <Link to="/#contact" style={anchorStyle} onMouseEnter={e => e.target.style.color = C.dark} onMouseLeave={e => e.target.style.color = C.muted}>Contact</Link>
-          </>
+          <div style={{ display: "flex", gap: "2.5rem", alignItems: "center" }}>
+            <Link to="/about" style={{ ...linkStyle, color: location.pathname === "/about" ? C.dark : C.muted }}
+              onMouseEnter={e => e.target.style.color = C.dark}
+              onMouseLeave={e => e.target.style.color = location.pathname === "/about" ? C.dark : C.muted}>About</Link>
+            {isHome ? (
+              <>
+                <a href="#projects" style={linkStyle} onMouseEnter={e => e.target.style.color = C.dark} onMouseLeave={e => e.target.style.color = C.muted}>Projects</a>
+                <a href="#contact" style={linkStyle} onMouseEnter={e => e.target.style.color = C.dark} onMouseLeave={e => e.target.style.color = C.muted}>Contact</a>
+              </>
+            ) : (
+              <>
+                <Link to="/#projects" style={linkStyle} onMouseEnter={e => e.target.style.color = C.dark} onMouseLeave={e => e.target.style.color = C.muted}>Projects</Link>
+                <Link to="/#contact" style={linkStyle} onMouseEnter={e => e.target.style.color = C.dark} onMouseLeave={e => e.target.style.color = C.muted}>Contact</Link>
+              </>
+            )}
+            <a href="/Preeta_Chatterjee_Resume.pdf" target="_blank" rel="noreferrer"
+              style={{ fontFamily: "'DM Mono',monospace", fontSize: ".68rem", letterSpacing: ".16em", textTransform: "uppercase", padding: ".4rem 1rem", border: `1.5px solid ${C.red}`, color: C.red, textDecoration: "none", transition: "all .2s" }}
+              onMouseEnter={e => { e.currentTarget.style.background = C.red; e.currentTarget.style.color = "#F2F2F2"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = C.red; }}>Résumé ↗</a>
+          </div>
         )}
-        <a href="/Preeta_Chatterjee_Resume.pdf" target="_blank" rel="noreferrer" style={{ fontFamily: "'DM Mono',monospace", fontSize: ".68rem", letterSpacing: ".16em", textTransform: "uppercase", padding: ".4rem 1rem", border: `1.5px solid ${C.red}`, color: C.red, textDecoration: "none", transition: "all .2s" }}
-          onMouseEnter={e => { e.currentTarget.style.background = C.red; e.currentTarget.style.color = "#F2F2F2"; }}
-          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = C.red; }}>Résumé ↗</a>
-      </div>
-    </nav>
+      </nav>
+
+      {/* Mobile dropdown menu */}
+      {mobile && menuOpen && (
+        <div style={{ position: "fixed", top: 60, left: 0, right: 0, zIndex: 199, background: "rgba(242,242,242,.97)", backdropFilter: "blur(12px)", padding: "0 1.5rem 1.5rem", borderBottom: `1px solid ${C.border}` }}>
+          <Link to="/about" style={mobileLinkStyle} onClick={() => setMenuOpen(false)}>About</Link>
+          <a href={isHome ? "#projects" : "/#projects"} style={mobileLinkStyle} onClick={() => setMenuOpen(false)}>Projects</a>
+          <a href={isHome ? "#contact" : "/#contact"} style={mobileLinkStyle} onClick={() => setMenuOpen(false)}>Contact</a>
+          <a href="/Preeta_Chatterjee_Resume.pdf" target="_blank" rel="noreferrer"
+            style={{ ...mobileLinkStyle, color: C.red, borderBottom: "none" }}
+            onClick={() => setMenuOpen(false)}>Résumé ↗</a>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -182,7 +226,7 @@ function HeroCanvas() {
     const ro = new ResizeObserver(resize); ro.observe(canvas);
 
     const nb = (x, y, burst) => ({
-      x: x ?? (canvas.width * .38 + Math.random() * canvas.width * .58),
+      x: x ?? (canvas.width * .1 + Math.random() * canvas.width * .8),
       y: y ?? (Math.random() * canvas.height * .8 + canvas.height * .1),
       r: burst ? 3 + Math.random() * 8 : 5 + Math.random() * 16,
       vx: (Math.random() - .5) * (burst ? 8 : 2.5),
@@ -193,20 +237,25 @@ function HeroCanvas() {
       gravity: burst ? .15 : 0,
       life: burst ? 1 : Infinity,
     });
-    for (let i = 0; i < 24; i++) balls.push(nb());
+    for (let i = 0; i < 18; i++) balls.push(nb());
 
     let score = 0, floaters = [];
 
-    const onMv = e => { const r = canvas.getBoundingClientRect(); mouse = { x: e.clientX - r.left, y: e.clientY - r.top }; };
+    const getPos = e => {
+      const r = canvas.getBoundingClientRect();
+      if (e.touches) return { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top };
+      return { x: e.clientX - r.left, y: e.clientY - r.top };
+    };
+
+    const onMv = e => { const p = getPos(e); mouse = p; };
     const onLv = () => { mouse = { x: -999, y: -999 }; };
     const onCl = e => {
-      const r = canvas.getBoundingClientRect();
-      const cx = e.clientX - r.left, cy = e.clientY - r.top;
+      const { x: cx, y: cy } = getPos(e);
       let hit = false;
       balls = balls.map(b => {
         if (!hit) {
           const dx = b.x - cx, dy = b.y - cy;
-          if (Math.sqrt(dx * dx + dy * dy) < b.r + 8) {
+          if (Math.sqrt(dx * dx + dy * dy) < b.r + 4) {
             hit = true; score++;
             floaters.push({ x: cx, y: cy, text: "+1", life: 1, vy: -2 });
             for (let i = 0; i < 8; i++) balls.push(nb(b.x, b.y, true));
@@ -217,11 +266,13 @@ function HeroCanvas() {
       }).filter(Boolean);
       if (!hit) { for (let i = 0; i < 4; i++) balls.push(nb(cx, cy, true)); }
       if (balls.filter(b => b.life === Infinity).length < 10) { for (let i = 0; i < 3; i++) balls.push(nb()); }
-      if (balls.length > 70) balls = balls.filter((b, i) => b.life === Infinity || i > balls.length - 20);
+      if (balls.length > 70) balls = balls.filter((b, idx) => b.life === Infinity || idx > balls.length - 20);
     };
+
     canvas.addEventListener("mousemove", onMv);
     canvas.addEventListener("mouseleave", onLv);
     canvas.addEventListener("click", onCl);
+    canvas.addEventListener("touchstart", onCl, { passive: true });
 
     let raf;
     const draw = () => {
@@ -239,12 +290,11 @@ function HeroCanvas() {
       balls = balls.filter(b => b.life > 0);
       balls.forEach(b => {
         const dx = b.x - mouse.x, dy = b.y - mouse.y, d = Math.sqrt(dx * dx + dy * dy);
-        if (d < 80 && b.life === Infinity) { b.vx += dx / d * 1.5; b.vy += dy / d * 1.5; }
+        if (d < 30 && b.life === Infinity) { b.vx += dx / d * 0.8; b.vy += dy / d * 0.8; }
         b.vx *= .98; b.vy *= .98;
         b.vy += b.gravity || 0;
         b.x += b.vx; b.y += b.vy;
         if (b.life !== Infinity) { b.life -= .02; b.alpha = b.life * .7; }
-        if (b.x < W * .35 && b.life === Infinity) b.vx += .5;
         if (b.x > W - b.r) { b.vx *= -1; b.x = W - b.r; }
         if (b.y < b.r) { b.vy *= -1; b.y = b.r; }
         if (b.y > H - b.r) { b.vy *= -.8; b.y = H - b.r; }
@@ -280,13 +330,14 @@ function HeroCanvas() {
       canvas.removeEventListener("mousemove", onMv);
       canvas.removeEventListener("mouseleave", onLv);
       canvas.removeEventListener("click", onCl);
+      canvas.removeEventListener("touchstart", onCl);
       ro.disconnect();
     };
   }, []);
   return (
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
       <canvas ref={ref} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", cursor: "crosshair" }} />
-      <span style={{ position: "absolute", bottom: "2.5rem", right: "2rem", fontFamily: "'DM Mono',monospace", fontSize: ".58rem", letterSpacing: ".15em", color: C.muted, textTransform: "uppercase" }}>push the bubbles around</span>
+      <span style={{ position: "absolute", bottom: "1rem", right: "1rem", fontFamily: "'DM Mono',monospace", fontSize: ".55rem", letterSpacing: ".12em", color: C.muted, textTransform: "uppercase" }}>tap the bubbles</span>
     </div>
   );
 }
@@ -308,16 +359,24 @@ function Marquee() {
 
 // ── Project Card ──────────────────────────────────────────────────────────────
 function ProjCard({ p, i }) {
-  const [ref, inV] = useInView(), [hov, setHov] = useState(false);
+  const [ref, inV] = useInView();
+  const [hov, setHov] = useState(false);
+  const mobile = useMobile();
   return (
-    <div ref={ref} style={{ gridColumn: p.full ? "span 2" : "span 1", background: hov ? "#fff" : C.bg, padding: "2.5rem", position: "relative", overflow: "hidden", opacity: inV ? 1 : 0, transform: inV ? "none" : "translateY(28px)", transition: `background .3s, opacity .7s ease ${i * .1}s, transform .7s ease ${i * .1}s` }}
+    <div ref={ref} style={{
+      gridColumn: mobile ? "span 2" : p.full ? "span 2" : "span 1",
+      background: hov ? "#fff" : C.bg, padding: mobile ? "1.5rem" : "2.5rem",
+      position: "relative", overflow: "hidden",
+      opacity: inV ? 1 : 0, transform: inV ? "none" : "translateY(28px)",
+      transition: `background .3s, opacity .7s ease ${i * .1}s, transform .7s ease ${i * .1}s`,
+    }}
       onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
-      <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "4rem", color: hov ? C.border : C.border2, lineHeight: 1, position: "absolute", top: "1.5rem", right: "2rem", transition: "color .3s" }}>{p.num}</div>
+      <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: mobile ? "3rem" : "4rem", color: hov ? C.border : C.border2, lineHeight: 1, position: "absolute", top: "1rem", right: "1.2rem", transition: "color .3s" }}>{p.num}</div>
       <div style={{ display: "inline-flex", alignItems: "center", gap: ".4rem", padding: ".22rem .7rem", background: p.statusBg, border: `1px solid ${(p.statusDot || p.statusColor) + "44"}`, marginBottom: "1rem" }}>
         <span style={{ width: 5, height: 5, borderRadius: "50%", background: p.statusDot || p.statusColor, display: "inline-block" }} />
         <span style={{ fontFamily: "'DM Mono',monospace", fontSize: ".58rem", letterSpacing: ".1em", color: p.statusColor }}>{p.status} · {p.year}</span>
       </div>
-      <h3 style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: "1.55rem", color: C.dark, lineHeight: 1.15, marginBottom: ".5rem", fontWeight: 400 }}>{p.title}</h3>
+      <h3 style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: mobile ? "1.3rem" : "1.55rem", color: C.dark, lineHeight: 1.15, marginBottom: ".5rem", fontWeight: 400 }}>{p.title}</h3>
       <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".63rem", letterSpacing: ".14em", color: C.muted, textTransform: "uppercase", marginBottom: ".8rem" }}>{p.sub}</div>
       <p style={{ fontFamily: "Georgia,serif", fontSize: ".86rem", lineHeight: 1.8, color: C.muted, marginBottom: "1.3rem" }}>{p.desc}</p>
       <div style={{ display: "flex", flexWrap: "wrap", gap: ".35rem", marginBottom: p.links.length ? "1.3rem" : 0 }}>
@@ -326,8 +385,8 @@ function ProjCard({ p, i }) {
       {p.links.length > 0 && (
         <div style={{ display: "flex", gap: "1.2rem", flexWrap: "wrap" }}>
           {p.links.map(l => (
-            <a key={l.label} href={l.href} target="_blank" rel="noreferrer" style={{ fontFamily: "'DM Mono',monospace", fontSize: ".68rem", letterSpacing: ".1em", textTransform: "uppercase", color: l.color, display: "inline-flex", alignItems: "center", gap: ".35rem", transition: "gap .2s", textDecoration: "none" }}
-              onMouseEnter={e => e.currentTarget.style.gap = ".6rem"} onMouseLeave={e => e.currentTarget.style.gap = ".35rem"}>{l.label} ↗</a>
+            <a key={l.label} href={l.href} target="_blank" rel="noreferrer"
+              style={{ fontFamily: "'DM Mono',monospace", fontSize: ".68rem", letterSpacing: ".1em", textTransform: "uppercase", color: l.color, display: "inline-flex", alignItems: "center", gap: ".35rem", textDecoration: "none" }}>{l.label} ↗</a>
           ))}
         </div>
       )}
@@ -339,7 +398,6 @@ function ProjCard({ p, i }) {
 // ── Contact Form ──────────────────────────────────────────────────────────────
 function ContactForm() {
   const [state, handleSubmit] = useForm("xzdkjqpb");
-
   const iStyle = {
     width: "100%", background: "transparent", border: "none",
     borderBottom: `1.5px solid ${C.border}`, color: C.dark,
@@ -347,14 +405,12 @@ function ContactForm() {
     fontSize: ".85rem", outline: "none", transition: "border-color .2s",
     display: "block", marginBottom: "1.4rem",
   };
-
   if (state.succeeded) return (
     <div style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "1.4rem", color: C.dark, fontStyle: "italic", padding: "2rem 0" }}>
       Message sent.<br />
       <span style={{ fontSize: ".8rem", color: C.muted, fontStyle: "normal", fontFamily: "'DM Mono', monospace" }}>I'll be in touch soon.</span>
     </div>
   );
-
   return (
     <form onSubmit={handleSubmit}>
       {[["name", "Name", "text"], ["email", "Email", "email"]].map(([n, l, t]) => (
@@ -363,8 +419,7 @@ function ContactForm() {
           <input id={n} type={t} name={n} required style={iStyle}
             onFocus={e => e.target.style.borderColor = C.green}
             onBlur={e => e.target.style.borderColor = C.border} />
-          <ValidationError prefix={l} field={n} errors={state.errors}
-            style={{ fontFamily: "'DM Mono', monospace", fontSize: ".65rem", color: C.red }} />
+          <ValidationError prefix={l} field={n} errors={state.errors} style={{ fontFamily: "'DM Mono', monospace", fontSize: ".65rem", color: C.red }} />
         </div>
       ))}
       <div style={{ marginBottom: "1.4rem" }}>
@@ -373,18 +428,15 @@ function ContactForm() {
           style={{ ...iStyle, resize: "none", minHeight: 120, marginBottom: 0 }}
           onFocus={e => e.target.style.borderColor = C.green}
           onBlur={e => e.target.style.borderColor = C.border} />
-        <ValidationError prefix="Message" field="message" errors={state.errors}
-          style={{ fontFamily: "'DM Mono', monospace", fontSize: ".65rem", color: C.red }} />
+        <ValidationError prefix="Message" field="message" errors={state.errors} style={{ fontFamily: "'DM Mono', monospace", fontSize: ".65rem", color: C.red }} />
       </div>
       <button type="submit" disabled={state.submitting} style={{
         display: "inline-block", padding: ".85rem 2.5rem",
-        background: C.green, color: "#F2F2F2",
-        border: `2px solid ${C.green}`,
+        background: C.green, color: "#F2F2F2", border: `2px solid ${C.green}`,
         fontFamily: "'DM Mono', monospace", fontSize: ".73rem",
         letterSpacing: ".14em", textTransform: "uppercase",
         cursor: state.submitting ? "not-allowed" : "pointer",
-        opacity: state.submitting ? .7 : 1,
-        transition: "all .2s", marginTop: ".5rem",
+        opacity: state.submitting ? .7 : 1, transition: "all .2s", marginTop: ".5rem",
       }}
         onMouseEnter={e => { if (!state.submitting) { e.target.style.background = "transparent"; e.target.style.color = C.green; } }}
         onMouseLeave={e => { e.target.style.background = C.green; e.target.style.color = "#F2F2F2"; }}>
@@ -397,7 +449,7 @@ function ContactForm() {
 // ── Footer ────────────────────────────────────────────────────────────────────
 function Footer() {
   return (
-    <footer style={{ background: C.dark, padding: "2rem 3rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
+    <footer style={{ background: C.dark, padding: "2rem 1.5rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
       <span style={{ fontFamily: "'DM Mono',monospace", fontSize: ".6rem", letterSpacing: ".1em", color: "rgba(242,242,242,.3)", textTransform: "uppercase" }}>© 2025 Preeta Chatterjee</span>
       <div style={{ display: "flex", gap: "2rem" }}>
         {[["About", "/about"], ["Projects", "/#projects"], ["Contact", "/#contact"]].map(([l, href]) => (
@@ -411,59 +463,66 @@ function Footer() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// PAGE: HOME (hero + about strip + projects + contact all inline)
+// PAGE: HOME
 // ══════════════════════════════════════════════════════════════════════════════
 function HomePage() {
-  const [m, setM] = useState(false);
-  useEffect(() => { setTimeout(() => setM(true), 120); }, []);
-  const f = d => ({ opacity: m ? 1 : 0, transform: m ? "translateY(0)" : "translateY(20px)", transition: `all .8s ease ${d}s` });
+  const [mounted, setMounted] = useState(false);
+  const mobile = useMobile();
+  useEffect(() => { setTimeout(() => setMounted(true), 120); }, []);
+  const f = d => ({ opacity: mounted ? 1 : 0, transform: mounted ? "translateY(0)" : "translateY(20px)", transition: `all .8s ease ${d}s` });
   const [refP, inP] = useInView();
   const [refC, inC] = useInView();
+  const pad = mobile ? "1.5rem" : "3rem";
 
   return (
     <>
       {/* ── Hero ── */}
-      <section style={{ minHeight: "100vh", display: "grid", gridTemplateColumns: "55% 45%", background: C.bg, overflow: "hidden" }}>
-        <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: "7rem 3rem 4rem", position: "relative", zIndex: 2 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: ".7rem", marginBottom: "2rem", ...f(.1) }}>
-            <span style={{ width: 30, height: 1.5, background: `linear-gradient(to right,${C.green},${C.red})`, display: "inline-block" }} />
-            <span style={{ fontFamily: "'DM Mono',monospace", fontSize: ".65rem", letterSpacing: ".2em", color: C.green, textTransform: "uppercase" }}>MS Computer Science · Northeastern</span>
+      <section style={{
+        minHeight: "100vh",
+        display: "grid",
+        gridTemplateColumns: mobile ? "1fr" : "55% 45%",
+        gridTemplateRows: mobile ? "auto 40vw" : "1fr",
+        background: C.bg, overflow: "hidden",
+      }}>
+        <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: mobile ? "5rem 1.5rem 2rem" : "7rem 3rem 4rem", position: "relative", zIndex: 2 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: ".7rem", marginBottom: "1.5rem", ...f(.1) }}>
+            <span style={{ width: 30, height: 1.5, background: `linear-gradient(to right,${C.green},${C.red})`, display: "inline-block", flexShrink: 0 }} />
+            <span style={{ fontFamily: "'DM Mono',monospace", fontSize: ".6rem", letterSpacing: ".18em", color: C.green, textTransform: "uppercase" }}>MS Computer Science · Northeastern</span>
           </div>
-          <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(4rem,8.5vw,7.5rem)", lineHeight: .92, letterSpacing: ".02em", ...f(.15) }}>
+          <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: mobile ? "clamp(3.5rem,15vw,5rem)" : "clamp(4rem,8.5vw,7.5rem)", lineHeight: .92, letterSpacing: ".02em", ...f(.15) }}>
             <div style={{ color: C.dark }}>PREETA</div>
             <div style={{ color: C.red }}>CHATTERJEE</div>
           </div>
-          <p style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: "clamp(.95rem,1.8vw,1.2rem)", color: C.mid, lineHeight: 1.65, fontStyle: "italic", margin: "1.8rem 0 2rem", maxWidth: 420, ...f(.3) }}>
+          <p style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: "clamp(.9rem,1.8vw,1.2rem)", color: C.mid, lineHeight: 1.65, fontStyle: "italic", margin: "1.5rem 0 1.8rem", maxWidth: 420, ...f(.3) }}>
             Building intelligent systems and playable worlds — where machine learning meets real-time 3D.
           </p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: ".5rem", marginBottom: "2.5rem", ...f(.4) }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: ".5rem", marginBottom: "2rem", ...f(.4) }}>
             {[["ML Engineer", "green"], ["Game Developer", "red"], ["NLP", "o"], ["Unity", "o"], ["Simulation", "o"]].map(([label, t]) => (
-              <span key={label} style={{ fontFamily: "'DM Mono',monospace", fontSize: ".6rem", letterSpacing: ".1em", textTransform: "uppercase", padding: ".3rem .85rem", border: `1.5px solid ${t === "green" ? C.green : t === "red" ? C.red : C.border}`, background: t === "green" ? C.green : t === "red" ? C.red : "transparent", color: t === "o" ? C.mid : "#F2F2F2" }}>{label}</span>
+              <span key={label} style={{ fontFamily: "'DM Mono',monospace", fontSize: ".58rem", letterSpacing: ".1em", textTransform: "uppercase", padding: ".3rem .75rem", border: `1.5px solid ${t === "green" ? C.green : t === "red" ? C.red : C.border}`, background: t === "green" ? C.green : t === "red" ? C.red : "transparent", color: t === "o" ? C.mid : "#F2F2F2" }}>{label}</span>
             ))}
           </div>
-          <div style={{ display: "flex", gap: "1rem", ...f(.5) }}>
-            <a href="#projects" style={{ display: "inline-block", padding: ".85rem 2.2rem", background: C.dark, color: C.bg, fontFamily: "'DM Mono',monospace", fontSize: ".73rem", letterSpacing: ".12em", textTransform: "uppercase", border: `2px solid ${C.dark}`, transition: "all .2s", textDecoration: "none" }}
+          <div style={{ display: "flex", gap: ".75rem", flexWrap: "wrap", ...f(.5) }}>
+            <a href="#projects" style={{ display: "inline-block", padding: ".75rem 1.8rem", background: C.dark, color: C.bg, fontFamily: "'DM Mono',monospace", fontSize: ".7rem", letterSpacing: ".12em", textTransform: "uppercase", border: `2px solid ${C.dark}`, transition: "all .2s", textDecoration: "none" }}
               onMouseEnter={e => { e.target.style.background = "transparent"; e.target.style.color = C.dark; }}
               onMouseLeave={e => { e.target.style.background = C.dark; e.target.style.color = C.bg; }}>Explore Work</a>
-            <a href="#contact" style={{ display: "inline-block", padding: ".85rem 2.2rem", background: C.red, color: "#F2F2F2", fontFamily: "'DM Mono',monospace", fontSize: ".73rem", letterSpacing: ".12em", textTransform: "uppercase", border: `2px solid ${C.red}`, transition: "all .2s", textDecoration: "none" }}
+            <a href="#contact" style={{ display: "inline-block", padding: ".75rem 1.8rem", background: C.red, color: "#F2F2F2", fontFamily: "'DM Mono',monospace", fontSize: ".7rem", letterSpacing: ".12em", textTransform: "uppercase", border: `2px solid ${C.red}`, transition: "all .2s", textDecoration: "none" }}
               onMouseEnter={e => { e.target.style.background = "transparent"; e.target.style.color = C.red; }}
               onMouseLeave={e => { e.target.style.background = C.red; e.target.style.color = "#F2F2F2"; }}>Get in Touch</a>
           </div>
-          <div style={{ position: "absolute", bottom: "2.5rem", left: "3rem", display: "flex", alignItems: "center", gap: ".7rem", ...f(1) }}>
-            <div style={{ width: 1, height: 50, background: `linear-gradient(to bottom,${C.red},transparent)` }} />
-            <span style={{ fontFamily: "'DM Mono',monospace", fontSize: ".58rem", letterSpacing: ".18em", color: C.muted, textTransform: "uppercase", writingMode: "vertical-rl" }}>Scroll</span>
-          </div>
         </div>
-        <div style={{ position: "relative", overflow: "hidden" }}><HeroCanvas /></div>
+        {/* Canvas — full width on mobile, right column on desktop */}
+        <div style={{ position: "relative", overflow: "hidden", minHeight: mobile ? "40vw" : "auto" }}>
+          <HeroCanvas />
+        </div>
       </section>
 
       {/* ── Marquee ── */}
       <Marquee />
 
       {/* ── About strip ── */}
-      <section style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
-        <div style={{ background: C.dark, padding: "5rem 3rem", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(2.5rem,5vw,4.5rem)", lineHeight: .92, letterSpacing: ".02em", marginBottom: "1.5rem" }}>
+      <section style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr" }}>
+        <div style={{ background: C.dark, padding: `3.5rem ${pad}`, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(2rem,5vw,4.5rem)", lineHeight: .92, letterSpacing: ".02em", marginBottom: "1.5rem" }}>
             <span style={{ color: "#F2F2F2" }}>ML meets </span><span style={{ color: C.green }}>game dev</span><br /><span style={{ color: C.redMid }}>&amp; beyond.</span>
           </div>
           <p style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: ".98rem", color: "rgba(242,242,242,.65)", lineHeight: 1.8, fontStyle: "italic", marginBottom: "2rem" }}>
@@ -471,77 +530,69 @@ function HomePage() {
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "rgba(255,255,255,.08)", border: "1px solid rgba(255,255,255,.08)" }}>
             {[["4.0", "GPA", C.green], ["3+", "Projects Shipped", C.redMid], ["2", "Publications", C.greenMid], ["5+", "Years Coding", C.redMid]].map(([n, l, col]) => (
-              <div key={l} style={{ background: C.dark, padding: "1.2rem 1.5rem" }}>
-                <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "2.5rem", color: col, lineHeight: 1 }}>{n}</div>
-                <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".58rem", letterSpacing: ".14em", color: "rgba(242,242,242,.4)", textTransform: "uppercase", marginTop: ".2rem" }}>{l}</div>
+              <div key={l} style={{ background: C.dark, padding: "1rem 1.2rem" }}>
+                <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "2.2rem", color: col, lineHeight: 1 }}>{n}</div>
+                <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".55rem", letterSpacing: ".14em", color: "rgba(242,242,242,.4)", textTransform: "uppercase", marginTop: ".2rem" }}>{l}</div>
               </div>
             ))}
           </div>
-          <div style={{ marginTop: "2rem" }}>
-            <Link to="/about" style={{ fontFamily: "'DM Mono',monospace", fontSize: ".68rem", letterSpacing: ".12em", textTransform: "uppercase", color: C.green, border: `1.5px solid ${C.green}`, padding: ".5rem 1.2rem", textDecoration: "none", display: "inline-block", transition: "all .2s" }}
+          <div style={{ marginTop: "1.5rem" }}>
+            <Link to="/about" style={{ fontFamily: "'DM Mono',monospace", fontSize: ".65rem", letterSpacing: ".12em", textTransform: "uppercase", color: C.green, border: `1.5px solid ${C.green}`, padding: ".5rem 1.2rem", textDecoration: "none", display: "inline-block", transition: "all .2s" }}
               onMouseEnter={e => { e.target.style.background = C.green; e.target.style.color = "#F2F2F2"; }}
               onMouseLeave={e => { e.target.style.background = "transparent"; e.target.style.color = C.green; }}>Read More →</Link>
           </div>
         </div>
-        <div style={{ background: C.bg, padding: "5rem 3rem", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+        <div style={{ background: C.bg, padding: `3.5rem ${pad}`, display: "flex", flexDirection: "column", justifyContent: "center" }}>
           <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".62rem", letterSpacing: ".2em", color: C.green, textTransform: "uppercase", marginBottom: "1.5rem" }}>Technical Arsenal</div>
           {SKILLS.map(s => (
-            <div key={s.name} style={{ borderBottom: `1px solid ${C.border2}`, padding: ".9rem 0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div key={s.name} style={{ borderBottom: `1px solid ${C.border2}`, padding: ".8rem 0", display: "flex", justifyContent: "space-between", alignItems: mobile ? "flex-start" : "center", flexDirection: mobile ? "column" : "row", gap: mobile ? ".5rem" : 0 }}>
               <span style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: ".95rem", color: C.dark, fontStyle: "italic" }}>{s.name}</span>
-              <div style={{ display: "flex", gap: ".35rem", flexWrap: "wrap", justifyContent: "flex-end", maxWidth: "60%" }}>
-                {s.tags.map(t => <span key={t} style={{ fontFamily: "'DM Mono',monospace", fontSize: ".58rem", letterSpacing: ".07em", color: C.muted, padding: ".15rem .5rem", border: `1px solid ${C.border}` }}>{t}</span>)}
+              <div style={{ display: "flex", gap: ".35rem", flexWrap: "wrap", justifyContent: mobile ? "flex-start" : "flex-end" }}>
+                {s.tags.map(t => <span key={t} style={{ fontFamily: "'DM Mono',monospace", fontSize: ".55rem", letterSpacing: ".07em", color: C.muted, padding: ".15rem .5rem", border: `1px solid ${C.border}` }}>{t}</span>)}
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── Projects (inline, anchor target) ── */}
-      <section id="projects" style={{ padding: "6rem 3rem", background: C.surface }}>
-        <div ref={refP} style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "3rem", ...rv(inP) }}>
-          <div>
-            <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".65rem", letterSpacing: ".18em", color: C.red, textTransform: "uppercase", marginBottom: ".5rem" }}>02 / Selected Work</div>
-            <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(2.5rem,6vw,5rem)", color: C.dark, letterSpacing: ".02em", lineHeight: .92 }}>Projects.</div>
-          </div>
+      {/* ── Projects ── */}
+      <section id="projects" style={{ padding: `4rem ${pad}`, background: C.surface }}>
+        <div ref={refP} style={{ marginBottom: "2.5rem", ...rv(inP) }}>
+          <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".65rem", letterSpacing: ".18em", color: C.red, textTransform: "uppercase", marginBottom: ".5rem" }}>02 / Selected Work</div>
+          <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(2.5rem,6vw,5rem)", color: C.dark, letterSpacing: ".02em", lineHeight: .92 }}>Projects.</div>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5px", background: C.border }}>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: "1.5px", background: C.border }}>
           {PROJECTS.map((p, i) => <ProjCard key={p.id} p={p} i={i} />)}
         </div>
       </section>
 
       {/* ── Contact ── */}
-<section id="contact" style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
-  <div ref={refC} style={{
-    background: C.green, padding: "5rem 3rem",
-    display: "flex", flexDirection: "column", justifyContent: "center",
-    position: "relative", overflow: "hidden", ...rv(inC),
-  }}>
-    <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "12rem", color: "rgba(255,255,255,.05)", position: "absolute", bottom: "-2rem", left: "-1rem", lineHeight: 1, pointerEvents: "none" }}>HELLO</div>
-    <div style={{ fontFamily: "'DM Mono', monospace", fontSize: ".65rem", letterSpacing: ".2em", color: "rgba(242,242,242,.5)", textTransform: "uppercase", marginBottom: ".8rem", position: "relative" }}>03 / Contact</div>
-    <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3rem,6vw,5.5rem)", color: "#F2F2F2", lineHeight: .92, letterSpacing: ".02em", marginBottom: "1.5rem", position: "relative" }}>
-      Let's<br />build<br />something.
-    </div>
-    <p style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "1rem", color: "rgba(242,242,242,.72)", lineHeight: 1.75, fontStyle: "italic", marginBottom: "2.5rem", position: "relative" }}>
-      Open to co-op and internship opportunities in AI/ML, game development, and simulation. Boston-based, available summer 2026.
-    </p>
-    <div style={{ position: "relative" }}>
-      {[["Email", "chatterjee.pre@northeastern.edu"], ["LinkedIn", "linkedin.com/in/preeta-chatterjee"], ["GitHub", "github.com/preeta-chatterjee"]].map(([l, v]) => (
-        <div key={l} style={{ display: "flex", gap: "1rem", alignItems: "baseline", marginBottom: ".7rem" }}>
-          <span style={{ fontFamily: "'DM Mono', monospace", fontSize: ".6rem", letterSpacing: ".16em", color: "rgba(242,242,242,.45)", textTransform: "uppercase", minWidth: 65 }}>{l}</span>
-          <span style={{ fontFamily: "'DM Mono', monospace", fontSize: ".7rem", color: "rgba(242,242,242,.82)" }}>{v}</span>
+      <section id="contact" style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr" }}>
+        {/* Green left */}
+        <div ref={refC} style={{ background: C.green, padding: `3.5rem ${pad}`, display: "flex", flexDirection: "column", justifyContent: "center", position: "relative", overflow: "hidden", ...rv(inC) }}>
+          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: mobile ? "6rem" : "12rem", color: "rgba(255,255,255,.05)", position: "absolute", bottom: "-1rem", left: "-1rem", lineHeight: 1, pointerEvents: "none" }}>HELLO</div>
+          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: ".65rem", letterSpacing: ".2em", color: "rgba(242,242,242,.5)", textTransform: "uppercase", marginBottom: ".8rem", position: "relative" }}>03 / Contact</div>
+          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem,6vw,5.5rem)", color: "#F2F2F2", lineHeight: .92, letterSpacing: ".02em", marginBottom: "1.5rem", position: "relative" }}>
+            Let's<br />build<br />something.
+          </div>
+          <p style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "1rem", color: "rgba(242,242,242,.72)", lineHeight: 1.75, fontStyle: "italic", marginBottom: "2rem", position: "relative" }}>
+            Open to co-op and internship opportunities in AI/ML, game development, and simulation. Boston-based, available summer 2027.
+          </p>
+          <div style={{ position: "relative" }}>
+            {[["Email", "chatterjee.pre@northeastern.edu"], ["LinkedIn", "linkedin.com/in/preeta-chatterjee"], ["GitHub", "github.com/preeta-chatterjee"]].map(([l, v]) => (
+              <div key={l} style={{ display: "flex", gap: "1rem", alignItems: "baseline", marginBottom: ".7rem", flexWrap: "wrap" }}>
+                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: ".6rem", letterSpacing: ".16em", color: "rgba(242,242,242,.45)", textTransform: "uppercase", minWidth: 65, flexShrink: 0 }}>{l}</span>
+                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: ".68rem", color: "rgba(242,242,242,.82)", wordBreak: "break-all" }}>{v}</span>
+              </div>
+            ))}
+          </div>
         </div>
-      ))}
-    </div>
-  </div>
-
-  <div style={{
-    background: C.bg, padding: "5rem 3rem",
-    display: "flex", flexDirection: "column", justifyContent: "center",
-  }}>
-    <div style={{ fontFamily: "'DM Mono', monospace", fontSize: ".62rem", letterSpacing: ".2em", color: C.green, textTransform: "uppercase", marginBottom: "2rem" }}>Drop me a message</div>
-    <ContactForm />
-  </div>
-</section>
+        {/* Light right — form */}
+        <div style={{ background: C.bg, padding: `3.5rem ${pad}`, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: ".62rem", letterSpacing: ".2em", color: C.green, textTransform: "uppercase", marginBottom: "2rem" }}>Drop me a message</div>
+          <ContactForm />
+        </div>
+      </section>
 
       <Footer />
     </>
@@ -549,9 +600,12 @@ function HomePage() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// PAGE: ABOUT (separate route)
+// PAGE: ABOUT
 // ══════════════════════════════════════════════════════════════════════════════
 function AboutPage() {
+  const mobile = useMobile();
+  const pad = mobile ? "1.5rem" : "3rem";
+
   const sections = [
     { heading: "Background", body: "I'm a Master's student in Computer Science at Northeastern University (GPA: 4.0), specialising in NLP and generative AI. My undergraduate background in Electronics and Communication Engineering gives me an unusually hardware-aware perspective on software systems.", accent: C.green },
     { heading: "What I Build", body: "I work across two axes — machine learning systems and interactive 3D environments. On the ML side I design retrieval and generation pipelines; on the game side I build physics-driven experiences in Unity and Unreal. The overlap between the two — intelligent, simulated worlds — is where I want to go.", accent: C.red },
@@ -561,24 +615,28 @@ function AboutPage() {
 
   return (
     <div style={{ paddingTop: 60, minHeight: "100vh", background: C.bg }}>
-      <div style={{ background: C.dark, padding: "5rem 3rem 4rem" }}>
+      <div style={{ background: C.dark, padding: `4rem ${pad} 3rem` }}>
         <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".65rem", letterSpacing: ".2em", color: C.red, textTransform: "uppercase", marginBottom: ".8rem" }}>01 / About</div>
-        <h1 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(3.5rem,8vw,7rem)", color: "#F2F2F2", lineHeight: .92, letterSpacing: ".02em" }}>About Me.</h1>
+        <h1 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(3rem,8vw,7rem)", color: "#F2F2F2", lineHeight: .92, letterSpacing: ".02em" }}>About Me.</h1>
       </div>
-      <div style={{ padding: "4rem 3rem" }}>
+      <div style={{ padding: `3rem ${pad}` }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
-          {/* Intro quote */}
-          <div style={{ borderLeft: `4px solid ${C.red}`, paddingLeft: "2rem", marginBottom: "4rem" }}>
-            <p style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: "clamp(1.1rem,2.5vw,1.5rem)", color: C.dark, lineHeight: 1.65, fontStyle: "italic" }}>
+          <div style={{ borderLeft: `4px solid ${C.red}`, paddingLeft: "1.5rem", marginBottom: "3rem" }}>
+            <p style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: "clamp(1rem,2.5vw,1.5rem)", color: C.dark, lineHeight: 1.65, fontStyle: "italic" }}>
               "I want to build systems that think, and worlds that feel real."
             </p>
           </div>
 
-          {/* Sections */}
           {sections.map((s, i) => {
             const [ref, inV] = useInView();
             return (
-              <div key={s.heading} ref={ref} style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: "3rem", marginBottom: "3.5rem", borderTop: `1px solid ${C.border2}`, paddingTop: "2.5rem", ...rv(inV, i * .1) }}>
+              <div key={s.heading} ref={ref} style={{
+                display: "grid",
+                gridTemplateColumns: mobile ? "1fr" : "160px 1fr",
+                gap: mobile ? "1rem" : "3rem",
+                marginBottom: "3rem", borderTop: `1px solid ${C.border2}`, paddingTop: "2rem",
+                ...rv(inV, i * .1),
+              }}>
                 <div>
                   <div style={{ width: 24, height: 3, background: s.accent, marginBottom: ".8rem" }} />
                   <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "1.3rem", color: C.dark, letterSpacing: ".02em" }}>{s.heading}</div>
@@ -588,7 +646,6 @@ function AboutPage() {
             );
           })}
 
-          {/* Education */}
           {(() => {
             const [ref, inV] = useInView();
             return (
@@ -598,12 +655,12 @@ function AboutPage() {
                   { deg: "MS Computer Science", school: "Northeastern University", loc: "Boston, MA", year: "Expected May 2027", gpa: "4.0", col: C.green },
                   { deg: "BTech Electronics & Communication Engineering", school: "Institute of Engineering and Management", loc: "Kolkata, India", year: "Apr 2023", gpa: "9.38/10", col: C.red },
                 ].map(e => (
-                  <div key={e.school} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: `1px solid ${C.border2}`, padding: "1.5rem 0" }}>
-                    <div>
+                  <div key={e.school} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: `1px solid ${C.border2}`, padding: "1.5rem 0", flexWrap: mobile ? "wrap" : "nowrap", gap: "1rem" }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: "1.05rem", color: C.dark, fontStyle: "italic", marginBottom: ".3rem" }}>{e.deg}</div>
-                      <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".72rem", color: C.muted }}>{e.school} · {e.loc}</div>
+                      <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".7rem", color: C.muted }}>{e.school} · {e.loc}</div>
                     </div>
-                    <div style={{ textAlign: "right", flexShrink: 0, marginLeft: "2rem" }}>
+                    <div style={{ textAlign: "right", flexShrink: 0 }}>
                       <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "1.4rem", color: e.col }}>{e.gpa}</div>
                       <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".62rem", color: C.muted }}>{e.year}</div>
                     </div>
@@ -613,16 +670,16 @@ function AboutPage() {
             );
           })()}
 
-          {/* Resume CTA */}
           {(() => {
             const [ref, inV] = useInView();
             return (
-              <div ref={ref} style={{ marginTop: "4rem", padding: "2.5rem", background: C.dark, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1.5rem", ...rv(inV) }}>
+              <div ref={ref} style={{ marginTop: "4rem", padding: mobile ? "1.5rem" : "2.5rem", background: C.dark, display: "flex", alignItems: mobile ? "flex-start" : "center", justifyContent: "space-between", flexDirection: mobile ? "column" : "row", gap: "1.5rem", ...rv(inV) }}>
                 <div>
                   <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "1.8rem", color: "#F2F2F2", letterSpacing: ".02em" }}>Want the full picture?</div>
                   <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".7rem", color: "rgba(242,242,242,.5)", marginTop: ".3rem" }}>Download my résumé for complete work history and publications.</div>
                 </div>
-                <a href="/Preeta_Chatterjee_Resume.pdf" target="_blank" rel="noreferrer" style={{ display: "inline-block", padding: ".85rem 2rem", background: C.green, color: "#F2F2F2", fontFamily: "'DM Mono',monospace", fontSize: ".73rem", letterSpacing: ".12em", textTransform: "uppercase", border: `2px solid ${C.green}`, transition: "all .2s", textDecoration: "none", flexShrink: 0 }}
+                <a href="/Preeta_Chatterjee_Resume.pdf" target="_blank" rel="noreferrer"
+                  style={{ display: "inline-block", padding: ".85rem 2rem", background: C.green, color: "#F2F2F2", fontFamily: "'DM Mono',monospace", fontSize: ".73rem", letterSpacing: ".12em", textTransform: "uppercase", border: `2px solid ${C.green}`, transition: "all .2s", textDecoration: "none", flexShrink: 0 }}
                   onMouseEnter={e => { e.target.style.background = "transparent"; e.target.style.color = C.green; }}
                   onMouseLeave={e => { e.target.style.background = C.green; e.target.style.color = "#F2F2F2"; }}>Download Résumé ↓</a>
               </div>
@@ -642,7 +699,7 @@ export default function App() {
     link.rel = "stylesheet";
     link.href = "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap";
     document.head.appendChild(link);
-	document.title = "Preeta Chatterjee";
+    document.title = "Preeta Chatterjee";
   }, []);
 
   return (
