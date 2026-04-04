@@ -1,73 +1,56 @@
 import { useState, useEffect, useRef } from "react";
 
-const COLORS = {
-  bg: "#0e0e0e",
-  surface: "#161616",
-  card: "#1a1a1a",
-  border: "#2a2a2a",
-  green: "#174D38",
-  greenLight: "#1e6347",
-  red: "#4D1717",
-  redLight: "#6b2020",
-  silver: "#CBCBCB",
-  fog: "#F2F2F2",
-  muted: "#888888",
-  text: "#f0ede8",
+// ── Colours ──────────────────────────────────────────────────────────
+const C = {
+  bg: "#F2F2F2", surface: "#ffffff", border: "#d0d0d0", border2: "#e8e8e8",
+  green: "#174D38", greenL: "#1e6347", greenBg: "#e4ede8",
+  red: "#4D1717", redBg: "#f0e5e5",
+  dark: "#111111", mid: "#444444", muted: "#777777",
+  amber: "#b8860b", amberBg: "#fdf3e0", amberDark: "#7a5a08",
 };
 
-const NAV_LINKS = ["About", "Projects", "Contact"];
+const PALETTE = [C.green, C.red, C.greenL, "#CBCBCB", "#d0d0d0", C.green, C.amber];
+
+const SKILLS = [
+  { name: "Languages", tags: ["Python", "C++", "C#", "Java", "MATLAB", "TypeScript"] },
+  { name: "3D & Graphics", tags: ["Unity", "Unreal Engine", "Simulink", "OpenGL"] },
+  { name: "ML / AI", tags: ["PyTorch", "Hugging Face", "FAISS", "scikit-learn"] },
+  { name: "Concepts", tags: ["RAG", "NLP", "Simulation Modeling", "Real-Time Systems", "OOP"] },
+  { name: "Tools", tags: ["Git", "Azure Cosmos DB", "React.js", "CI/CD"] },
+];
 
 const PROJECTS = [
   {
-    id: 1,
+    id: 1, num: "01",
     title: "RAG Research Engine",
-    tag: "NLP · Machine Learning",
-    status: "Completed",
-    statusColor: COLORS.green,
-    year: "2025",
-    description:
-      "End-to-end retrieval-augmented generation pipeline querying 30+ research papers on fairness and bias in LLMs. Built with FAISS vector indexing, E5-Base-v2 embeddings, and FLAN-T5-XL for natural language generation. Evaluation framework across 124 QA pairs with ablation studies.",
-    stack: ["Python", "Hugging Face", "FAISS", "PyTorch", "FLAN-T5-XL"],
-    github: "https://github.com/preeta-chatterjee",
-    accent: COLORS.green,
+    sub: "NLP · Machine Learning",
+    status: "Completed", statusColor: C.green, statusBg: C.greenBg,
+    desc: "End-to-end retrieval-augmented generation pipeline querying 30+ research papers on fairness and bias in LLMs. FAISS vector indexing, E5-Base-v2 embeddings, and FLAN-T5-XL generation. Evaluation framework across 124 QA pairs with ablation studies.",
+    stack: ["Python", "Hugging Face", "FAISS", "PyTorch", "FLAN-T5-XL", "E5-Base-v2"],
+    accentColor: C.green, full: true,
   },
   {
-    id: 2,
+    id: 2, num: "02",
     title: "Roll — A Ball",
-    tag: "Game Development · Unity",
-    status: "Live",
-    statusColor: COLORS.greenLight,
-    year: "2025",
-    description:
-      "A physics-driven 3D ball game built in Unity. Demonstrates real-time rigid-body dynamics, collision handling, and game state management. First shipped game project — fully playable and deployed.",
+    sub: "Game Development · Unity",
+    status: "Live", statusColor: C.greenL, statusBg: C.greenBg,
+    desc: "Physics-driven 3D ball game demonstrating real-time rigid-body dynamics, collision handling, and game state management. First shipped game — fully playable.",
     stack: ["Unity", "C#", "Physics Engine", "3D Modeling"],
-    github: "https://github.com/preeta-chatterjee",
-    accent: COLORS.red,
+    accentColor: C.red, full: false,
   },
   {
-    id: 3,
+    id: 3, num: "03",
     title: "Untitled Game Project",
-    tag: "Game Development · In Progress",
-    status: "In Progress",
-    statusColor: "#b8860b",
-    year: "2025–",
-    description:
-      "An ongoing game development project currently in active development. Exploring simulation mechanics, environment design, and interactive systems. Updates pushed regularly to GitHub.",
+    sub: "Game Development · Simulation",
+    status: "In Progress", statusColor: C.amberDark, statusBg: C.amberBg, statusDot: C.amber,
+    desc: "Ongoing game exploring simulation mechanics, environment design, and interactive systems. Active development — updates pushed regularly.",
     stack: ["Unity", "C#", "Unreal Engine", "Simulation"],
-    github: "https://github.com/preeta-chatterjee",
-    accent: COLORS.red,
+    accentColor: C.red, full: false,
   },
 ];
 
-const SKILLS = [
-  { label: "Languages", items: "Python · C++ · Java · C# · MATLAB · TypeScript" },
-  { label: "3D / Graphics", items: "Unity · Unreal Engine · Simulink · OpenGL" },
-  { label: "ML / AI", items: "PyTorch · Hugging Face · FAISS · scikit-learn · FLAN-T5" },
-  { label: "Tools", items: "Git · Azure Cosmos DB · React.js · CI/CD" },
-  { label: "Concepts", items: "Simulation Modeling · RAG · NLP · Real-Time Systems · OOP" },
-];
-
-function useInView(threshold = 0.15) {
+// ── useInView hook ───────────────────────────────────────────────────
+function useInView(threshold = 0.12) {
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
   useEffect(() => {
@@ -81,56 +64,69 @@ function useInView(threshold = 0.15) {
   return [ref, inView];
 }
 
-function Noise() {
-  return (
-    <svg style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 0, opacity: 0.03 }}>
-      <filter id="noise">
-        <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
-        <feColorMatrix type="saturate" values="0" />
-      </filter>
-      <rect width="100%" height="100%" filter="url(#noise)" />
-    </svg>
-  );
+// ── Custom Cursor ────────────────────────────────────────────────────
+function Cursor() {
+  const dot = useRef(null);
+  const ring = useRef(null);
+  const mouse = useRef({ x: -999, y: -999 });
+  const pos = useRef({ x: -999, y: -999 });
+
+  useEffect(() => {
+    const move = e => { mouse.current = { x: e.clientX, y: e.clientY }; };
+    document.addEventListener("mousemove", move);
+    let raf;
+    function tick() {
+      pos.current.x += (mouse.current.x - pos.current.x) * 0.12;
+      pos.current.y += (mouse.current.y - pos.current.y) * 0.12;
+      if (dot.current) { dot.current.style.left = mouse.current.x + "px"; dot.current.style.top = mouse.current.y + "px"; }
+      if (ring.current) { ring.current.style.left = pos.current.x + "px"; ring.current.style.top = pos.current.y + "px"; }
+      raf = requestAnimationFrame(tick);
+    }
+    tick();
+    return () => { document.removeEventListener("mousemove", move); cancelAnimationFrame(raf); };
+  }, []);
+
+  const dotStyle = {
+    position: "fixed", width: "12px", height: "12px", background: C.green,
+    borderRadius: "50%", pointerEvents: "none", zIndex: 9999,
+    transform: "translate(-50%,-50%)", transition: "transform 0.15s",
+  };
+  const ringStyle = {
+    position: "fixed", width: "36px", height: "36px",
+    border: `1.5px solid ${C.green}`, borderRadius: "50%",
+    pointerEvents: "none", zIndex: 9998, transform: "translate(-50%,-50%)",
+  };
+  return <><div ref={dot} style={dotStyle} /><div ref={ring} style={ringStyle} /></>;
 }
 
-function Nav({ active }) {
+// ── Nav ──────────────────────────────────────────────────────────────
+function Nav() {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
-    const h = () => setScrolled(window.scrollY > 40);
+    const h = () => setScrolled(window.scrollY > 60);
     window.addEventListener("scroll", h);
     return () => window.removeEventListener("scroll", h);
   }, []);
-
   return (
     <nav style={{
       position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
-      padding: "0 2.5rem",
-      height: "64px",
+      height: "60px", padding: "0 3rem",
       display: "flex", alignItems: "center", justifyContent: "space-between",
-      background: scrolled ? "rgba(14,14,14,0.92)" : "transparent",
+      background: scrolled ? "rgba(242,242,242,0.95)" : "transparent",
       backdropFilter: scrolled ? "blur(12px)" : "none",
-      borderBottom: scrolled ? `1px solid ${COLORS.border}` : "none",
+      borderBottom: scrolled ? `1px solid ${C.border}` : "none",
       transition: "all 0.4s ease",
     }}>
-      <span style={{
-        fontFamily: "'DM Serif Display', Georgia, serif",
-        fontSize: "1.15rem",
-        color: COLORS.text,
-        letterSpacing: "0.02em",
-      }}>PC</span>
+      <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.6rem", color: C.green, letterSpacing: "0.05em" }}>PC</span>
       <div style={{ display: "flex", gap: "2.5rem" }}>
-        {NAV_LINKS.map(l => (
+        {["About", "Projects", "Contact"].map(l => (
           <a key={l} href={`#${l.toLowerCase()}`} style={{
-            color: active === l.toLowerCase() ? COLORS.fog : COLORS.muted,
-            textDecoration: "none",
-            fontSize: "0.8rem",
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            fontFamily: "'DM Mono', 'Courier New', monospace",
-            transition: "color 0.2s",
+            color: C.muted, textDecoration: "none",
+            fontSize: "0.68rem", letterSpacing: "0.16em", textTransform: "uppercase",
+            fontFamily: "'DM Mono', monospace", transition: "color 0.2s",
           }}
-            onMouseEnter={e => e.target.style.color = COLORS.fog}
-            onMouseLeave={e => e.target.style.color = active === l.toLowerCase() ? COLORS.fog : COLORS.muted}
+            onMouseEnter={e => e.target.style.color = C.dark}
+            onMouseLeave={e => e.target.style.color = C.muted}
           >{l}</a>
         ))}
       </div>
@@ -138,457 +134,453 @@ function Nav({ active }) {
   );
 }
 
-function Hero() {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => { setTimeout(() => setMounted(true), 100); }, []);
+// ── Hero Canvas ──────────────────────────────────────────────────────
+function HeroCanvas() {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    let balls = [], frame = 0, mouse = { x: -999, y: -999 };
+    const LABELS = [
+      { text: "UNITY", x: 0.55, y: 0.2, size: 11 },
+      { text: "C#", x: 0.8, y: 0.35, size: 13 },
+      { text: "PYTHON", x: 0.6, y: 0.65, size: 10 },
+      { text: "NLP", x: 0.75, y: 0.75, size: 12 },
+      { text: "PyTorch", x: 0.52, y: 0.45, size: 10 },
+      { text: "FAISS", x: 0.85, y: 0.55, size: 9 },
+      { text: "RAG", x: 0.63, y: 0.82, size: 11 },
+    ];
+
+    function resize() {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    }
+    resize();
+
+    function newBall(x, y, burst = false) {
+      const W = canvas.width, H = canvas.height;
+      return {
+        x: x ?? (W * 0.35 + Math.random() * W * 0.6),
+        y: y ?? (Math.random() * H * 0.8 + H * 0.1),
+        r: burst ? 4 + Math.random() * 10 : 6 + Math.random() * 18,
+        vx: burst ? (Math.random() - 0.5) * 6 : (Math.random() - 0.5) * 2.5,
+        vy: burst ? (Math.random() - 0.5) * 6 : (Math.random() - 0.5) * 2.5,
+        color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
+        alpha: 0.15 + Math.random() * 0.5,
+        outline: Math.random() > 0.6,
+      };
+    }
+    for (let i = 0; i < 22; i++) balls.push(newBall());
+
+    const onMove = e => {
+      const r = canvas.getBoundingClientRect();
+      mouse = { x: e.clientX - r.left, y: e.clientY - r.top };
+    };
+    const onLeave = () => { mouse = { x: -999, y: -999 }; };
+    const onClick = e => {
+      const r = canvas.getBoundingClientRect();
+      const cx = e.clientX - r.left, cy = e.clientY - r.top;
+      for (let i = 0; i < 5; i++) balls.push(newBall(cx, cy, true));
+      if (balls.length > 55) balls.splice(0, 5);
+    };
+    canvas.addEventListener("mousemove", onMove);
+    canvas.addEventListener("mouseleave", onLeave);
+    canvas.addEventListener("click", onClick);
+
+    let raf;
+    function draw() {
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      // grid
+      ctx.strokeStyle = "rgba(23,77,56,0.06)";
+      ctx.lineWidth = 1;
+      for (let x = 0; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+      for (let y = 0; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+
+      // floating labels
+      LABELS.forEach((l, i) => {
+        ctx.font = `500 ${l.size}px 'DM Mono', monospace`;
+        ctx.fillStyle = `rgba(23,77,56,${0.1 + Math.sin(frame * 0.02 + i) * 0.04})`;
+        ctx.fillText(l.text, l.x * W, l.y * H + Math.sin(frame * 0.018 + i) * 8);
+      });
+
+      // balls
+      balls.forEach(b => {
+        const dx = b.x - mouse.x, dy = b.y - mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 100) { b.vx += (dx / dist) * 1.2; b.vy += (dy / dist) * 1.2; }
+        b.vx *= 0.98; b.vy *= 0.98;
+        b.x += b.vx; b.y += b.vy;
+        if (b.x < W * 0.35) b.vx += 0.5;
+        if (b.x > W - b.r) { b.vx *= -1; b.x = W - b.r; }
+        if (b.y < b.r) { b.vy *= -1; b.y = b.r; }
+        if (b.y > H - b.r) { b.vy *= -1; b.y = H - b.r; }
+
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.globalAlpha = b.alpha;
+        if (b.outline) { ctx.strokeStyle = b.color; ctx.lineWidth = 1.5; ctx.stroke(); }
+        else { ctx.fillStyle = b.color; ctx.fill(); }
+        ctx.globalAlpha = 1;
+      });
+
+      // corner brackets
+      ctx.strokeStyle = "rgba(23,77,56,0.25)"; ctx.lineWidth = 1.5;
+      const s = 20;
+      ctx.beginPath(); ctx.moveTo(W - 40, 40 + s); ctx.lineTo(W - 40, 40); ctx.lineTo(W - 40 - s, 40); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(40, H - 40 - s); ctx.lineTo(40, H - 40); ctx.lineTo(40 + s, H - 40); ctx.stroke();
+
+      frame++;
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas);
+    return () => {
+      cancelAnimationFrame(raf);
+      canvas.removeEventListener("mousemove", onMove);
+      canvas.removeEventListener("mouseleave", onLeave);
+      canvas.removeEventListener("click", onClick);
+      ro.disconnect();
+    };
+  }, []);
 
   return (
-    <section id="about" style={{
-      minHeight: "100vh",
-      display: "flex", flexDirection: "column", justifyContent: "center",
-      padding: "0 2.5rem",
-      position: "relative",
-      overflow: "hidden",
-    }}>
-      {/* Background accent blobs */}
-      <div style={{
-        position: "absolute", top: "15%", right: "8%",
-        width: "340px", height: "340px", borderRadius: "50%",
-        background: `radial-gradient(circle, ${COLORS.green}22 0%, transparent 70%)`,
-        filter: "blur(40px)", pointerEvents: "none",
-      }} />
-      <div style={{
-        position: "absolute", bottom: "20%", left: "5%",
-        width: "260px", height: "260px", borderRadius: "50%",
-        background: `radial-gradient(circle, ${COLORS.red}18 0%, transparent 70%)`,
-        filter: "blur(50px)", pointerEvents: "none",
-      }} />
-
-      <div style={{ maxWidth: "900px", position: "relative", zIndex: 1 }}>
-        {/* Eyebrow */}
-        <div style={{
-          display: "inline-flex", alignItems: "center", gap: "0.6rem",
-          marginBottom: "1.8rem",
-          opacity: mounted ? 1 : 0,
-          transform: mounted ? "translateY(0)" : "translateY(12px)",
-          transition: "all 0.7s ease 0.1s",
-        }}>
-          <span style={{ width: "28px", height: "1px", background: COLORS.green, display: "inline-block" }} />
-          <span style={{
-            fontFamily: "'DM Mono', monospace",
-            fontSize: "0.72rem", letterSpacing: "0.18em",
-            color: COLORS.green, textTransform: "uppercase",
-          }}>Computer Science · Northeastern University</span>
-        </div>
-
-        {/* Name */}
-        <h1 style={{
-          fontFamily: "'DM Serif Display', Georgia, serif",
-          fontSize: "clamp(3.2rem, 8vw, 7rem)",
-          fontWeight: 400,
-          lineHeight: 0.95,
-          color: COLORS.text,
-          margin: "0 0 0.15em",
-          letterSpacing: "-0.02em",
-          opacity: mounted ? 1 : 0,
-          transform: mounted ? "translateY(0)" : "translateY(20px)",
-          transition: "all 0.8s ease 0.2s",
-        }}>
-          Preeta<br />
-          <span style={{ color: COLORS.silver, fontStyle: "italic" }}>Chatterjee</span>
-        </h1>
-
-        {/* Tagline */}
-        <p style={{
-          fontFamily: "'DM Mono', monospace",
-          fontSize: "clamp(0.85rem, 1.8vw, 1.05rem)",
-          color: COLORS.muted,
-          maxWidth: "540px",
-          lineHeight: 1.7,
-          marginTop: "1.8rem",
-          marginBottom: "2.8rem",
-          opacity: mounted ? 1 : 0,
-          transform: mounted ? "translateY(0)" : "translateY(16px)",
-          transition: "all 0.8s ease 0.35s",
-        }}>
-          ML engineer & game developer. Building intelligent systems and real-time 3D experiences — from RAG pipelines to physics-driven games.
-        </p>
-
-        {/* CTA row */}
-        <div style={{
-          display: "flex", gap: "1rem", flexWrap: "wrap",
-          opacity: mounted ? 1 : 0,
-          transform: mounted ? "translateY(0)" : "translateY(12px)",
-          transition: "all 0.8s ease 0.5s",
-        }}>
-          <a href="#projects" style={{
-            padding: "0.75rem 2rem",
-            background: COLORS.green,
-            color: COLORS.fog,
-            textDecoration: "none",
-            fontFamily: "'DM Mono', monospace",
-            fontSize: "0.78rem", letterSpacing: "0.1em", textTransform: "uppercase",
-            border: "none", cursor: "pointer",
-            transition: "background 0.2s",
-          }}
-            onMouseEnter={e => e.target.style.background = COLORS.greenLight}
-            onMouseLeave={e => e.target.style.background = COLORS.green}
-          >View Projects</a>
-          <a href="https://github.com/preeta-chatterjee" target="_blank" rel="noreferrer" style={{
-            padding: "0.75rem 2rem",
-            background: "transparent",
-            color: COLORS.silver,
-            textDecoration: "none",
-            fontFamily: "'DM Mono', monospace",
-            fontSize: "0.78rem", letterSpacing: "0.1em", textTransform: "uppercase",
-            border: `1px solid ${COLORS.border}`,
-            cursor: "pointer",
-            transition: "border-color 0.2s, color 0.2s",
-          }}
-            onMouseEnter={e => { e.target.style.borderColor = COLORS.silver; e.target.style.color = COLORS.fog; }}
-            onMouseLeave={e => { e.target.style.borderColor = COLORS.border; e.target.style.color = COLORS.silver; }}
-          >GitHub ↗</a>
-        </div>
-
-        {/* Skills strip */}
-        <div style={{
-          marginTop: "5rem",
-          paddingTop: "2.5rem",
-          borderTop: `1px solid ${COLORS.border}`,
-          opacity: mounted ? 1 : 0,
-          transition: "opacity 0.8s ease 0.7s",
-        }}>
-          {SKILLS.map(s => (
-            <div key={s.label} style={{
-              display: "flex", gap: "1.5rem", alignItems: "baseline",
-              marginBottom: "0.55rem",
-            }}>
-              <span style={{
-                fontFamily: "'DM Mono', monospace",
-                fontSize: "0.68rem", letterSpacing: "0.12em",
-                color: COLORS.green, textTransform: "uppercase",
-                minWidth: "110px",
-              }}>{s.label}</span>
-              <span style={{
-                fontFamily: "'DM Mono', monospace",
-                fontSize: "0.75rem", color: COLORS.muted,
-              }}>{s.items}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function ProjectCard({ project, index }) {
-  const [ref, inView] = useInView();
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <div ref={ref} style={{
-      opacity: inView ? 1 : 0,
-      transform: inView ? "translateY(0)" : "translateY(30px)",
-      transition: `all 0.7s ease ${index * 0.12}s`,
-    }}>
-      <div
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        style={{
-          background: hovered ? COLORS.card : COLORS.surface,
-          border: `1px solid ${hovered ? project.accent + "55" : COLORS.border}`,
-          padding: "2rem 2.2rem",
-          transition: "all 0.3s ease",
-          cursor: "default",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        {/* Top accent line */}
-        <div style={{
-          position: "absolute", top: 0, left: 0, right: 0, height: "2px",
-          background: hovered ? project.accent : "transparent",
-          transition: "background 0.3s",
-        }} />
-
-        {/* Header row */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.2rem" }}>
-          <div>
-            <div style={{
-              fontFamily: "'DM Mono', monospace",
-              fontSize: "0.65rem", letterSpacing: "0.15em",
-              color: COLORS.muted, textTransform: "uppercase",
-              marginBottom: "0.4rem",
-            }}>{project.tag}</div>
-            <h3 style={{
-              fontFamily: "'DM Serif Display', Georgia, serif",
-              fontSize: "1.55rem", fontWeight: 400,
-              color: COLORS.text, margin: 0, letterSpacing: "-0.01em",
-            }}>{project.title}</h3>
-          </div>
-          <div style={{ textAlign: "right", flexShrink: 0, marginLeft: "1rem" }}>
-            <div style={{
-              display: "inline-flex", alignItems: "center", gap: "0.4rem",
-              padding: "0.25rem 0.7rem",
-              background: project.statusColor + "22",
-              border: `1px solid ${project.statusColor}44`,
-              marginBottom: "0.4rem",
-            }}>
-              <span style={{ width: "5px", height: "5px", borderRadius: "50%", background: project.statusColor, display: "inline-block" }} />
-              <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.62rem", color: project.statusColor, letterSpacing: "0.1em" }}>
-                {project.status}
-              </span>
-            </div>
-            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.68rem", color: COLORS.muted }}>{project.year}</div>
-          </div>
-        </div>
-
-        {/* Description */}
-        <p style={{
-          fontFamily: "Georgia, serif",
-          fontSize: "0.88rem", lineHeight: 1.75,
-          color: COLORS.muted, margin: "0 0 1.5rem",
-        }}>{project.description}</p>
-
-        {/* Stack pills */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginBottom: "1.5rem" }}>
-          {project.stack.map(s => (
-            <span key={s} style={{
-              fontFamily: "'DM Mono', monospace",
-              fontSize: "0.65rem", letterSpacing: "0.08em",
-              color: COLORS.silver,
-              padding: "0.2rem 0.6rem",
-              border: `1px solid ${COLORS.border}`,
-              background: COLORS.bg,
-            }}>{s}</span>
-          ))}
-        </div>
-
-        {/* GitHub link */}
-        <a href={project.github} target="_blank" rel="noreferrer" style={{
-          fontFamily: "'DM Mono', monospace",
-          fontSize: "0.72rem", letterSpacing: "0.1em",
-          color: project.accent === COLORS.green ? COLORS.green : "#c0392b",
-          textDecoration: "none", textTransform: "uppercase",
-          display: "inline-flex", alignItems: "center", gap: "0.4rem",
-          transition: "opacity 0.2s",
-        }}
-          onMouseEnter={e => e.currentTarget.style.opacity = "0.7"}
-          onMouseLeave={e => e.currentTarget.style.opacity = "1"}
-        >
-          View on GitHub <span style={{ fontSize: "0.9rem" }}>↗</span>
-        </a>
-      </div>
+    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+      <canvas ref={canvasRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", cursor: "crosshair" }} />
+      <span style={{
+        position: "absolute", bottom: "2.5rem", right: "2.5rem",
+        fontFamily: "'DM Mono', monospace", fontSize: "0.6rem",
+        letterSpacing: "0.16em", color: C.muted, textTransform: "uppercase",
+      }}>interactive · click to play</span>
     </div>
   );
 }
 
-function Projects() {
-  const [ref, inView] = useInView();
+// ── Hero ─────────────────────────────────────────────────────────────
+function Hero() {
+  const [m, setM] = useState(false);
+  useEffect(() => { setTimeout(() => setM(true), 120); }, []);
+  const fade = (delay) => ({
+    opacity: m ? 1 : 0, transform: m ? "translateY(0)" : "translateY(20px)",
+    transition: `all 0.8s ease ${delay}s`,
+  });
+
   return (
-    <section id="projects" style={{ padding: "7rem 2.5rem", position: "relative" }}>
-      <div style={{ maxWidth: "900px", margin: "0 auto" }}>
-        <div ref={ref} style={{
-          display: "flex", alignItems: "center", gap: "1.5rem",
-          marginBottom: "3.5rem",
-          opacity: inView ? 1 : 0, transform: inView ? "translateY(0)" : "translateY(20px)",
-          transition: "all 0.6s ease",
+    <section id="about" style={{
+      minHeight: "100vh", display: "grid", gridTemplateColumns: "1fr 1fr",
+      position: "relative", overflow: "hidden", background: C.bg,
+    }}>
+      {/* Left */}
+      <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: "7rem 3rem 4rem", position: "relative", zIndex: 2 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.7rem", marginBottom: "2rem", ...fade(0.1) }}>
+          <span style={{ width: "30px", height: "1.5px", background: C.green, display: "inline-block" }} />
+          <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.65rem", letterSpacing: "0.2em", color: C.green, textTransform: "uppercase" }}>MS Computer Science · Northeastern</span>
+        </div>
+        <div style={{
+          fontFamily: "'Bebas Neue', sans-serif",
+          fontSize: "clamp(4.5rem, 9vw, 8rem)",
+          lineHeight: 0.92, letterSpacing: "0.02em",
+          ...fade(0.15),
         }}>
-          <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.68rem", color: COLORS.green, letterSpacing: "0.18em", textTransform: "uppercase" }}>02 / Projects</span>
-          <div style={{ flex: 1, height: "1px", background: COLORS.border }} />
+          <div style={{ color: C.dark }}>PREETA</div>
+          <div style={{ WebkitTextStroke: `2px ${C.dark}`, color: "transparent" }}>CHAT-</div>
+          <div style={{ color: C.green }}>TERJEE</div>
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
-          {PROJECTS.map((p, i) => <ProjectCard key={p.id} project={p} index={i} />)}
+        <p style={{
+          fontFamily: "'DM Serif Display', Georgia, serif",
+          fontSize: "clamp(1rem, 1.8vw, 1.2rem)",
+          color: C.mid, lineHeight: 1.65, fontStyle: "italic",
+          marginTop: "1.8rem", marginBottom: "2rem", maxWidth: "400px",
+          ...fade(0.3),
+        }}>Building intelligent systems and playable worlds — where machine learning meets real-time 3D.</p>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "2.5rem", ...fade(0.4) }}>
+          {["ML Engineer", "Game Developer", "NLP", "Unity", "Simulation"].map((t, i) => (
+            <span key={t} style={{
+              fontFamily: "'DM Mono', monospace",
+              fontSize: "0.62rem", letterSpacing: "0.1em", textTransform: "uppercase",
+              padding: "0.3rem 0.8rem",
+              border: `1.5px solid ${i < 2 ? C.green : C.border}`,
+              color: i < 2 ? C.surface : C.mid,
+              background: i < 2 ? C.green : "transparent",
+            }}>{t}</span>
+          ))}
         </div>
-        <div style={{ marginTop: "2rem", textAlign: "center" }}>
-          <a href="https://github.com/preeta-chatterjee" target="_blank" rel="noreferrer"
-            style={{
-              fontFamily: "'DM Mono', monospace", fontSize: "0.72rem",
-              color: COLORS.muted, textDecoration: "none", letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              transition: "color 0.2s",
-            }}
-            onMouseEnter={e => e.target.style.color = COLORS.fog}
-            onMouseLeave={e => e.target.style.color = COLORS.muted}
-          >All projects at github.com/preeta-chatterjee ↗</a>
+        <div style={fade(0.5)}>
+          <a href="#projects" style={{
+            display: "inline-block", padding: "0.85rem 2.2rem",
+            background: C.dark, color: C.bg,
+            fontFamily: "'DM Mono', monospace", fontSize: "0.75rem",
+            letterSpacing: "0.12em", textTransform: "uppercase",
+            border: `2px solid ${C.dark}`, transition: "all 0.2s",
+          }}
+            onMouseEnter={e => { e.target.style.background = "transparent"; e.target.style.color = C.dark; }}
+            onMouseLeave={e => { e.target.style.background = C.dark; e.target.style.color = C.bg; }}
+          >Explore Work</a>
         </div>
+        {/* scroll hint */}
+        <div style={{ position: "absolute", bottom: "2.5rem", left: "3rem", display: "flex", alignItems: "center", gap: "0.7rem", ...fade(1) }}>
+          <div style={{ width: "1px", height: "50px", background: `linear-gradient(to bottom, ${C.green}, transparent)` }} />
+          <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.6rem", letterSpacing: "0.18em", color: C.muted, textTransform: "uppercase", writingMode: "vertical-rl" }}>Scroll</span>
+        </div>
+      </div>
+      {/* Right canvas */}
+      <div style={{ position: "relative", overflow: "hidden" }}>
+        <HeroCanvas />
       </div>
     </section>
   );
 }
 
-function Contact() {
-  const [ref, inView] = useInView();
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [sent, setSent] = useState(false);
-
-  const handle = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
-  const submit = e => {
-    e.preventDefault();
-    setSent(true);
-  };
-
-  const inputStyle = {
-    width: "100%", boxSizing: "border-box",
-    background: COLORS.surface,
-    border: `1px solid ${COLORS.border}`,
-    color: COLORS.fog,
-    padding: "0.85rem 1rem",
-    fontFamily: "'DM Mono', monospace",
-    fontSize: "0.82rem",
-    outline: "none",
-    transition: "border-color 0.2s",
-  };
-
+// ── Marquee ──────────────────────────────────────────────────────────
+function Marquee() {
+  const items = ["NLP", "✦", "Game Development", "✦", "Machine Learning", "✦", "Unity", "✦", "RAG Pipelines", "✦", "Simulation", "✦", "C++", "✦", "Real-Time Systems", "✦"];
+  const doubled = [...items, ...items];
   return (
-    <section id="contact" style={{ padding: "7rem 2.5rem 6rem", position: "relative" }}>
-      {/* Background accent */}
-      <div style={{
-        position: "absolute", top: "30%", right: "10%",
-        width: "300px", height: "300px", borderRadius: "50%",
-        background: `radial-gradient(circle, ${COLORS.red}15 0%, transparent 70%)`,
-        filter: "blur(50px)", pointerEvents: "none",
-      }} />
+    <div style={{ background: C.green, padding: "0.75rem 0", overflow: "hidden", whiteSpace: "nowrap" }}>
+      <div style={{ display: "inline-flex", animation: "marquee 18s linear infinite" }}>
+        {doubled.map((t, i) => (
+          <span key={i} style={{
+            fontFamily: "'Bebas Neue', sans-serif",
+            fontSize: "1.1rem", letterSpacing: "0.12em",
+            color: t === "✦" ? "rgba(242,242,242,0.4)" : "#F2F2F2",
+            padding: "0 2rem",
+          }}>{t}</span>
+        ))}
+      </div>
+      <style>{`@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}`}</style>
+    </div>
+  );
+}
 
-      <div style={{ maxWidth: "900px", margin: "0 auto" }}>
-        <div ref={ref} style={{
-          display: "flex", alignItems: "center", gap: "1.5rem",
-          marginBottom: "3.5rem",
-          opacity: inView ? 1 : 0, transform: inView ? "translateY(0)" : "translateY(20px)",
-          transition: "all 0.6s ease",
-        }}>
-          <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.68rem", color: COLORS.green, letterSpacing: "0.18em", textTransform: "uppercase" }}>03 / Contact</span>
-          <div style={{ flex: 1, height: "1px", background: COLORS.border }} />
+// ── About ────────────────────────────────────────────────────────────
+function About() {
+  const [refL, inL] = useInView();
+  const [refR, inR] = useInView();
+  const reveal = (inView, delay = 0) => ({
+    opacity: inView ? 1 : 0, transform: inView ? "translateY(0)" : "translateY(28px)",
+    transition: `all 0.7s ease ${delay}s`,
+  });
+  return (
+    <section id="about-detail" style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
+      {/* Dark left */}
+      <div ref={refL} style={{ background: C.dark, padding: "5rem 3rem", display: "flex", flexDirection: "column", justifyContent: "center", ...reveal(inL) }}>
+        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem,5vw,4.5rem)", color: "#F2F2F2", lineHeight: 0.95, letterSpacing: "0.02em", marginBottom: "1.5rem" }}>
+          ML meets<br /><span style={{ color: C.green }}>game dev.</span>
         </div>
-
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4rem", alignItems: "start" }}>
-          {/* Left copy */}
-          <div>
-            <h2 style={{
-              fontFamily: "'DM Serif Display', Georgia, serif",
-              fontSize: "clamp(2rem, 4vw, 3rem)",
-              fontWeight: 400, color: COLORS.text,
-              margin: "0 0 1rem", lineHeight: 1.1,
-              letterSpacing: "-0.02em",
-            }}>
-              Let's build<br /><span style={{ fontStyle: "italic", color: COLORS.silver }}>something.</span>
-            </h2>
-            <p style={{
-              fontFamily: "Georgia, serif",
-              fontSize: "0.9rem", lineHeight: 1.8,
-              color: COLORS.muted, margin: "0 0 2rem",
-            }}>
-              Open to internship and co-op opportunities in AI/ML engineering, game development, and simulation. Based in Boston — available summer 2026.
-            </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
-              {[
-                { label: "Email", value: "chatterjee.pre@northeastern.edu" },
-                { label: "LinkedIn", value: "linkedin.com/in/preeta-chatterjee" },
-                { label: "GitHub", value: "github.com/preeta-chatterjee" },
-              ].map(item => (
-                <div key={item.label} style={{ display: "flex", gap: "1rem", alignItems: "baseline" }}>
-                  <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.65rem", color: COLORS.green, letterSpacing: "0.12em", textTransform: "uppercase", minWidth: "60px" }}>{item.label}</span>
-                  <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.72rem", color: COLORS.muted }}>{item.value}</span>
-                </div>
+        <p style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "1rem", color: "rgba(242,242,242,0.7)", lineHeight: 1.8, fontStyle: "italic", marginBottom: "2rem" }}>
+          Master's student at Northeastern building at the intersection of intelligent systems and interactive experiences. From transformer-powered pipelines to physics-driven 3D worlds.
+        </p>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1px", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.1)" }}>
+          {[["4.0", "GPA"], ["3+", "Projects Shipped"], ["2", "Publications"], ["5+", "Years Coding"]].map(([n, l]) => (
+            <div key={l} style={{ background: C.dark, padding: "1.2rem 1.5rem" }}>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2.5rem", color: C.green, lineHeight: 1 }}>{n}</div>
+              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.6rem", letterSpacing: "0.14em", color: "rgba(242,242,242,0.45)", textTransform: "uppercase", marginTop: "0.2rem" }}>{l}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* Light right */}
+      <div ref={refR} style={{ background: C.bg, padding: "5rem 3rem", display: "flex", flexDirection: "column", justifyContent: "center", ...reveal(inR, 0.15) }}>
+        <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.62rem", letterSpacing: "0.2em", color: C.green, textTransform: "uppercase", marginBottom: "1.5rem" }}>Technical Arsenal</div>
+        {SKILLS.map(s => (
+          <div key={s.name} style={{ borderBottom: `1px solid ${C.border2}`, padding: "0.9rem 0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "0.95rem", color: C.dark, fontStyle: "italic" }}>{s.name}</span>
+            <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap", justifyContent: "flex-end", maxWidth: "60%" }}>
+              {s.tags.map(t => (
+                <span key={t} style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.58rem", letterSpacing: "0.08em", color: C.muted, padding: "0.15rem 0.5rem", border: `1px solid ${C.border}` }}>{t}</span>
               ))}
             </div>
           </div>
-
-          {/* Right form */}
-          <div>
-            {sent ? (
-              <div style={{
-                padding: "3rem 2rem", textAlign: "center",
-                border: `1px solid ${COLORS.green}44`,
-                background: COLORS.green + "11",
-              }}>
-                <div style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "1.5rem", color: COLORS.text, marginBottom: "0.5rem" }}>Message sent.</div>
-                <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.75rem", color: COLORS.muted }}>I'll be in touch soon.</div>
-              </div>
-            ) : (
-              <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                <div>
-                  <label style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.65rem", color: COLORS.muted, letterSpacing: "0.1em", textTransform: "uppercase", display: "block", marginBottom: "0.4rem" }}>Name</label>
-                  <input name="name" value={form.name} onChange={handle} required
-                    style={inputStyle}
-                    onFocus={e => e.target.style.borderColor = COLORS.green}
-                    onBlur={e => e.target.style.borderColor = COLORS.border}
-                  />
-                </div>
-                <div>
-                  <label style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.65rem", color: COLORS.muted, letterSpacing: "0.1em", textTransform: "uppercase", display: "block", marginBottom: "0.4rem" }}>Email</label>
-                  <input name="email" type="email" value={form.email} onChange={handle} required
-                    style={inputStyle}
-                    onFocus={e => e.target.style.borderColor = COLORS.green}
-                    onBlur={e => e.target.style.borderColor = COLORS.border}
-                  />
-                </div>
-                <div>
-                  <label style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.65rem", color: COLORS.muted, letterSpacing: "0.1em", textTransform: "uppercase", display: "block", marginBottom: "0.4rem" }}>Message</label>
-                  <textarea name="message" value={form.message} onChange={handle} required rows={5}
-                    style={{ ...inputStyle, resize: "vertical" }}
-                    onFocus={e => e.target.style.borderColor = COLORS.green}
-                    onBlur={e => e.target.style.borderColor = COLORS.border}
-                  />
-                </div>
-                <button type="submit" style={{
-                  padding: "0.85rem 2rem",
-                  background: COLORS.green,
-                  color: COLORS.fog,
-                  border: "none", cursor: "pointer",
-                  fontFamily: "'DM Mono', monospace",
-                  fontSize: "0.78rem", letterSpacing: "0.12em", textTransform: "uppercase",
-                  transition: "background 0.2s",
-                  alignSelf: "flex-start",
-                }}
-                  onMouseEnter={e => e.target.style.background = COLORS.greenLight}
-                  onMouseLeave={e => e.target.style.background = COLORS.green}
-                >Send Message →</button>
-              </form>
-            )}
-          </div>
-        </div>
+        ))}
       </div>
     </section>
   );
 }
 
+// ── Projects ─────────────────────────────────────────────────────────
+function Projects() {
+  const [refH, inH] = useInView();
+  return (
+    <section id="projects" style={{ padding: "6rem 3rem", background: C.surface }}>
+      <div ref={refH} style={{
+        display: "flex", alignItems: "flex-end", justifyContent: "space-between",
+        marginBottom: "3.5rem",
+        opacity: inH ? 1 : 0, transform: inH ? "none" : "translateY(20px)",
+        transition: "all 0.6s ease",
+      }}>
+        <div>
+          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.65rem", letterSpacing: "0.18em", color: C.green, textTransform: "uppercase", marginBottom: "0.5rem" }}>02 / Selected Work</div>
+          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem,6vw,5rem)", color: C.dark, letterSpacing: "0.02em", lineHeight: 0.95 }}>Projects.</div>
+        </div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5px", background: C.border }}>
+        {PROJECTS.map((p, i) => <ProjectCard key={p.id} p={p} i={i} />)}
+      </div>
+    </section>
+  );
+}
+
+function ProjectCard({ p, i }) {
+  const [ref, inView] = useInView();
+  const [hov, setHov] = useState(false);
+  return (
+    <div ref={ref} style={{
+      gridColumn: p.full ? "span 2" : "span 1",
+      background: hov ? "#fff" : C.bg,
+      padding: "2.5rem", position: "relative", overflow: "hidden",
+      transition: "background 0.3s",
+      opacity: inView ? 1 : 0, transform: inView ? "none" : "translateY(28px)",
+      transition: `opacity 0.7s ease ${i * 0.1}s, transform 0.7s ease ${i * 0.1}s, background 0.3s`,
+    }}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+    >
+      {/* big num */}
+      <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "4rem", color: hov ? C.border : C.border2, lineHeight: 1, position: "absolute", top: "1.5rem", right: "2rem", transition: "color 0.3s" }}>{p.num}</div>
+
+      {/* status badge */}
+      <div style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.22rem 0.65rem", background: p.statusBg, border: `1px solid ${p.statusColor}33`, marginBottom: "1rem" }}>
+        <span style={{ width: "5px", height: "5px", borderRadius: "50%", background: p.statusDot || p.statusColor, display: "inline-block" }} />
+        <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.58rem", letterSpacing: "0.1em", color: p.statusColor }}>{p.status} · {p.id === 1 ? "2025" : p.id === 2 ? "2025" : "2025–"}</span>
+      </div>
+
+      <h3 style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "1.6rem", color: C.dark, lineHeight: 1.15, marginBottom: "0.5rem", fontWeight: 400 }}>{p.title}</h3>
+      <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.65rem", letterSpacing: "0.14em", color: C.muted, textTransform: "uppercase", marginBottom: "0.8rem" }}>{p.sub}</div>
+      <p style={{ fontFamily: "Georgia, serif", fontSize: "0.87rem", lineHeight: 1.8, color: C.muted, marginBottom: "1.5rem" }}>{p.desc}</p>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
+        {p.stack.map(s => <span key={s} style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.6rem", letterSpacing: "0.07em", color: C.dark, padding: "0.18rem 0.55rem", border: `1px solid ${C.border}`, background: C.surface }}>{s}</span>)}
+      </div>
+
+      {/* bottom accent bar */}
+      <div style={{ position: "absolute", bottom: 0, left: 0, width: hov ? "100%" : "0%", height: "3px", background: p.accentColor, transition: "width 0.4s ease" }} />
+    </div>
+  );
+}
+
+// ── Contact ──────────────────────────────────────────────────────────
+function Contact() {
+  const [refL, inL] = useInView();
+  const [refR, inR] = useInView();
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [sent, setSent] = useState(false);
+  const handle = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
+
+  const inputStyle = {
+    width: "100%", background: "transparent", border: "none",
+    borderBottom: `1.5px solid ${C.border}`, color: C.dark,
+    padding: "0.7rem 0", fontFamily: "'DM Mono', monospace",
+    fontSize: "0.85rem", outline: "none", transition: "border-color 0.2s",
+    marginBottom: "1.5rem", display: "block",
+  };
+
+  return (
+    <section id="contact" style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
+      {/* Green left */}
+      <div ref={refL} style={{
+        background: C.green, padding: "5rem 3rem",
+        display: "flex", flexDirection: "column", justifyContent: "center",
+        position: "relative", overflow: "hidden",
+        opacity: inL ? 1 : 0, transform: inL ? "none" : "translateY(28px)", transition: "all 0.7s ease",
+      }}>
+        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "12rem", color: "rgba(255,255,255,0.05)", position: "absolute", bottom: "-2rem", left: "-1rem", lineHeight: 1, pointerEvents: "none", letterSpacing: "0.02em" }}>HELLO</div>
+        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3rem,6vw,5.5rem)", color: "#F2F2F2", lineHeight: 0.92, letterSpacing: "0.02em", marginBottom: "1.5rem", position: "relative" }}>Let's<br />build<br />something.</div>
+        <p style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "1rem", color: "rgba(242,242,242,0.75)", lineHeight: 1.75, fontStyle: "italic", marginBottom: "2.5rem", position: "relative" }}>
+          Open to co-op and internship opportunities in AI/ML engineering, game development, and simulation. Boston-based, available summer 2026.
+        </p>
+        <div style={{ position: "relative" }}>
+          {[["Email", "chatterjee.pre@northeastern.edu"], ["LinkedIn", "linkedin.com/in/preeta-chatterjee"]].map(([l, v]) => (
+            <div key={l} style={{ display: "flex", gap: "1rem", alignItems: "baseline", marginBottom: "0.7rem" }}>
+              <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.6rem", letterSpacing: "0.16em", color: "rgba(242,242,242,0.5)", textTransform: "uppercase", minWidth: "60px" }}>{l}</span>
+              <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.72rem", color: "rgba(242,242,242,0.85)" }}>{v}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Form right */}
+      <div ref={refR} style={{
+        background: C.bg, padding: "5rem 3rem",
+        display: "flex", flexDirection: "column", justifyContent: "center",
+        opacity: inR ? 1 : 0, transform: inR ? "none" : "translateY(28px)", transition: "all 0.7s ease 0.15s",
+      }}>
+        <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.62rem", letterSpacing: "0.2em", color: C.green, textTransform: "uppercase", marginBottom: "2rem" }}>03 / Get in touch</div>
+        {sent ? (
+          <div style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "1.4rem", color: C.dark, fontStyle: "italic", padding: "2rem 0" }}>
+            Message sent.<br />
+            <span style={{ fontSize: "0.8rem", color: C.muted, fontStyle: "normal", fontFamily: "'DM Mono', monospace" }}>I'll be in touch soon.</span>
+          </div>
+        ) : (
+          <form onSubmit={e => { e.preventDefault(); setSent(true); }}>
+            {[["name", "Name", "text"], ["email", "Email", "email"]].map(([n, l, t]) => (
+              <div key={n}>
+                <label style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.6rem", letterSpacing: "0.14em", color: C.muted, textTransform: "uppercase", display: "block", marginBottom: "0.4rem" }}>{l}</label>
+                <input name={n} type={t} value={form[n]} onChange={handle} required style={inputStyle}
+                  onFocus={e => e.target.style.borderColor = C.green}
+                  onBlur={e => e.target.style.borderColor = C.border}
+                />
+              </div>
+            ))}
+            <div>
+              <label style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.6rem", letterSpacing: "0.14em", color: C.muted, textTransform: "uppercase", display: "block", marginBottom: "0.4rem" }}>Message</label>
+              <textarea name="message" value={form.message} onChange={handle} required rows={4}
+                style={{ ...inputStyle, resize: "none", minHeight: "100px" }}
+                onFocus={e => e.target.style.borderColor = C.green}
+                onBlur={e => e.target.style.borderColor = C.border}
+              />
+            </div>
+            <button type="submit" style={{
+              display: "inline-block", padding: "0.85rem 2.5rem",
+              background: C.dark, color: "#F2F2F2", border: `2px solid ${C.dark}`,
+              fontFamily: "'DM Mono', monospace", fontSize: "0.75rem",
+              letterSpacing: "0.14em", textTransform: "uppercase",
+              cursor: "pointer", transition: "all 0.2s", marginTop: "0.5rem",
+            }}
+              onMouseEnter={e => { e.target.style.background = "transparent"; e.target.style.color = C.dark; }}
+              onMouseLeave={e => { e.target.style.background = C.dark; e.target.style.color = "#F2F2F2"; }}
+            >Send Message →</button>
+          </form>
+        )}
+      </div>
+    </section>
+  );
+}
+
+// ── Footer ───────────────────────────────────────────────────────────
 function Footer() {
   return (
-    <footer style={{
-      borderTop: `1px solid ${COLORS.border}`,
-      padding: "1.8rem 2.5rem",
-      display: "flex", justifyContent: "space-between", alignItems: "center",
-    }}>
-      <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.68rem", color: COLORS.muted }}>© 2025 Preeta Chatterjee</span>
-      <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.68rem", color: COLORS.muted }}>Boston, MA · MS Computer Science</span>
+    <footer style={{ background: C.dark, padding: "1.5rem 3rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.62rem", letterSpacing: "0.1em", color: "rgba(242,242,242,0.35)", textTransform: "uppercase" }}>© 2025 Preeta Chatterjee</span>
+      <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.62rem", letterSpacing: "0.1em", color: "rgba(242,242,242,0.35)", textTransform: "uppercase" }}>MS Computer Science · Northeastern University</span>
     </footer>
   );
 }
 
-export default function Portfolio() {
-  const [activeSection, setActiveSection] = useState("about");
+// ── Cursor mount on body ─────────────────────────────────────────────
+function GlobalCursor() {
+  useEffect(() => { document.body.style.cursor = "none"; return () => { document.body.style.cursor = "auto"; }; }, []);
+  return <Cursor />;
+}
 
+// ── App ──────────────────────────────────────────────────────────────
+export default function Portfolio() {
   useEffect(() => {
-    // Load Google Fonts
     const link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = "https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap";
+    link.href = "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap";
     document.head.appendChild(link);
-
-    const obs = new IntersectionObserver(
-      entries => entries.forEach(e => { if (e.isIntersecting) setActiveSection(e.target.id); }),
-      { threshold: 0.4 }
-    );
-    document.querySelectorAll("section[id]").forEach(s => obs.observe(s));
-    return () => obs.disconnect();
   }, []);
 
   return (
-    <div style={{ background: COLORS.bg, minHeight: "100vh", color: COLORS.text, position: "relative" }}>
-      <Noise />
-      <Nav active={activeSection} />
+    <div style={{ background: C.bg, minHeight: "100vh", overflowX: "hidden" }}>
+      <GlobalCursor />
+      <Nav />
       <Hero />
+      <Marquee />
+      <About />
       <Projects />
       <Contact />
       <Footer />
