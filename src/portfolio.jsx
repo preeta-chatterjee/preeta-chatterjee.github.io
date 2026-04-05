@@ -56,9 +56,22 @@ const PROJECTS = [
     title: "Apartment 101", sub: "Game Development · Simulation",
     status: "In Progress", statusColor: C.amberDk, statusBg: C.amberBg, statusDot: C.amber,
     year: "2026–",
-    desc: "An ongoing game exploring physics interactions and interactive systems within a domestic setting. Working on it regularly.",
+    desc: "An ongoing game exploring physics interactions and interactive systems within a domestic setting. Regularly updated.",
     stack: ["C++", "Unreal Engine", "Physics Engine"],
     links: [],
+    accent: C.red,
+  },
+  {
+    id: 4, num: "04", full: false,
+    title: "Haunted Hallway", sub: "Game Development · Unity 2D",
+    status: "Live", statusColor: C.redL, statusBg: C.redBg, statusDot: C.red,
+    year: "2026",
+    desc: "A 2D browser-based survival game built in Unity for a course animation assignment. A rigged zombie — assembled from six individually generated and cleaned limb sprites with custom pivot points — walks toward the player while five glowing keys spawn at random screen positions. Click all five before the zombie reaches you. Companion piece to Hallway Hunters, the main final project.",
+    stack: ["Unity", "C#", "WebGL", "Input System", "Google Gemini"],
+    links: [
+      { label: "Play on itch.io", href: "https://lunosstar.itch.io/haunted-hallway", color: C.red },
+      { label: "GitHub", href: "https://github.com/preeta-chatterjee/HauntedHallway", color: C.green },
+    ],
     accent: C.red,
   },
 ];
