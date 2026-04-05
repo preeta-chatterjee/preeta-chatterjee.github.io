@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // SETUP INSTRUCTIONS
 // 1. npm install @formspree/react react-router-dom
-// 2. Place your resume PDF at: public/Preeta_Chatterjee_Resume.pdf
+// 2. Place your resume PDF at: public/Resume_Preeta_Chatterjee_03042026.pdf
 // 3. Replace src/App.jsx with this file
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -66,7 +66,7 @@ const PROJECTS = [
     title: "Haunted Hallway", sub: "Game Development · Unity 2D",
     status: "Live", statusColor: C.redL, statusBg: C.redBg, statusDot: C.red,
     year: "2026",
-    desc: "A 2D browser-based survival game built in Unity for a course animation assignment. A rigged zombie — assembled from six individually generated and cleaned limb sprites with custom pivot points — walks toward the player while five glowing keys spawn at random screen positions. Click all five before the zombie reaches you. Companion piece to Hallway Hunters, the main final project.",
+    desc: "A 2D browser-based survival game built in Unity playable both on computers and mobiles. A rigged zombie — assembled from six individually generated and cleaned limb sprites with custom pivot points — walks toward the player while thirteen glowing keys spawn at random screen positions. Click all thirteen before the zombie reaches you. Companion piece to Hallway Hunters, the main final project.",
     stack: ["Unity", "C#", "WebGL", "Input System", "Google Gemini"],
     links: [
       { label: "Play on itch.io", href: "https://lunosstar.itch.io/haunted-hallway", color: C.red },
@@ -154,7 +154,6 @@ function Nav() {
     return () => window.removeEventListener("scroll", h);
   }, []);
 
-  // Close menu on route change
   useEffect(() => { setMenuOpen(false); }, [location]);
 
   const navBg = scrolled || !isHome || menuOpen ? "rgba(242,242,242,.97)" : "transparent";
@@ -171,13 +170,14 @@ function Nav() {
     borderBottom: `1px solid ${C.border2}`, display: "block", color: C.dark,
   };
 
+  const activeColor = path => location.pathname === path ? C.dark : C.muted;
+
   return (
     <>
       <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 200, height: 60, padding: "0 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", background: navBg, backdropFilter: "blur(12px)", borderBottom: navBorder, transition: "all .4s" }}>
         <Link to="/" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "1.6rem", letterSpacing: ".05em", background: `linear-gradient(135deg,${C.green},${C.red})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", textDecoration: "none" }}>PC</Link>
 
         {mobile ? (
-          // Hamburger
           <button onClick={() => setMenuOpen(o => !o)} style={{ background: "none", border: "none", cursor: "pointer", padding: ".5rem", display: "flex", flexDirection: "column", gap: "5px" }}>
             <span style={{ display: "block", width: 22, height: 2, background: menuOpen ? C.red : C.dark, transition: "all .3s", transform: menuOpen ? "rotate(45deg) translate(5px,5px)" : "none" }} />
             <span style={{ display: "block", width: 22, height: 2, background: menuOpen ? C.red : C.dark, transition: "all .3s", opacity: menuOpen ? 0 : 1 }} />
@@ -185,21 +185,17 @@ function Nav() {
           </button>
         ) : (
           <div style={{ display: "flex", gap: "2.5rem", alignItems: "center" }}>
-            <Link to="/about" style={{ ...linkStyle, color: location.pathname === "/about" ? C.dark : C.muted }}
+            <Link to="/about" style={{ ...linkStyle, color: activeColor("/about") }}
               onMouseEnter={e => e.target.style.color = C.dark}
-              onMouseLeave={e => e.target.style.color = location.pathname === "/about" ? C.dark : C.muted}>About</Link>
-            {isHome ? (
-              <>
-                <a href="#projects" style={linkStyle} onMouseEnter={e => e.target.style.color = C.dark} onMouseLeave={e => e.target.style.color = C.muted}>Projects</a>
-                <a href="#contact" style={linkStyle} onMouseEnter={e => e.target.style.color = C.dark} onMouseLeave={e => e.target.style.color = C.muted}>Contact</a>
-              </>
-            ) : (
-              <>
-                <Link to="/#projects" style={linkStyle} onMouseEnter={e => e.target.style.color = C.dark} onMouseLeave={e => e.target.style.color = C.muted}>Projects</Link>
-                <Link to="/#contact" style={linkStyle} onMouseEnter={e => e.target.style.color = C.dark} onMouseLeave={e => e.target.style.color = C.muted}>Contact</Link>
-              </>
-            )}
-            <a href="/Preeta_Chatterjee_Resume.pdf" target="_blank" rel="noreferrer"
+              onMouseLeave={e => e.target.style.color = activeColor("/about")}>About</Link>
+            <Link to="/projects" style={{ ...linkStyle, color: activeColor("/projects") }}
+              onMouseEnter={e => e.target.style.color = C.dark}
+              onMouseLeave={e => e.target.style.color = activeColor("/projects")}>Projects</Link>
+            {isHome
+              ? <a href="#contact" style={linkStyle} onMouseEnter={e => e.target.style.color = C.dark} onMouseLeave={e => e.target.style.color = C.muted}>Contact</a>
+              : <Link to="/#contact" style={linkStyle} onMouseEnter={e => e.target.style.color = C.dark} onMouseLeave={e => e.target.style.color = C.muted}>Contact</Link>
+            }
+            <a href="/Resume_Preeta_Chatterjee_03042026.pdf" target="_blank" rel="noreferrer"
               style={{ fontFamily: "'DM Mono',monospace", fontSize: ".68rem", letterSpacing: ".16em", textTransform: "uppercase", padding: ".4rem 1rem", border: `1.5px solid ${C.red}`, color: C.red, textDecoration: "none", transition: "all .2s" }}
               onMouseEnter={e => { e.currentTarget.style.background = C.red; e.currentTarget.style.color = "#F2F2F2"; }}
               onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = C.red; }}>Résumé ↗</a>
@@ -207,13 +203,12 @@ function Nav() {
         )}
       </nav>
 
-      {/* Mobile dropdown menu */}
       {mobile && menuOpen && (
         <div style={{ position: "fixed", top: 60, left: 0, right: 0, zIndex: 199, background: "rgba(242,242,242,.97)", backdropFilter: "blur(12px)", padding: "0 1.5rem 1.5rem", borderBottom: `1px solid ${C.border}` }}>
           <Link to="/about" style={mobileLinkStyle} onClick={() => setMenuOpen(false)}>About</Link>
-          <a href={isHome ? "#projects" : "/#projects"} style={mobileLinkStyle} onClick={() => setMenuOpen(false)}>Projects</a>
+          <Link to="/projects" style={mobileLinkStyle} onClick={() => setMenuOpen(false)}>Projects</Link>
           <a href={isHome ? "#contact" : "/#contact"} style={mobileLinkStyle} onClick={() => setMenuOpen(false)}>Contact</a>
-          <a href="/Preeta_Chatterjee_Resume.pdf" target="_blank" rel="noreferrer"
+          <a href="/Resume_Preeta_Chatterjee_03042026.pdf" target="_blank" rel="noreferrer"
             style={{ ...mobileLinkStyle, color: C.red, borderBottom: "none" }}
             onClick={() => setMenuOpen(false)}>Résumé ↗</a>
         </div>
@@ -260,7 +255,7 @@ function HeroCanvas() {
       return { x: e.clientX - r.left, y: e.clientY - r.top };
     };
 
-    const onMv = e => { const p = getPos(e); mouse = p; };
+    const onMv = e => { mouse = getPos(e); };
     const onLv = () => { mouse = { x: -999, y: -999 }; };
     const onCl = e => {
       const { x: cx, y: cy } = getPos(e);
@@ -370,7 +365,7 @@ function Marquee() {
   );
 }
 
-// ── Project Card ──────────────────────────────────────────────────────────────
+// ── Project Card — grid layout (homepage) ─────────────────────────────────────
 function ProjCard({ p, i }) {
   const [ref, inV] = useInView();
   const [hov, setHov] = useState(false);
@@ -403,6 +398,53 @@ function ProjCard({ p, i }) {
           ))}
         </div>
       )}
+      <div style={{ position: "absolute", bottom: 0, left: 0, width: hov ? "100%" : "0%", height: 3, background: p.accent, transition: "width .4s ease" }} />
+    </div>
+  );
+}
+
+// ── Project Card — list layout (projects page, full width stacked) ────────────
+function ProjCardFull({ p, i }) {
+  const [ref, inV] = useInView();
+  const [hov, setHov] = useState(false);
+  const mobile = useMobile();
+  return (
+    <div ref={ref} style={{
+      background: hov ? "#fff" : C.bg,
+      padding: mobile ? "1.8rem 1.5rem" : "2.5rem 3rem",
+      position: "relative", overflow: "hidden",
+      borderBottom: `1.5px solid ${C.border}`,
+      opacity: inV ? 1 : 0, transform: inV ? "none" : "translateY(28px)",
+      transition: `background .3s, opacity .7s ease ${i * .1}s, transform .7s ease ${i * .1}s`,
+    }}
+      onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem", flexWrap: "wrap", gap: ".5rem" }}>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: ".4rem", padding: ".22rem .7rem", background: p.statusBg, border: `1px solid ${(p.statusDot || p.statusColor) + "44"}` }}>
+          <span style={{ width: 5, height: 5, borderRadius: "50%", background: p.statusDot || p.statusColor, display: "inline-block" }} />
+          <span style={{ fontFamily: "'DM Mono',monospace", fontSize: ".58rem", letterSpacing: ".1em", color: p.statusColor }}>{p.status} · {p.year}</span>
+        </div>
+        <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "2.5rem", color: hov ? C.border : C.border2, lineHeight: 1, transition: "color .3s" }}>{p.num}</div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 2fr", gap: mobile ? "1rem" : "3rem", alignItems: "start" }}>
+        <div>
+          <h3 style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: "1.55rem", color: C.dark, lineHeight: 1.15, marginBottom: ".4rem", fontWeight: 400 }}>{p.title}</h3>
+          <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".63rem", letterSpacing: ".14em", color: C.muted, textTransform: "uppercase", marginBottom: "1rem" }}>{p.sub}</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: ".35rem" }}>
+            {p.stack.map(s => <span key={s} style={{ fontFamily: "'DM Mono',monospace", fontSize: ".6rem", letterSpacing: ".07em", color: C.dark, padding: ".18rem .55rem", border: `1px solid ${C.border}`, background: C.surface }}>{s}</span>)}
+          </div>
+        </div>
+        <div>
+          <p style={{ fontFamily: "Georgia,serif", fontSize: ".9rem", lineHeight: 1.8, color: C.muted, marginBottom: "1.3rem" }}>{p.desc}</p>
+          {p.links.length > 0 && (
+            <div style={{ display: "flex", gap: "1.2rem", flexWrap: "wrap" }}>
+              {p.links.map(l => (
+                <a key={l.label} href={l.href} target="_blank" rel="noreferrer"
+                  style={{ fontFamily: "'DM Mono',monospace", fontSize: ".68rem", letterSpacing: ".1em", textTransform: "uppercase", color: l.color, display: "inline-flex", alignItems: "center", gap: ".35rem", textDecoration: "none" }}>{l.label} ↗</a>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
       <div style={{ position: "absolute", bottom: 0, left: 0, width: hov ? "100%" : "0%", height: 3, background: p.accent, transition: "width .4s ease" }} />
     </div>
   );
@@ -465,7 +507,7 @@ function Footer() {
     <footer style={{ background: C.dark, padding: "2rem 1.5rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
       <span style={{ fontFamily: "'DM Mono',monospace", fontSize: ".6rem", letterSpacing: ".1em", color: "rgba(242,242,242,.3)", textTransform: "uppercase" }}>© 2025 Preeta Chatterjee</span>
       <div style={{ display: "flex", gap: "2rem" }}>
-        {[["About", "/about"], ["Projects", "/#projects"], ["Contact", "/#contact"]].map(([l, href]) => (
+        {[["About", "/about"], ["Projects", "/projects"], ["Contact", "/#contact"]].map(([l, href]) => (
           <a key={l} href={href} style={{ fontFamily: "'DM Mono',monospace", fontSize: ".6rem", letterSpacing: ".12em", textTransform: "uppercase", color: "rgba(242,242,242,.3)", textDecoration: "none", transition: "color .2s" }}
             onMouseEnter={e => e.target.style.color = "rgba(242,242,242,.8)"}
             onMouseLeave={e => e.target.style.color = "rgba(242,242,242,.3)"}>{l}</a>
@@ -487,16 +529,13 @@ function HomePage() {
   const [refC, inC] = useInView();
   const pad = mobile ? "1.5rem" : "3rem";
 
+  // Only show first 3 projects on homepage
+  const featuredProjects = PROJECTS.slice(0, 3);
+
   return (
     <>
       {/* ── Hero ── */}
-      <section style={{
-        minHeight: "100vh",
-        display: "grid",
-        gridTemplateColumns: mobile ? "1fr" : "55% 45%",
-        gridTemplateRows: mobile ? "auto 40vw" : "1fr",
-        background: C.bg, overflow: "hidden",
-      }}>
+      <section style={{ minHeight: "100vh", display: "grid", gridTemplateColumns: mobile ? "1fr" : "55% 45%", gridTemplateRows: mobile ? "auto 40vw" : "1fr", background: C.bg, overflow: "hidden" }}>
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: mobile ? "5rem 1.5rem 2rem" : "7rem 3rem 4rem", position: "relative", zIndex: 2 }}>
           <div style={{ display: "flex", alignItems: "center", gap: ".7rem", marginBottom: "1.5rem", ...f(.1) }}>
             <span style={{ width: 30, height: 1.5, background: `linear-gradient(to right,${C.green},${C.red})`, display: "inline-block", flexShrink: 0 }} />
@@ -523,13 +562,11 @@ function HomePage() {
               onMouseLeave={e => { e.target.style.background = C.red; e.target.style.color = "#F2F2F2"; }}>Get in Touch</a>
           </div>
         </div>
-        {/* Canvas — full width on mobile, right column on desktop */}
         <div style={{ position: "relative", overflow: "hidden", minHeight: mobile ? "40vw" : "auto" }}>
           <HeroCanvas />
         </div>
       </section>
 
-      {/* ── Marquee ── */}
       <Marquee />
 
       {/* ── About strip ── */}
@@ -568,20 +605,30 @@ function HomePage() {
         </div>
       </section>
 
-      {/* ── Projects ── */}
+      {/* ── Featured Projects (first 3 only) ── */}
       <section id="projects" style={{ padding: `4rem ${pad}`, background: C.surface }}>
-        <div ref={refP} style={{ marginBottom: "2.5rem", ...rv(inP) }}>
-          <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".65rem", letterSpacing: ".18em", color: C.red, textTransform: "uppercase", marginBottom: ".5rem" }}>02 / Selected Work</div>
-          <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(2.5rem,6vw,5rem)", color: C.dark, letterSpacing: ".02em", lineHeight: .92 }}>Projects.</div>
+        <div ref={refP} style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "2.5rem", flexWrap: "wrap", gap: "1rem", ...rv(inP) }}>
+          <div>
+            <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".65rem", letterSpacing: ".18em", color: C.red, textTransform: "uppercase", marginBottom: ".5rem" }}>02 / Selected Work</div>
+            <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(2.5rem,6vw,5rem)", color: C.dark, letterSpacing: ".02em", lineHeight: .92 }}>Projects.</div>
+          </div>
+          <Link to="/projects" style={{
+            fontFamily: "'DM Mono',monospace", fontSize: ".68rem", letterSpacing: ".12em",
+            textTransform: "uppercase", color: C.green, border: `1.5px solid ${C.green}`,
+            padding: ".5rem 1.2rem", textDecoration: "none", display: "inline-block", transition: "all .2s",
+          }}
+            onMouseEnter={e => { e.target.style.background = C.green; e.target.style.color = "#F2F2F2"; }}
+            onMouseLeave={e => { e.target.style.background = "transparent"; e.target.style.color = C.green; }}>
+            View All ({PROJECTS.length}) →
+          </Link>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: "1.5px", background: C.border }}>
-          {PROJECTS.map((p, i) => <ProjCard key={p.id} p={p} i={i} />)}
+          {featuredProjects.map((p, i) => <ProjCard key={p.id} p={p} i={i} />)}
         </div>
       </section>
 
       {/* ── Contact ── */}
       <section id="contact" style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr" }}>
-        {/* Green left */}
         <div ref={refC} style={{ background: C.green, padding: `3.5rem ${pad}`, display: "flex", flexDirection: "column", justifyContent: "center", position: "relative", overflow: "hidden", ...rv(inC) }}>
           <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: mobile ? "6rem" : "12rem", color: "rgba(255,255,255,.05)", position: "absolute", bottom: "-1rem", left: "-1rem", lineHeight: 1, pointerEvents: "none" }}>HELLO</div>
           <div style={{ fontFamily: "'DM Mono', monospace", fontSize: ".65rem", letterSpacing: ".2em", color: "rgba(242,242,242,.5)", textTransform: "uppercase", marginBottom: ".8rem", position: "relative" }}>03 / Contact</div>
@@ -589,7 +636,7 @@ function HomePage() {
             Let's<br />build<br />something.
           </div>
           <p style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "1rem", color: "rgba(242,242,242,.72)", lineHeight: 1.75, fontStyle: "italic", marginBottom: "2rem", position: "relative" }}>
-            Open to co-op and internship opportunities in AI/ML, game development, and simulation. Boston-based, available summer 2027.
+            Open to co-op and internship opportunities in AI/ML, game development, and simulation. Boston-based, available summer 2026.
           </p>
           <div style={{ position: "relative" }}>
             {[["Email", "chatterjee.pre@northeastern.edu"], ["LinkedIn", "linkedin.com/in/preeta-chatterjee"], ["GitHub", "github.com/preeta-chatterjee"]].map(([l, v]) => (
@@ -600,7 +647,6 @@ function HomePage() {
             ))}
           </div>
         </div>
-        {/* Light right — form */}
         <div style={{ background: C.bg, padding: `3.5rem ${pad}`, display: "flex", flexDirection: "column", justifyContent: "center" }}>
           <div style={{ fontFamily: "'DM Mono', monospace", fontSize: ".62rem", letterSpacing: ".2em", color: C.green, textTransform: "uppercase", marginBottom: "2rem" }}>Drop me a message</div>
           <ContactForm />
@@ -609,6 +655,38 @@ function HomePage() {
 
       <Footer />
     </>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PAGE: ALL PROJECTS
+// ══════════════════════════════════════════════════════════════════════════════
+function ProjectsPage() {
+  const mobile = useMobile();
+  const pad = mobile ? "1.5rem" : "3rem";
+
+  return (
+    <div style={{ paddingTop: 60, minHeight: "100vh", background: C.bg }}>
+      {/* Page header */}
+      <div style={{ background: C.dark, padding: `4rem ${pad} 3rem` }}>
+        <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".65rem", letterSpacing: ".2em", color: C.red, textTransform: "uppercase", marginBottom: ".8rem" }}>02 / Work</div>
+        <h1 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(3rem,8vw,7rem)", color: "#F2F2F2", lineHeight: .92, letterSpacing: ".02em" }}>All Projects.</h1>
+      </div>
+
+      {/* All projects stacked */}
+      <div style={{ borderTop: `1.5px solid ${C.border}` }}>
+        {PROJECTS.map((p, i) => <ProjCardFull key={p.id} p={p} i={i} />)}
+      </div>
+
+      {/* Back to home */}
+      <div style={{ padding: `3rem ${pad}`, background: C.surface }}>
+        <Link to="/" style={{ fontFamily: "'DM Mono',monospace", fontSize: ".68rem", letterSpacing: ".12em", textTransform: "uppercase", color: C.muted, textDecoration: "none", transition: "color .2s" }}
+          onMouseEnter={e => e.target.style.color = C.dark}
+          onMouseLeave={e => e.target.style.color = C.muted}>← Back to Home</Link>
+      </div>
+
+      <Footer />
+    </div>
   );
 }
 
@@ -643,13 +721,7 @@ function AboutPage() {
           {sections.map((s, i) => {
             const [ref, inV] = useInView();
             return (
-              <div key={s.heading} ref={ref} style={{
-                display: "grid",
-                gridTemplateColumns: mobile ? "1fr" : "160px 1fr",
-                gap: mobile ? "1rem" : "3rem",
-                marginBottom: "3rem", borderTop: `1px solid ${C.border2}`, paddingTop: "2rem",
-                ...rv(inV, i * .1),
-              }}>
+              <div key={s.heading} ref={ref} style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "160px 1fr", gap: mobile ? "1rem" : "3rem", marginBottom: "3rem", borderTop: `1px solid ${C.border2}`, paddingTop: "2rem", ...rv(inV, i * .1) }}>
                 <div>
                   <div style={{ width: 24, height: 3, background: s.accent, marginBottom: ".8rem" }} />
                   <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "1.3rem", color: C.dark, letterSpacing: ".02em" }}>{s.heading}</div>
@@ -691,7 +763,7 @@ function AboutPage() {
                   <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "1.8rem", color: "#F2F2F2", letterSpacing: ".02em" }}>Want the full picture?</div>
                   <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".7rem", color: "rgba(242,242,242,.5)", marginTop: ".3rem" }}>Download my résumé for complete work history and publications.</div>
                 </div>
-                <a href="/Preeta_Chatterjee_Resume.pdf" target="_blank" rel="noreferrer"
+                <a href="/Resume_Preeta_Chatterjee_03042026.pdf" target="_blank" rel="noreferrer"
                   style={{ display: "inline-block", padding: ".85rem 2rem", background: C.green, color: "#F2F2F2", fontFamily: "'DM Mono',monospace", fontSize: ".73rem", letterSpacing: ".12em", textTransform: "uppercase", border: `2px solid ${C.green}`, transition: "all .2s", textDecoration: "none", flexShrink: 0 }}
                   onMouseEnter={e => { e.target.style.background = "transparent"; e.target.style.color = C.green; }}
                   onMouseLeave={e => { e.target.style.background = C.green; e.target.style.color = "#F2F2F2"; }}>Download Résumé ↓</a>
@@ -723,6 +795,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/projects" element={<ProjectsPage />} />
         </Routes>
       </div>
     </BrowserRouter>
