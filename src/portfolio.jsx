@@ -76,6 +76,32 @@ const PROJECTS = [
   },
 ];
 
+const PUBLICATIONS = [
+  {
+    id: "p1", num: "P1",
+    title: "Automated Hybrid Stair Climber for Physically Challenged People",
+    authors: "P. Chatterjee; N. Lahiri; A. Bhattacharjee; A. Chakraborty",
+    venue: "IEEE 5th IEMENTech 2021",
+    type: "Conference Paper",
+    desc: "Survey and proposal of a cost-effective hybrid stair-climbing device for people with neurological disorders, combining wheel clusters, tracks, and rotating legs. Aimed at making stair navigation safe and accessible for users across different financial backgrounds in India.",
+    links: [
+      { label: "IEEE Xplore", href: "https://ieeexplore.ieee.org/document/9614713", color: C.green },
+      { label: "PDF", href: "/Hybrid_Stair_Climber.pdf", color: C.red },
+    ],
+  },
+  {
+    id: "p2", num: "P2",
+    title: "A Brief Study on Quantum Computing",
+    authors: "P. Chatterjee, R. Chakraborty",
+    venue: "International Journal of Innovative Research in Physics (IJIIP), Vol. 1, Issue 4, 2020, pp. 58–63",
+    type: "Journal Article",
+    desc: "Overview of quantum computing fundamentals including qubits, quantum parallelism, and experimental realisation methods such as ion trap and quantum dot technologies. Examines limitations of classical computers and the trajectory of quantum computing toward practical applications.",
+    links: [
+	  { label: "PDF", href: "https://ijiip.smartsociety.org/vol1_issue4/issue4_paper7.pdf", color: C.red },
+	],
+  },
+];
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function useInView(threshold = 0.1) {
   const ref = useRef(null);
@@ -250,10 +276,15 @@ function HeroCanvas() {
     let score = 0, floaters = [];
 
     const getPos = e => {
-      const r = canvas.getBoundingClientRect();
-      if (e.touches) return { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top };
-      return { x: e.clientX - r.left, y: e.clientY - r.top };
-    };
+	  const r = canvas.getBoundingClientRect();
+	  if (e.changedTouches && e.changedTouches.length > 0) {
+		return { x: e.changedTouches[0].clientX - r.left, y: e.changedTouches[0].clientY - r.top };
+	  }
+	  if (e.touches && e.touches.length > 0) {
+		return { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top };
+	  }
+	  return { x: e.clientX - r.left, y: e.clientY - r.top };
+	};
 
     const onMv = e => { mouse = getPos(e); };
     const onLv = () => { mouse = { x: -999, y: -999 }; };
@@ -263,7 +294,9 @@ function HeroCanvas() {
       balls = balls.map(b => {
         if (!hit) {
           const dx = b.x - cx, dy = b.y - cy;
-          if (Math.sqrt(dx * dx + dy * dy) < b.r + 4) {
+          const isTouch = (e.changedTouches && e.changedTouches.length > 0);
+		  const hitRadius = isTouch ? b.r + 22 : b.r + 4;
+		  if (Math.sqrt(dx * dx + dy * dy) < hitRadius) {
             hit = true; score++;
             floaters.push({ x: cx, y: cy, text: "+1", life: 1, vy: -2 });
             for (let i = 0; i < 8; i++) balls.push(nb(b.x, b.y, true));
@@ -280,7 +313,7 @@ function HeroCanvas() {
     canvas.addEventListener("mousemove", onMv);
     canvas.addEventListener("mouseleave", onLv);
     canvas.addEventListener("click", onCl);
-    canvas.addEventListener("touchstart", onCl, { passive: true });
+    canvas.addEventListener("touchend", onCl, { passive: true });
 
     let raf;
     const draw = () => {
@@ -298,7 +331,7 @@ function HeroCanvas() {
       balls = balls.filter(b => b.life > 0);
       balls.forEach(b => {
         const dx = b.x - mouse.x, dy = b.y - mouse.y, d = Math.sqrt(dx * dx + dy * dy);
-        if (d < 30 && b.life === Infinity) { b.vx += dx / d * 0.8; b.vy += dy / d * 0.8; }
+        //if (d < 30 && b.life === Infinity) { b.vx += dx / d * 0.8; b.vy += dy / d * 0.8; }
         b.vx *= .98; b.vy *= .98;
         b.vy += b.gravity || 0;
         b.x += b.vx; b.y += b.vy;
@@ -323,7 +356,7 @@ function HeroCanvas() {
       if (score > 0) {
         ctx.font = "500 11px 'DM Mono',monospace";
         ctx.fillStyle = `rgba(77,23,23,.4)`;
-        ctx.fillText(`SCORE: ${score}`, W - 90, 30);
+        ctx.fillText(`SCORE: ${score}`, W - 100, 80);
       }
       ctx.lineWidth = 1.5;
       ctx.strokeStyle = "rgba(23,77,56,.28)";
@@ -338,7 +371,7 @@ function HeroCanvas() {
       canvas.removeEventListener("mousemove", onMv);
       canvas.removeEventListener("mouseleave", onLv);
       canvas.removeEventListener("click", onCl);
-      canvas.removeEventListener("touchstart", onCl);
+      canvas.removeEventListener("touchend", onCl);
       ro.disconnect();
     };
   }, []);
@@ -446,6 +479,50 @@ function ProjCardFull({ p, i }) {
         </div>
       </div>
       <div style={{ position: "absolute", bottom: 0, left: 0, width: hov ? "100%" : "0%", height: 3, background: p.accent, transition: "width .4s ease" }} />
+    </div>
+  );
+}
+
+function PubCard({ p, i }) {
+  const [ref, inV] = useInView();
+  const [hov, setHov] = useState(false);
+  const mobile = useMobile();
+
+  return (
+    <div ref={ref} style={{
+      background: hov ? "#fff" : C.bg,
+      padding: mobile ? "1.8rem 1.5rem" : "2.5rem 3rem",
+      position: "relative", overflow: "hidden",
+      borderBottom: `1.5px solid ${C.border}`,
+      opacity: inV ? 1 : 0, transform: inV ? "none" : "translateY(28px)",
+      transition: `background .3s, opacity .7s ease ${i * .1}s, transform .7s ease ${i * .1}s`,
+    }}
+      onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem", flexWrap: "wrap", gap: ".5rem" }}>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: ".4rem", padding: ".22rem .7rem", background: C.greenBg, border: `1px solid ${C.green}44` }}>
+          <span style={{ fontFamily: "'DM Mono',monospace", fontSize: ".58rem", letterSpacing: ".1em", color: C.green }}>{p.type}</span>
+        </div>
+        <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "2.5rem", color: hov ? C.border : C.border2, lineHeight: 1, transition: "color .3s" }}>{p.num}</div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 2fr", gap: mobile ? "1rem" : "3rem", alignItems: "start" }}>
+        <div>
+          <h3 style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: "1.2rem", color: C.dark, lineHeight: 1.25, marginBottom: ".5rem", fontWeight: 400, fontStyle: "italic" }}>{p.title}</h3>
+          <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".62rem", color: C.muted, marginBottom: ".4rem" }}>{p.authors}</div>
+          <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".6rem", color: C.green, letterSpacing: ".06em" }}>{p.venue}</div>
+        </div>
+        <div>
+          <p style={{ fontFamily: "Georgia,serif", fontSize: ".9rem", lineHeight: 1.8, color: C.muted, marginBottom: "1.3rem" }}>{p.desc}</p>
+          <div style={{ display: "flex", gap: "1.2rem", flexWrap: "wrap" }}>
+            {p.links.map(l => (
+              <a key={l.label} href={l.href} target="_blank" rel="noreferrer"
+                style={{ fontFamily: "'DM Mono',monospace", fontSize: ".68rem", letterSpacing: ".1em", textTransform: "uppercase", color: l.color, display: "inline-flex", alignItems: "center", gap: ".35rem", textDecoration: "none" }}>{l.label} ↗</a>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div style={{ position: "absolute", bottom: 0, left: 0, width: hov ? "100%" : "0%", height: 3, background: C.green, transition: "width .4s ease" }} />
     </div>
   );
 }
@@ -619,7 +696,7 @@ function HomePage() {
           }}
             onMouseEnter={e => { e.target.style.background = C.green; e.target.style.color = "#F2F2F2"; }}
             onMouseLeave={e => { e.target.style.background = "transparent"; e.target.style.color = C.green; }}>
-            View All ({PROJECTS.length}) →
+            View All ({PROJECTS.length + PUBLICATIONS.length}) →
           </Link>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: "1.5px", background: C.border }}>
@@ -639,7 +716,7 @@ function HomePage() {
             Open to co-op and internship opportunities in AI/ML, game development, and simulation. Boston-based, available summer 2026.
           </p>
           <div style={{ position: "relative" }}>
-            {[["Email", "chatterjee.pre@northeastern.edu"], ["LinkedIn", "linkedin.com/in/preeta-chatterjee"], ["GitHub", "github.com/preeta-chatterjee"]].map(([l, v]) => (
+            {[["Email", "chatterjee.pre@northeastern.edu"], ["LinkedIn", "linkedin.com/in/preeta-chatterjee"]].map(([l, v]) => (
               <div key={l} style={{ display: "flex", gap: "1rem", alignItems: "baseline", marginBottom: ".7rem", flexWrap: "wrap" }}>
                 <span style={{ fontFamily: "'DM Mono', monospace", fontSize: ".6rem", letterSpacing: ".16em", color: "rgba(242,242,242,.45)", textTransform: "uppercase", minWidth: 65, flexShrink: 0 }}>{l}</span>
                 <span style={{ fontFamily: "'DM Mono', monospace", fontSize: ".68rem", color: "rgba(242,242,242,.82)", wordBreak: "break-all" }}>{v}</span>
@@ -666,28 +743,36 @@ function ProjectsPage() {
   const pad = mobile ? "1.5rem" : "3rem";
 
   return (
-    <div style={{ paddingTop: 60, minHeight: "100vh", background: C.bg }}>
-      {/* Page header */}
-      <div style={{ background: C.dark, padding: `4rem ${pad} 3rem` }}>
-        <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".65rem", letterSpacing: ".2em", color: C.red, textTransform: "uppercase", marginBottom: ".8rem" }}>02 / Work</div>
-        <h1 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(3rem,8vw,7rem)", color: "#F2F2F2", lineHeight: .92, letterSpacing: ".02em" }}>All Projects.</h1>
-      </div>
-
-      {/* All projects stacked */}
-      <div style={{ borderTop: `1.5px solid ${C.border}` }}>
-        {PROJECTS.map((p, i) => <ProjCardFull key={p.id} p={p} i={i} />)}
-      </div>
-
-      {/* Back to home */}
-      <div style={{ padding: `3rem ${pad}`, background: C.surface }}>
-        <Link to="/" style={{ fontFamily: "'DM Mono',monospace", fontSize: ".68rem", letterSpacing: ".12em", textTransform: "uppercase", color: C.muted, textDecoration: "none", transition: "color .2s" }}
-          onMouseEnter={e => e.target.style.color = C.dark}
-          onMouseLeave={e => e.target.style.color = C.muted}>← Back to Home</Link>
-      </div>
-
-      <Footer />
+  <div style={{ paddingTop: 60, minHeight: "100vh", background: C.bg }}>
+    <div style={{ background: C.dark, padding: `4rem ${pad} 3rem` }}>
+      <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".65rem", letterSpacing: ".2em", color: C.red, textTransform: "uppercase", marginBottom: ".8rem" }}>02 / Work</div>
+      <h1 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(3rem,8vw,7rem)", color: "#F2F2F2", lineHeight: .92, letterSpacing: ".02em" }}>All Projects.</h1>
     </div>
-  );
+
+    {/* Projects */}
+    <div style={{ borderTop: `1.5px solid ${C.border}` }}>
+      {PROJECTS.map((p, i) => <ProjCardFull key={p.id} p={p} i={i} />)}
+    </div>
+
+    {/* Publications */}
+    <div style={{ background: C.surface, padding: `4rem ${pad} 0` }}>
+      <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".65rem", letterSpacing: ".18em", color: C.red, textTransform: "uppercase", marginBottom: ".5rem" }}>Research</div>
+      <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(2.5rem,6vw,5rem)", color: C.dark, letterSpacing: ".02em", lineHeight: .92, marginBottom: "2.5rem" }}>Publications.</div>
+    </div>
+    <div style={{ background: C.surface, borderTop: `1.5px solid ${C.border}` }}>
+      {PUBLICATIONS.map((p, i) => <PubCard key={p.id} p={p} i={i} />)}
+    </div>
+
+    {/* Back to home */}
+    <div style={{ padding: `3rem ${pad}`, background: C.surface }}>
+      <Link to="/" style={{ fontFamily: "'DM Mono',monospace", fontSize: ".68rem", letterSpacing: ".12em", textTransform: "uppercase", color: C.muted, textDecoration: "none", transition: "color .2s" }}
+        onMouseEnter={e => e.target.style.color = C.dark}
+        onMouseLeave={e => e.target.style.color = C.muted}>← Back to Home</Link>
+    </div>
+
+    <Footer />
+  </div>
+);
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -778,6 +863,14 @@ function AboutPage() {
 }
 
 // ── App ────────────────────────────────────────────────────────────────────────
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
 export default function App() {
   useEffect(() => {
     const link = document.createElement("link");
@@ -792,6 +885,7 @@ export default function App() {
       <div style={{ background: C.bg, minHeight: "100vh", overflowX: "hidden" }}>
         <Cursor />
         <Nav />
+        <ScrollToTop />   {/* ← add this line */}
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
@@ -799,5 +893,5 @@ export default function App() {
         </Routes>
       </div>
     </BrowserRouter>
-  );
+);
 }
