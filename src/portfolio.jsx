@@ -1,9 +1,3 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// SETUP INSTRUCTIONS
-// 1. npm install @formspree/react react-router-dom
-// 2. Place your resume PDF at: public/Resume_Preeta_Chatterjee_03042026.pdf
-// 3. Replace src/App.jsx with this file
-// ─────────────────────────────────────────────────────────────────────────────
 
 import { useState, useEffect, useRef } from "react";
 import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-dom";
@@ -40,16 +34,13 @@ const PROJECTS = [
   },
   {
     id: 2, num: "02", full: false,
-    title: "Roll — A Ball", sub: "Game Development · Unity",
-    status: "Live", statusColor: C.redL, statusBg: C.redBg, statusDot: C.red,
-    year: "2025",
-    desc: "Physics-driven 3D ball-maze game built in Unity. Real-time rigid-body dynamics, collision handling, and game state management. Fully playable and deployed on itch.io.",
-    stack: ["Unity", "C#", "Physics Engine", "3D Modeling"],
-    links: [
-      { label: "GitHub", href: "https://github.com/preeta-chatterjee/roll-a-ball-maze", color: C.green },
-      { label: "Play on itch.io", href: "https://lunosstar.itch.io/roll-a-ball", color: C.red },
-    ],
-    accent: C.red,
+    title: "Job Tracker", sub: "Full Stack · AI · Web Development",
+    status: "Completed", statusColor: C.green, statusBg: C.greenBg,
+    year: "2026",
+    desc: "A full-stack job application tracker with AI-powered prioritization using Google Gemini. Features include auto-fill from job URLs, drag-and-drop reordering, follow-up notifications, analytics dashboard, contact tracking per application, and a public demo mode. Built with a serverless backend on Vercel and a PostgreSQL database with Row Level Security.",
+    stack: ["React", "Vite", "Supabase", "PostgreSQL", "Google Gemini", "Vercel", "Resend"],
+    links: [{ label: "Live Demo", href: "https://job-tracker-rho-ecru.vercel.app/demo", color: C.green }],
+    accent: C.green,
   },
   {
     id: 3, num: "03", full: false,
@@ -63,6 +54,19 @@ const PROJECTS = [
   },
   {
     id: 4, num: "04", full: false,
+    title: "Roll — A Ball", sub: "Game Development · Unity",
+    status: "Live", statusColor: C.redL, statusBg: C.redBg, statusDot: C.red,
+    year: "2025",
+    desc: "Physics-driven 3D ball-maze game built in Unity. Real-time rigid-body dynamics, collision handling, and game state management. Fully playable and deployed on itch.io.",
+    stack: ["Unity", "C#", "Physics Engine", "3D Modeling"],
+    links: [
+      { label: "GitHub", href: "https://github.com/preeta-chatterjee/roll-a-ball-maze", color: C.green },
+      { label: "Play on itch.io", href: "https://lunosstar.itch.io/roll-a-ball", color: C.red },
+    ],
+    accent: C.red,
+  },
+  {
+    id: 5, num: "05", full: false,
     title: "Haunted Hallway", sub: "Game Development · Unity 2D",
     status: "Live", statusColor: C.redL, statusBg: C.redBg, statusDot: C.red,
     year: "2026",
