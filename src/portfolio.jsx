@@ -745,8 +745,8 @@ function HomePage() {
   return (
     <>
       {/* ── Hero ── */}
-      <section style={{ minHeight: "100vh", display: "grid", gridTemplateColumns: mobile ? "1fr" : "55% 45%", gridTemplateRows: mobile ? "auto 40vw" : "1fr", background: C.bg, overflow: "hidden" }}>
-        <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: mobile ? "5rem 1.5rem 2rem" : "7rem 3rem 4rem", position: "relative", zIndex: 2 }}>
+      <section style={{ minHeight: "85vh", display: "grid", gridTemplateColumns: mobile ? "1fr" : "55% 45%", gridTemplateRows: mobile ? "auto 55vw" : "1fr", background: C.bg, overflow: "hidden" }}>
+        <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: mobile ? "5rem 1.5rem 3rem" : "6rem 3rem 5rem", position: "relative", zIndex: 2 }}>
           <div style={{ display: "flex", alignItems: "center", gap: ".7rem", marginBottom: "1.5rem", ...f(.1) }}>
             <span style={{ width: 30, height: 1.5, background: `linear-gradient(to right,${C.green},${C.red})`, display: "inline-block", flexShrink: 0 }} />
             <span style={{ fontFamily: "'DM Mono',monospace", fontSize: ".6rem", letterSpacing: ".18em", color: C.green, textTransform: "uppercase" }}>MS CS · Northeastern · 4.0 GPA · 2 Publications</span>
@@ -756,7 +756,7 @@ function HomePage() {
             <div style={{ color: C.red }}>CHATTERJEE</div>
           </div>
           <p style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: "clamp(.9rem,1.8vw,1.2rem)", color: C.mid, lineHeight: 1.65, fontStyle: "italic", margin: "1.5rem 0 1.8rem", maxWidth: 420, ...f(.3) }}>
-            Building intelligent systems and playable worlds where AI meets real time 3D.
+            Building intelligent systems and playable worlds where AI meets real-time 3D.
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: ".5rem", marginBottom: "2rem", ...f(.4) }}>
             {[["ML Engineer", "green"], ["Game Developer", "red"], ["NLP", "o"], ["Unity", "o"], ["Simulation", "o"]].map(([label, t]) => (
@@ -772,10 +772,22 @@ function HomePage() {
               onMouseLeave={e => { e.target.style.background = C.red; e.target.style.color = "#F2F2F2"; }}>Get in Touch</a>
           </div>
         </div>
-        <div style={{ position: "relative", overflow: "hidden", minHeight: mobile ? "40vw" : "auto" }}>
+
+        {/* Canvas panel — dot-grid background so it never looks like blank space */}
+        <div style={{
+          position: "relative", overflow: "hidden",
+          minHeight: mobile ? "55vw" : "auto",
+          background: `radial-gradient(circle, ${C.border} 1px, transparent 1px)`,
+          backgroundSize: "22px 22px",
+          backgroundColor: C.bg,
+          borderLeft: mobile ? "none" : `1px solid ${C.border2}`,
+        }}>
           <HeroCanvas />
         </div>
       </section>
+
+      {/* Thin gradient accent rule — bridges hero to marquee */}
+      <div style={{ height: 3, background: `linear-gradient(to right, ${C.green}, ${C.red})` }} />
 
       <Marquee />
 
