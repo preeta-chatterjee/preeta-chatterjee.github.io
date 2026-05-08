@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useRef } from "react";
-import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-dom";
+import { HashRouter, Routes, Route, Link, useLocation } from "react-router-dom";
 import { useForm, ValidationError } from "@formspree/react";
 
 const C = {
@@ -140,7 +140,10 @@ function Cursor() {
   const mouse = useRef({ x: -999, y: -999 }), pos = useRef({ x: -999, y: -999 });
   const mobile = useMobile();
   useEffect(() => {
-    if (mobile) return;
+    if (mobile) {
+      document.body.style.cursor = "auto";
+      return () => { document.body.style.cursor = "auto"; };
+    }
     const move = e => { mouse.current = { x: e.clientX, y: e.clientY }; };
     document.addEventListener("mousemove", move);
     document.body.style.cursor = "none";
@@ -216,16 +219,16 @@ function Nav() {
         ) : (
           <div style={{ display: "flex", gap: "2.5rem", alignItems: "center" }}>
             <Link to="/about" style={{ ...linkStyle, color: activeColor("/about") }}
-              onMouseEnter={e => e.target.style.color = C.dark}
-              onMouseLeave={e => e.target.style.color = activeColor("/about")}>About</Link>
+              onMouseEnter={e => e.currentTarget.style.color = C.dark}
+              onMouseLeave={e => e.currentTarget.style.color = activeColor("/about")}>About</Link>
             <Link to="/projects" style={{ ...linkStyle, color: activeColor("/projects") }}
-              onMouseEnter={e => e.target.style.color = C.dark}
-              onMouseLeave={e => e.target.style.color = activeColor("/projects")}>Projects</Link>
+              onMouseEnter={e => e.currentTarget.style.color = C.dark}
+              onMouseLeave={e => e.currentTarget.style.color = activeColor("/projects")}>Projects</Link>
             {isHome
-              ? <a href="#contact" style={linkStyle} onMouseEnter={e => e.target.style.color = C.dark} onMouseLeave={e => e.target.style.color = C.muted}>Contact</a>
-              : <Link to="/#contact" style={linkStyle} onMouseEnter={e => e.target.style.color = C.dark} onMouseLeave={e => e.target.style.color = C.muted}>Contact</Link>
+              ? <a href="#contact" style={linkStyle} onMouseEnter={e => e.currentTarget.style.color = C.dark} onMouseLeave={e => e.currentTarget.style.color = C.muted}>Contact</a>
+              : <Link to="/#contact" style={linkStyle} onMouseEnter={e => e.currentTarget.style.color = C.dark} onMouseLeave={e => e.currentTarget.style.color = C.muted}>Contact</Link>
             }
-            <a href="/Resume_Preeta_Chatterjee_03042026.pdf" target="_blank" rel="noreferrer"
+            <a href="/Preeta_Chatterjee_Resume.pdf" target="_blank" rel="noreferrer"
               style={{ fontFamily: "'DM Mono',monospace", fontSize: ".68rem", letterSpacing: ".16em", textTransform: "uppercase", padding: ".4rem 1rem", border: `1.5px solid ${C.red}`, color: C.red, textDecoration: "none", transition: "all .2s" }}
               onMouseEnter={e => { e.currentTarget.style.background = C.red; e.currentTarget.style.color = "#F2F2F2"; }}
               onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = C.red; }}>Résumé ↗</a>
@@ -238,7 +241,7 @@ function Nav() {
           <Link to="/about" style={mobileLinkStyle} onClick={() => setMenuOpen(false)}>About</Link>
           <Link to="/projects" style={mobileLinkStyle} onClick={() => setMenuOpen(false)}>Projects</Link>
           <a href={isHome ? "#contact" : "/#contact"} style={mobileLinkStyle} onClick={() => setMenuOpen(false)}>Contact</a>
-          <a href="/Resume_Preeta_Chatterjee_03042026.pdf" target="_blank" rel="noreferrer"
+          <a href="/Preeta_Chatterjee_Resume.pdf" target="_blank" rel="noreferrer"
             style={{ ...mobileLinkStyle, color: C.red, borderBottom: "none" }}
             onClick={() => setMenuOpen(false)}>Résumé ↗</a>
         </div>
@@ -259,7 +262,12 @@ function HeroCanvas() {
       { t: "PyTorch", x: .5, y: .44, s: 10 }, { t: "FAISS", x: .84, y: .54, s: 9 },
       { t: "RAG", x: .62, y: .82, s: 11 },
     ];
-    const resize = () => { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; };
+    const resize = () => {
+      if (canvas.offsetWidth > 0 && canvas.offsetHeight > 0) {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+      }
+    };
     resize();
     const ro = new ResizeObserver(resize); ro.observe(canvas);
 
@@ -298,9 +306,7 @@ function HeroCanvas() {
       balls = balls.map(b => {
         if (!hit) {
           const dx = b.x - cx, dy = b.y - cy;
-          const isTouch = (e.changedTouches && e.changedTouches.length > 0);
-		  const hitRadius = isTouch ? b.r + 22 : b.r + 4;
-		  if (Math.sqrt(dx * dx + dy * dy) < hitRadius) {
+          if (Math.sqrt(dx * dx + dy * dy) < b.r + 6) {
             hit = true; score++;
             floaters.push({ x: cx, y: cy, text: "+1", life: 1, vy: -2 });
             for (let i = 0; i < 8; i++) balls.push(nb(b.x, b.y, true));
@@ -314,10 +320,14 @@ function HeroCanvas() {
       if (balls.length > 70) balls = balls.filter((b, idx) => b.life === Infinity || idx > balls.length - 20);
     };
 
+    // Use touchstart + preventDefault to block the delayed synthetic click on mobile,
+    // preventing each tap from firing both touchstart and click (double-score bug).
+    const onTouch = e => { e.preventDefault(); onCl(e); };
+
     canvas.addEventListener("mousemove", onMv);
     canvas.addEventListener("mouseleave", onLv);
     canvas.addEventListener("click", onCl);
-    canvas.addEventListener("touchend", onCl, { passive: true });
+    canvas.addEventListener("touchstart", onTouch, { passive: false });
 
     let raf;
     const draw = () => {
@@ -375,13 +385,13 @@ function HeroCanvas() {
       canvas.removeEventListener("mousemove", onMv);
       canvas.removeEventListener("mouseleave", onLv);
       canvas.removeEventListener("click", onCl);
-      canvas.removeEventListener("touchend", onCl);
+      canvas.removeEventListener("touchstart", onTouch);
       ro.disconnect();
     };
   }, []);
   return (
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
-      <canvas ref={ref} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", cursor: "crosshair" }} />
+      <canvas ref={ref} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} />
       <span style={{ position: "absolute", bottom: "1rem", right: "1rem", fontFamily: "'DM Mono',monospace", fontSize: ".55rem", letterSpacing: ".12em", color: C.muted, textTransform: "uppercase" }}>tap the bubbles</span>
     </div>
   );
@@ -588,11 +598,15 @@ function Footer() {
     <footer style={{ background: C.dark, padding: "2rem 1.5rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
       <span style={{ fontFamily: "'DM Mono',monospace", fontSize: ".6rem", letterSpacing: ".1em", color: "rgba(242,242,242,.3)", textTransform: "uppercase" }}>© 2025 Preeta Chatterjee</span>
       <div style={{ display: "flex", gap: "2rem" }}>
-        {[["About", "/about"], ["Projects", "/projects"], ["Contact", "/#contact"]].map(([l, href]) => (
-          <a key={l} href={href} style={{ fontFamily: "'DM Mono',monospace", fontSize: ".6rem", letterSpacing: ".12em", textTransform: "uppercase", color: "rgba(242,242,242,.3)", textDecoration: "none", transition: "color .2s" }}
-            onMouseEnter={e => e.target.style.color = "rgba(242,242,242,.8)"}
-            onMouseLeave={e => e.target.style.color = "rgba(242,242,242,.3)"}>{l}</a>
-        ))}
+        <Link to="/about" style={{ fontFamily: "'DM Mono',monospace", fontSize: ".6rem", letterSpacing: ".12em", textTransform: "uppercase", color: "rgba(242,242,242,.3)", textDecoration: "none", transition: "color .2s" }}
+          onMouseEnter={e => e.currentTarget.style.color = "rgba(242,242,242,.8)"}
+          onMouseLeave={e => e.currentTarget.style.color = "rgba(242,242,242,.3)"}>About</Link>
+        <Link to="/projects" style={{ fontFamily: "'DM Mono',monospace", fontSize: ".6rem", letterSpacing: ".12em", textTransform: "uppercase", color: "rgba(242,242,242,.3)", textDecoration: "none", transition: "color .2s" }}
+          onMouseEnter={e => e.currentTarget.style.color = "rgba(242,242,242,.8)"}
+          onMouseLeave={e => e.currentTarget.style.color = "rgba(242,242,242,.3)"}>Projects</Link>
+        <a href="/#contact" style={{ fontFamily: "'DM Mono',monospace", fontSize: ".6rem", letterSpacing: ".12em", textTransform: "uppercase", color: "rgba(242,242,242,.3)", textDecoration: "none", transition: "color .2s" }}
+          onMouseEnter={e => e.currentTarget.style.color = "rgba(242,242,242,.8)"}
+          onMouseLeave={e => e.currentTarget.style.color = "rgba(242,242,242,.3)"}>Contact</a>
       </div>
     </footer>
   );
@@ -669,8 +683,8 @@ function HomePage() {
           </div>
           <div style={{ marginTop: "1.5rem" }}>
             <Link to="/about" style={{ fontFamily: "'DM Mono',monospace", fontSize: ".65rem", letterSpacing: ".12em", textTransform: "uppercase", color: C.green, border: `1.5px solid ${C.green}`, padding: ".5rem 1.2rem", textDecoration: "none", display: "inline-block", transition: "all .2s" }}
-              onMouseEnter={e => { e.target.style.background = C.green; e.target.style.color = "#F2F2F2"; }}
-              onMouseLeave={e => { e.target.style.background = "transparent"; e.target.style.color = C.green; }}>Read More →</Link>
+              onMouseEnter={e => { e.currentTarget.style.background = C.green; e.currentTarget.style.color = "#F2F2F2"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = C.green; }}>Read More →</Link>
           </div>
         </div>
         <div style={{ background: C.bg, padding: `3.5rem ${pad}`, display: "flex", flexDirection: "column", justifyContent: "center" }}>
@@ -698,8 +712,8 @@ function HomePage() {
             textTransform: "uppercase", color: C.green, border: `1.5px solid ${C.green}`,
             padding: ".5rem 1.2rem", textDecoration: "none", display: "inline-block", transition: "all .2s",
           }}
-            onMouseEnter={e => { e.target.style.background = C.green; e.target.style.color = "#F2F2F2"; }}
-            onMouseLeave={e => { e.target.style.background = "transparent"; e.target.style.color = C.green; }}>
+            onMouseEnter={e => { e.currentTarget.style.background = C.green; e.currentTarget.style.color = "#F2F2F2"; }}
+            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = C.green; }}>
             View All ({PROJECTS.length + PUBLICATIONS.length}) →
           </Link>
         </div>
@@ -770,13 +784,67 @@ function ProjectsPage() {
     {/* Back to home */}
     <div style={{ padding: `3rem ${pad}`, background: C.surface }}>
       <Link to="/" style={{ fontFamily: "'DM Mono',monospace", fontSize: ".68rem", letterSpacing: ".12em", textTransform: "uppercase", color: C.muted, textDecoration: "none", transition: "color .2s" }}
-        onMouseEnter={e => e.target.style.color = C.dark}
-        onMouseLeave={e => e.target.style.color = C.muted}>← Back to Home</Link>
+        onMouseEnter={e => e.currentTarget.style.color = C.dark}
+        onMouseLeave={e => e.currentTarget.style.color = C.muted}>← Back to Home</Link>
     </div>
 
     <Footer />
   </div>
 );
+}
+
+// ── About sub-components (hooks must be at component top level) ───────────────
+function AboutSection({ s, i, mobile }) {
+  const [ref, inV] = useInView();
+  return (
+    <div ref={ref} style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "160px 1fr", gap: mobile ? "1rem" : "3rem", marginBottom: "3rem", borderTop: `1px solid ${C.border2}`, paddingTop: "2rem", ...rv(inV, i * .1) }}>
+      <div>
+        <div style={{ width: 24, height: 3, background: s.accent, marginBottom: ".8rem" }} />
+        <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "1.3rem", color: C.dark, letterSpacing: ".02em" }}>{s.heading}</div>
+      </div>
+      <p style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: "1rem", color: C.mid, lineHeight: 1.85, fontStyle: "italic" }}>{s.body}</p>
+    </div>
+  );
+}
+
+function EducationBlock({ mobile }) {
+  const [ref, inV] = useInView();
+  return (
+    <div ref={ref} style={{ marginTop: "2rem", ...rv(inV) }}>
+      <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".62rem", letterSpacing: ".2em", color: C.green, textTransform: "uppercase", marginBottom: "1.5rem" }}>Education</div>
+      {[
+        { deg: "MS Computer Science", school: "Northeastern University", loc: "Boston, MA", year: "Expected May 2027", gpa: "4.0", col: C.green },
+        { deg: "BTech Electronics & Communication Engineering", school: "Institute of Engineering and Management", loc: "Kolkata, India", year: "Apr 2023", gpa: "9.38/10", col: C.red },
+      ].map(e => (
+        <div key={e.school} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: `1px solid ${C.border2}`, padding: "1.5rem 0", flexWrap: mobile ? "wrap" : "nowrap", gap: "1rem" }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: "1.05rem", color: C.dark, fontStyle: "italic", marginBottom: ".3rem" }}>{e.deg}</div>
+            <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".7rem", color: C.muted }}>{e.school} · {e.loc}</div>
+          </div>
+          <div style={{ textAlign: "right", flexShrink: 0 }}>
+            <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "1.4rem", color: e.col }}>{e.gpa}</div>
+            <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".62rem", color: C.muted }}>{e.year}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ResumeBlock({ mobile }) {
+  const [ref, inV] = useInView();
+  return (
+    <div ref={ref} style={{ marginTop: "4rem", padding: mobile ? "1.5rem" : "2.5rem", background: C.dark, display: "flex", alignItems: mobile ? "flex-start" : "center", justifyContent: "space-between", flexDirection: mobile ? "column" : "row", gap: "1.5rem", ...rv(inV) }}>
+      <div>
+        <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "1.8rem", color: "#F2F2F2", letterSpacing: ".02em" }}>Want the full picture?</div>
+        <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".7rem", color: "rgba(242,242,242,.5)", marginTop: ".3rem" }}>Download my résumé for complete work history and publications.</div>
+      </div>
+      <a href="/Preeta_Chatterjee_Resume.pdf" target="_blank" rel="noreferrer"
+        style={{ display: "inline-block", padding: ".85rem 2rem", background: C.green, color: "#F2F2F2", fontFamily: "'DM Mono',monospace", fontSize: ".73rem", letterSpacing: ".12em", textTransform: "uppercase", border: `2px solid ${C.green}`, transition: "all .2s", textDecoration: "none", flexShrink: 0 }}
+        onMouseEnter={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = C.green; }}
+        onMouseLeave={e => { e.currentTarget.style.background = C.green; e.currentTarget.style.color = "#F2F2F2"; }}>Download Résumé ↓</a>
+    </div>
+  );
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -807,58 +875,12 @@ function AboutPage() {
             </p>
           </div>
 
-          {sections.map((s, i) => {
-            const [ref, inV] = useInView();
-            return (
-              <div key={s.heading} ref={ref} style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "160px 1fr", gap: mobile ? "1rem" : "3rem", marginBottom: "3rem", borderTop: `1px solid ${C.border2}`, paddingTop: "2rem", ...rv(inV, i * .1) }}>
-                <div>
-                  <div style={{ width: 24, height: 3, background: s.accent, marginBottom: ".8rem" }} />
-                  <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "1.3rem", color: C.dark, letterSpacing: ".02em" }}>{s.heading}</div>
-                </div>
-                <p style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: "1rem", color: C.mid, lineHeight: 1.85, fontStyle: "italic" }}>{s.body}</p>
-              </div>
-            );
-          })}
+          {sections.map((s, i) => (
+            <AboutSection key={s.heading} s={s} i={i} mobile={mobile} />
+          ))}
 
-          {(() => {
-            const [ref, inV] = useInView();
-            return (
-              <div ref={ref} style={{ marginTop: "2rem", ...rv(inV) }}>
-                <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".62rem", letterSpacing: ".2em", color: C.green, textTransform: "uppercase", marginBottom: "1.5rem" }}>Education</div>
-                {[
-                  { deg: "MS Computer Science", school: "Northeastern University", loc: "Boston, MA", year: "Expected May 2027", gpa: "4.0", col: C.green },
-                  { deg: "BTech Electronics & Communication Engineering", school: "Institute of Engineering and Management", loc: "Kolkata, India", year: "Apr 2023", gpa: "9.38/10", col: C.red },
-                ].map(e => (
-                  <div key={e.school} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: `1px solid ${C.border2}`, padding: "1.5rem 0", flexWrap: mobile ? "wrap" : "nowrap", gap: "1rem" }}>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: "1.05rem", color: C.dark, fontStyle: "italic", marginBottom: ".3rem" }}>{e.deg}</div>
-                      <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".7rem", color: C.muted }}>{e.school} · {e.loc}</div>
-                    </div>
-                    <div style={{ textAlign: "right", flexShrink: 0 }}>
-                      <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "1.4rem", color: e.col }}>{e.gpa}</div>
-                      <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".62rem", color: C.muted }}>{e.year}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            );
-          })()}
-
-          {(() => {
-            const [ref, inV] = useInView();
-            return (
-              <div ref={ref} style={{ marginTop: "4rem", padding: mobile ? "1.5rem" : "2.5rem", background: C.dark, display: "flex", alignItems: mobile ? "flex-start" : "center", justifyContent: "space-between", flexDirection: mobile ? "column" : "row", gap: "1.5rem", ...rv(inV) }}>
-                <div>
-                  <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "1.8rem", color: "#F2F2F2", letterSpacing: ".02em" }}>Want the full picture?</div>
-                  <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".7rem", color: "rgba(242,242,242,.5)", marginTop: ".3rem" }}>Download my résumé for complete work history and publications.</div>
-                </div>
-                <a href="/Resume_Preeta_Chatterjee_03042026.pdf" target="_blank" rel="noreferrer"
-                  style={{ display: "inline-block", padding: ".85rem 2rem", background: C.green, color: "#F2F2F2", fontFamily: "'DM Mono',monospace", fontSize: ".73rem", letterSpacing: ".12em", textTransform: "uppercase", border: `2px solid ${C.green}`, transition: "all .2s", textDecoration: "none", flexShrink: 0 }}
-                  onMouseEnter={e => { e.target.style.background = "transparent"; e.target.style.color = C.green; }}
-                  onMouseLeave={e => { e.target.style.background = C.green; e.target.style.color = "#F2F2F2"; }}>Download Résumé ↓</a>
-              </div>
-            );
-          })()}
+          <EducationBlock mobile={mobile} />
+          <ResumeBlock mobile={mobile} />
         </div>
       </div>
       <Footer />
@@ -877,25 +899,27 @@ function ScrollToTop() {
 
 export default function App() {
   useEffect(() => {
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap";
-    document.head.appendChild(link);
+    if (!document.querySelector('link[href*="fonts.googleapis.com"]')) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap";
+      document.head.appendChild(link);
+    }
     document.title = "Preeta Chatterjee";
   }, []);
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div style={{ background: C.bg, minHeight: "100vh", overflowX: "hidden" }}>
         <Cursor />
         <Nav />
-        <ScrollToTop />   {/* ← add this line */}
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/projects" element={<ProjectsPage />} />
         </Routes>
       </div>
-    </BrowserRouter>
+    </HashRouter>
 );
 }
