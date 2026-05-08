@@ -756,7 +756,7 @@ function HomePage() {
             <div style={{ color: C.red }}>CHATTERJEE</div>
           </div>
           <p style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: "clamp(.9rem,1.8vw,1.2rem)", color: C.mid, lineHeight: 1.65, fontStyle: "italic", margin: "1.5rem 0 1.8rem", maxWidth: 420, ...f(.3) }}>
-            NLP & generative AI by day, Unity & Unreal by night — two IEEE publications, five shipped projects, seeking Summer 2026 co-op in AI/ML or game development.
+            Building intelligent systems and playable worlds where AI meets real time 3D.
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: ".5rem", marginBottom: "2rem", ...f(.4) }}>
             {[["ML Engineer", "green"], ["Game Developer", "red"], ["NLP", "o"], ["Unity", "o"], ["Simulation", "o"]].map(([label, t]) => (
