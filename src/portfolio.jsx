@@ -11,6 +11,32 @@ const C = {
   amber: "#b8860b", amberBg: "#fdf3e0", amberDk: "#7a5a08",
 };
 
+// ── Layout constants ──────────────────────────────────────────────────────────
+const NAV_HEIGHT = 60; // px — update here if nav height changes
+
+// ── Typography tokens ─────────────────────────────────────────────────────────
+const T = {
+  mono:    "'DM Mono', monospace",
+  serif:   "'DM Serif Display', Georgia, serif",
+  display: "'Bebas Neue', sans-serif",
+};
+
+// ── Reusable style patterns ───────────────────────────────────────────────────
+// Tiny monospace label (section numbers, tags, captions)
+const S_LABEL = { fontFamily: T.mono, fontSize: ".6rem", letterSpacing: ".18em", textTransform: "uppercase" };
+// Standard nav / button mono text
+const S_MONO_SM = { fontFamily: T.mono, fontSize: ".68rem", letterSpacing: ".14em", textTransform: "uppercase" };
+// Ghost outline button base (colour overridden per use)
+const S_BTN_GHOST = (color) => ({
+  ...S_MONO_SM, display: "inline-block", padding: ".5rem 1.2rem",
+  border: `1.5px solid ${color}`, color, textDecoration: "none", transition: "all .2s",
+});
+// Filled button base
+const S_BTN_FILLED = (bg, fg = "#F2F2F2") => ({
+  ...S_MONO_SM, display: "inline-block", padding: ".75rem 1.8rem",
+  background: bg, color: fg, border: `2px solid ${bg}`, textDecoration: "none", transition: "all .2s",
+});
+
 const PALETTE = [C.green, C.red, C.greenL, C.redL, "#CBCBCB", C.redMid, C.greenMid];
 
 const SKILLS = [
@@ -27,9 +53,9 @@ const PROJECTS = [
     title: "RAG Research Engine", sub: "NLP · Machine Learning",
     status: "Completed", statusColor: C.green, statusBg: C.greenBg,
     year: "2025",
-    desc: "End-to-end retrieval-augmented generation pipeline querying 30+ research papers on fairness and bias in LLMs. FAISS vector indexing, E5-Base-v2 embeddings, and FLAN-T5-XL for natural language generation. Evaluation framework across 124 QA pairs with ablation studies.",
-    stack: ["Python", "Hugging Face", "FAISS", "PyTorch", "FLAN-T5-XL", "E5-Base-v2"],
-    links: [{ label: "GitHub", href: "https://github.com/NorthChat/NLP_Final_Project", color: C.green }],
+    desc: "End-to-end retrieval-augmented generation pipeline querying 20+ research papers on fairness and bias in LLMs. Responsible for the retrieval module (E5-Base-v2 embeddings, FAISS vector indexing, caching), generation module (FLAN-T5-XL, prompt engineering), and the full evaluation framework — Precision@K, Recall@K, MRR, and ROUGE. Ablation study across three embedding models: E5-base achieved the best ROUGE-L (0.154) while BGE-small led on Precision@5 (0.160). Evaluated on 124 custom-annotated QA pairs.",
+    stack: ["Python", "Hugging Face", "FAISS", "PyTorch", "FLAN-T5-XL", "E5-Base-v2", "spaCy"],
+    links: [{ label: "GitHub (group repo)", href: "https://github.com/NorthChat/NLP_Final_Project", color: C.green }],
     accent: C.green,
   },
   {
@@ -44,12 +70,15 @@ const PROJECTS = [
   },
   {
     id: 3, num: "03", full: false,
-    title: "Apartment 101", sub: "Game Development · Simulation",
+    title: "Apartment 101", sub: "Game Development · Unreal Engine",
     status: "In Progress", statusColor: C.amberDk, statusBg: C.amberBg, statusDot: C.amber,
     year: "2026–",
-    desc: "An ongoing game exploring physics interactions and interactive systems within a domestic setting. Regularly updated.",
-    stack: ["C++", "Unreal Engine", "Physics Engine"],
-    links: [],
+    desc: "A first-person physics game set in a domestic environment. Currently solving a blueprint collision channel inheritance bug — weapons correctly register hits on one zombie instance but pass through others built from the same blueprint, pointing to a per-actor physics asset override issue. Gameplay video coming soon.",
+    stack: ["C++", "Unreal Engine", "Blueprint", "Physics Assets", "Collision Channels"],
+    links: [
+      // TODO: replace href with YouTube link once uploaded
+      // { label: "Gameplay Video", href: "https://youtu.be/PLACEHOLDER", color: C.red },
+    ],
     accent: C.red,
   },
   {
@@ -106,7 +135,62 @@ const PUBLICATIONS = [
   },
 ];
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// ── Static page data (lives here, not inside render functions) ───────────────
+
+const FORMSPREE_ID = import.meta.env.VITE_FORMSPREE_ID ?? "xzdkjqpb";
+
+const ABOUT_SECTIONS = [
+  {
+    heading: "Background",
+    body: "I'm a Master's student in Computer Science at Northeastern University (GPA: 4.0), specialising in NLP and generative AI. My undergraduate background in Electronics and Communication Engineering gives me an unusually hardware-aware perspective on software systems.",
+    accent: C.green,
+  },
+  {
+    heading: "What I Build",
+    body: "I work across two axes — machine learning systems and interactive 3D environments. On the ML side I design retrieval and generation pipelines; on the game side I build physics-driven experiences in Unity and Unreal. The overlap between the two — intelligent, simulated worlds — is where I want to go.",
+    accent: C.red,
+  },
+  {
+    heading: "Experience",
+    body: null, // rendered separately by ExperienceBlock
+    accent: C.green,
+  },
+  {
+    heading: "Publications",
+    body: "I've presented at IEEE IEMENTech (Automated Hybrid Stair Climber for Physically Challenged People) and published in the International Journal of Innovative Research in Physics on Quantum Computing.",
+    accent: C.red,
+  },
+];
+
+const EXPERIENCE = [
+  {
+    role: "Graduate Engineer Trainee — Simulation & Software Testing",
+    company: "SMS India Pvt Ltd.",
+    loc: "Kolkata, India",
+    dates: "Aug 2023 – Jun 2024",
+    bullets: [
+      "Built and integrated MATLAB/Simulink models for rolling mill simulation, cutting project commissioning time by 25%.",
+      "Conducted on-site hardware/software testing across client sites; handled customer demos and progress reporting.",
+      "Led technical onboarding of interns, providing hands-on mentorship in simulation workflows.",
+      "Preceded by a 4-month internship (Jan–Apr 2023) focused on rolling mill simulation and hardware-software testing.",
+    ],
+  },
+  {
+    role: "Software Development Intern",
+    company: "Caravel Labs Inc.",
+    loc: "WA, USA",
+    dates: "Jun 2022 – Aug 2022",
+    bullets: [
+      "Built and deployed a full-stack web application in TypeScript and React.js with an Azure Cosmos DB backend.",
+      "Collaborated in weekly Agile sprints using Git, code review, and CI/CD pipelines in a production environment.",
+    ],
+  },
+];
+
+const EDUCATION = [
+  { deg: "MS Computer Science", school: "Northeastern University",                    loc: "Boston, MA",    year: "Expected May 2027", gpa: "4.0",     col: C.green },
+  { deg: "BTech Electronics & Communication Engineering", school: "Institute of Engineering and Management", loc: "Kolkata, India", year: "Apr 2023",          gpa: "9.38/10", col: C.red },
+];
 function useInView(threshold = 0.1) {
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
@@ -128,7 +212,8 @@ function useMobile(bp = 768) {
   return mobile;
 }
 
-const rv = (inView, delay = 0) => ({
+// Returns inline style for scroll-triggered fade-up animation
+const revealStyle = (inView, delay = 0) => ({
   opacity: inView ? 1 : 0,
   transform: inView ? "translateY(0)" : "translateY(28px)",
   transition: `opacity 0.7s ease ${delay}s, transform 0.7s ease ${delay}s`,
@@ -149,8 +234,8 @@ function Cursor() {
     document.body.style.cursor = "none";
     let raf;
     const tick = () => {
-      pos.current.x += (mouse.current.x - pos.current.x) * 0.12;
-      pos.current.y += (mouse.current.y - pos.current.y) * 0.12;
+      pos.current.x += (mouse.current.x - pos.current.x) * CURSOR_LERP;
+      pos.current.y += (mouse.current.y - pos.current.y) * CURSOR_LERP;
       if (dot.current) { dot.current.style.left = mouse.current.x + "px"; dot.current.style.top = mouse.current.y + "px"; }
       if (ring.current) { ring.current.style.left = pos.current.x + "px"; ring.current.style.top = pos.current.y + "px"; }
       raf = requestAnimationFrame(tick);
@@ -207,7 +292,7 @@ function Nav() {
 
   return (
     <>
-      <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 200, height: 60, padding: "0 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", background: navBg, backdropFilter: "blur(12px)", borderBottom: navBorder, transition: "all .4s" }}>
+      <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 200, height: NAV_HEIGHT, padding: "0 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", background: navBg, backdropFilter: "blur(12px)", borderBottom: navBorder, transition: "all .4s" }}>
         <Link to="/" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "1.6rem", letterSpacing: ".05em", background: `linear-gradient(135deg,${C.green},${C.red})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", textDecoration: "none" }}>PC</Link>
 
         {mobile ? (
@@ -237,7 +322,7 @@ function Nav() {
       </nav>
 
       {mobile && menuOpen && (
-        <div style={{ position: "fixed", top: 60, left: 0, right: 0, zIndex: 199, background: "rgba(242,242,242,.97)", backdropFilter: "blur(12px)", padding: "0 1.5rem 1.5rem", borderBottom: `1px solid ${C.border}` }}>
+        <div style={{ position: "fixed", top: NAV_HEIGHT, left: 0, right: 0, zIndex: 199, background: "rgba(242,242,242,.97)", backdropFilter: "blur(12px)", padding: "0 1.5rem 1.5rem", borderBottom: `1px solid ${C.border}` }}>
           <Link to="/about" style={mobileLinkStyle} onClick={() => setMenuOpen(false)}>About</Link>
           <Link to="/projects" style={mobileLinkStyle} onClick={() => setMenuOpen(false)}>Projects</Link>
           <a href={isHome ? "#contact" : "/#contact"} style={mobileLinkStyle} onClick={() => setMenuOpen(false)}>Contact</a>
@@ -250,18 +335,71 @@ function Nav() {
   );
 }
 
+// ── Hero Canvas helpers (plain functions — easier to debug than inline closures) ──
+const CANVAS_LABS = [
+  { t: "UNITY",   x: .55, y: .2,  s: 11 }, { t: "C#",     x: .8,  y: .35, s: 13 },
+  { t: "PYTHON",  x: .58, y: .62, s: 10 }, { t: "NLP",    x: .74, y: .74, s: 12 },
+  { t: "PyTorch", x: .5,  y: .44, s: 10 }, { t: "FAISS",  x: .84, y: .54, s: 9  },
+  { t: "RAG",     x: .62, y: .82, s: 11 },
+];
+const BALL_INIT_COUNT = 18;   // persistent balls on mount
+const BALL_MIN_COUNT  = 10;   // replenish when persistent balls drop below this
+const BALL_MAX_TOTAL  = 70;   // cap total balls (persistent + burst) to avoid perf issues
+const CURSOR_LERP     = 0.12; // cursor ring lag: 0 = instant, 1 = never moves
+
+function makeBall(canvasW, canvasH, burst, x, y) {
+  return {
+    x:       x   ?? (canvasW * .1 + Math.random() * canvasW * .8),
+    y:       y   ?? (Math.random() * canvasH * .8 + canvasH * .1),
+    r:       burst ? 3  + Math.random() * 8  : 5 + Math.random() * 16,
+    vx:      (Math.random() - .5) * (burst ? 8 : 2.5),
+    vy:      (Math.random() - .5) * (burst ? 8 : 2.5),
+    color:   PALETTE[Math.floor(Math.random() * PALETTE.length)],
+    alpha:   burst ? .7 : .12 + Math.random() * .5,
+    outline: !burst && Math.random() > .6,
+    gravity: burst ? .15 : 0,
+    life:    burst ? 1 : Infinity,
+  };
+}
+
+function drawGrid(ctx, W, H) {
+  ctx.strokeStyle = "rgba(77,23,23,.05)"; ctx.lineWidth = 1;
+  for (let x = 0; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+  for (let y = 0; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+}
+
+function drawLabels(ctx, frame, W, H) {
+  CANVAS_LABS.forEach((l, i) => {
+    ctx.font = `500 ${l.s}px 'DM Mono',monospace`;
+    const a = .08 + Math.sin(frame * .02 + i) * .04;
+    ctx.fillStyle = i % 2 === 0 ? `rgba(23,77,56,${a})` : `rgba(77,23,23,${a})`;
+    ctx.fillText(l.t, l.x * W, l.y * H + Math.sin(frame * .018 + i) * 8);
+  });
+}
+
+function drawCornerAccents(ctx, W, H) {
+  ctx.lineWidth = 1.5;
+  ctx.strokeStyle = "rgba(23,77,56,.28)";
+  ctx.beginPath(); ctx.moveTo(W - 40, 60); ctx.lineTo(W - 40, 40); ctx.lineTo(W - 60, 40); ctx.stroke();
+  ctx.strokeStyle = "rgba(77,23,23,.28)";
+  ctx.beginPath(); ctx.moveTo(40, H - 60); ctx.lineTo(40, H - 40); ctx.lineTo(60, H - 40); ctx.stroke();
+}
+
+function getTouchOrMousePos(e, canvasRect) {
+  if (e.changedTouches?.length > 0)
+    return { x: e.changedTouches[0].clientX - canvasRect.left, y: e.changedTouches[0].clientY - canvasRect.top };
+  if (e.touches?.length > 0)
+    return { x: e.touches[0].clientX - canvasRect.left, y: e.touches[0].clientY - canvasRect.top };
+  return { x: e.clientX - canvasRect.left, y: e.clientY - canvasRect.top };
+}
+
 // ── Hero Canvas ───────────────────────────────────────────────────────────────
 function HeroCanvas() {
   const ref = useRef(null);
   useEffect(() => {
     const canvas = ref.current, ctx = canvas.getContext("2d");
     let balls = [], frame = 0, mouse = { x: -999, y: -999 };
-    const LABS = [
-      { t: "UNITY", x: .55, y: .2, s: 11 }, { t: "C#", x: .8, y: .35, s: 13 },
-      { t: "PYTHON", x: .58, y: .62, s: 10 }, { t: "NLP", x: .74, y: .74, s: 12 },
-      { t: "PyTorch", x: .5, y: .44, s: 10 }, { t: "FAISS", x: .84, y: .54, s: 9 },
-      { t: "RAG", x: .62, y: .82, s: 11 },
-    ];
+
     const resize = () => {
       if (canvas.offsetWidth > 0 && canvas.offsetHeight > 0) {
         canvas.width = canvas.offsetWidth;
@@ -271,32 +409,12 @@ function HeroCanvas() {
     resize();
     const ro = new ResizeObserver(resize); ro.observe(canvas);
 
-    const nb = (x, y, burst) => ({
-      x: x ?? (canvas.width * .1 + Math.random() * canvas.width * .8),
-      y: y ?? (Math.random() * canvas.height * .8 + canvas.height * .1),
-      r: burst ? 3 + Math.random() * 8 : 5 + Math.random() * 16,
-      vx: (Math.random() - .5) * (burst ? 8 : 2.5),
-      vy: (Math.random() - .5) * (burst ? 8 : 2.5),
-      color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
-      alpha: burst ? .7 : .12 + Math.random() * .5,
-      outline: !burst && Math.random() > .6,
-      gravity: burst ? .15 : 0,
-      life: burst ? 1 : Infinity,
-    });
-    for (let i = 0; i < 18; i++) balls.push(nb());
+    const nb = (x, y, burst) => makeBall(canvas.width, canvas.height, burst, x, y);
+    for (let i = 0; i < BALL_INIT_COUNT; i++) balls.push(nb());
 
     let score = 0, floaters = [];
 
-    const getPos = e => {
-	  const r = canvas.getBoundingClientRect();
-	  if (e.changedTouches && e.changedTouches.length > 0) {
-		return { x: e.changedTouches[0].clientX - r.left, y: e.changedTouches[0].clientY - r.top };
-	  }
-	  if (e.touches && e.touches.length > 0) {
-		return { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top };
-	  }
-	  return { x: e.clientX - r.left, y: e.clientY - r.top };
-	};
+    const getPos = e => getTouchOrMousePos(e, canvas.getBoundingClientRect());
 
     const onMv = e => { mouse = getPos(e); };
     const onLv = () => { mouse = { x: -999, y: -999 }; };
@@ -316,11 +434,14 @@ function HeroCanvas() {
         return b;
       }).filter(Boolean);
       if (!hit) { for (let i = 0; i < 4; i++) balls.push(nb(cx, cy, true)); }
-      if (balls.filter(b => b.life === Infinity).length < 10) { for (let i = 0; i < 3; i++) balls.push(nb()); }
-      if (balls.length > 70) balls = balls.filter((b, idx) => b.life === Infinity || idx > balls.length - 20);
+      if (balls.filter(b => b.life === Infinity).length < BALL_MIN_COUNT) {
+        for (let i = 0; i < 3; i++) balls.push(nb());
+      }
+      if (balls.length > BALL_MAX_TOTAL)
+        balls = balls.filter((b, idx) => b.life === Infinity || idx > balls.length - 20);
     };
 
-    // Use touchstart + preventDefault to block the delayed synthetic click on mobile,
+    // touchstart + preventDefault stops the browser's delayed synthetic click,
     // preventing each tap from firing both touchstart and click (double-score bug).
     const onTouch = e => { e.preventDefault(); onCl(e); };
 
@@ -333,33 +454,29 @@ function HeroCanvas() {
     const draw = () => {
       const W = canvas.width, H = canvas.height;
       ctx.clearRect(0, 0, W, H);
-      ctx.strokeStyle = "rgba(77,23,23,.05)"; ctx.lineWidth = 1;
-      for (let x = 0; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
-      for (let y = 0; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
-      LABS.forEach((l, i) => {
-        ctx.font = `500 ${l.s}px 'DM Mono',monospace`;
-        const a = .08 + Math.sin(frame * .02 + i) * .04;
-        ctx.fillStyle = i % 2 === 0 ? `rgba(23,77,56,${a})` : `rgba(77,23,23,${a})`;
-        ctx.fillText(l.t, l.x * W, l.y * H + Math.sin(frame * .018 + i) * 8);
-      });
+
+      drawGrid(ctx, W, H);
+      drawLabels(ctx, frame, W, H);
+
+      // Update and draw persistent + burst balls
       balls = balls.filter(b => b.life > 0);
       balls.forEach(b => {
-        const dx = b.x - mouse.x, dy = b.y - mouse.y, d = Math.sqrt(dx * dx + dy * dy);
-        //if (d < 30 && b.life === Infinity) { b.vx += dx / d * 0.8; b.vy += dy / d * 0.8; }
         b.vx *= .98; b.vy *= .98;
         b.vy += b.gravity || 0;
         b.x += b.vx; b.y += b.vy;
         if (b.life !== Infinity) { b.life -= .02; b.alpha = b.life * .7; }
         if (b.x > W - b.r) { b.vx *= -1; b.x = W - b.r; }
-        if (b.y < b.r) { b.vy *= -1; b.y = b.r; }
+        if (b.y < b.r)     { b.vy *= -1; b.y = b.r; }
         if (b.y > H - b.r) { b.vy *= -.8; b.y = H - b.r; }
-        if (b.x < b.r) { b.vx *= -1; b.x = b.r; }
+        if (b.x < b.r)     { b.vx *= -1; b.x = b.r; }
         ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
         ctx.globalAlpha = Math.max(0, b.alpha);
         if (b.outline) { ctx.strokeStyle = b.color; ctx.lineWidth = 1.5; ctx.stroke(); }
         else { ctx.fillStyle = b.color; ctx.fill(); }
         ctx.globalAlpha = 1;
       });
+
+      // Score floaters (+1 popups)
       floaters = floaters.filter(f => f.life > 0);
       floaters.forEach(f => {
         f.y += f.vy; f.life -= .03;
@@ -367,16 +484,14 @@ function HeroCanvas() {
         ctx.fillStyle = `rgba(23,77,56,${f.life})`;
         ctx.fillText(f.text, f.x, f.y);
       });
+
       if (score > 0) {
         ctx.font = "500 11px 'DM Mono',monospace";
         ctx.fillStyle = `rgba(77,23,23,.4)`;
         ctx.fillText(`SCORE: ${score}`, W - 100, 80);
       }
-      ctx.lineWidth = 1.5;
-      ctx.strokeStyle = "rgba(23,77,56,.28)";
-      ctx.beginPath(); ctx.moveTo(W - 40, 60); ctx.lineTo(W - 40, 40); ctx.lineTo(W - 60, 40); ctx.stroke();
-      ctx.strokeStyle = "rgba(77,23,23,.28)";
-      ctx.beginPath(); ctx.moveTo(40, H - 60); ctx.lineTo(40, H - 40); ctx.lineTo(60, H - 40); ctx.stroke();
+
+      drawCornerAccents(ctx, W, H);
       frame++; raf = requestAnimationFrame(draw);
     };
     draw();
@@ -392,7 +507,7 @@ function HeroCanvas() {
   return (
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
       <canvas ref={ref} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} />
-      <span style={{ position: "absolute", bottom: "1rem", right: "1rem", fontFamily: "'DM Mono',monospace", fontSize: ".55rem", letterSpacing: ".12em", color: C.muted, textTransform: "uppercase" }}>tap the bubbles</span>
+      <span style={{ position: "absolute", bottom: "1rem", right: "1rem", fontFamily: T.mono, fontSize: ".55rem", letterSpacing: ".12em", color: C.muted, textTransform: "uppercase" }}>tap the bubbles</span>
     </div>
   );
 }
@@ -543,7 +658,7 @@ function PubCard({ p, i }) {
 
 // ── Contact Form ──────────────────────────────────────────────────────────────
 function ContactForm() {
-  const [state, handleSubmit] = useForm("xzdkjqpb");
+  const [state, handleSubmit] = useForm(FORMSPREE_ID);
   const iStyle = {
     width: "100%", background: "transparent", border: "none",
     borderBottom: `1.5px solid ${C.border}`, color: C.dark,
@@ -634,14 +749,14 @@ function HomePage() {
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: mobile ? "5rem 1.5rem 2rem" : "7rem 3rem 4rem", position: "relative", zIndex: 2 }}>
           <div style={{ display: "flex", alignItems: "center", gap: ".7rem", marginBottom: "1.5rem", ...f(.1) }}>
             <span style={{ width: 30, height: 1.5, background: `linear-gradient(to right,${C.green},${C.red})`, display: "inline-block", flexShrink: 0 }} />
-            <span style={{ fontFamily: "'DM Mono',monospace", fontSize: ".6rem", letterSpacing: ".18em", color: C.green, textTransform: "uppercase" }}>MS Computer Science · Northeastern</span>
+            <span style={{ fontFamily: "'DM Mono',monospace", fontSize: ".6rem", letterSpacing: ".18em", color: C.green, textTransform: "uppercase" }}>MS CS · Northeastern · 4.0 GPA · 2 Publications</span>
           </div>
           <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: mobile ? "clamp(3.5rem,15vw,5rem)" : "clamp(4rem,8.5vw,7.5rem)", lineHeight: .92, letterSpacing: ".02em", ...f(.15) }}>
             <div style={{ color: C.dark }}>PREETA</div>
             <div style={{ color: C.red }}>CHATTERJEE</div>
           </div>
           <p style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: "clamp(.9rem,1.8vw,1.2rem)", color: C.mid, lineHeight: 1.65, fontStyle: "italic", margin: "1.5rem 0 1.8rem", maxWidth: 420, ...f(.3) }}>
-            Building intelligent systems and playable worlds — where machine learning meets real-time 3D.
+            NLP & generative AI by day, Unity & Unreal by night — two IEEE publications, five shipped projects, seeking Summer 2026 co-op in AI/ML or game development.
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: ".5rem", marginBottom: "2rem", ...f(.4) }}>
             {[["ML Engineer", "green"], ["Game Developer", "red"], ["NLP", "o"], ["Unity", "o"], ["Simulation", "o"]].map(([label, t]) => (
@@ -702,7 +817,7 @@ function HomePage() {
 
       {/* ── Featured Projects (first 3 only) ── */}
       <section id="projects" style={{ padding: `4rem ${pad}`, background: C.surface }}>
-        <div ref={refP} style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "2.5rem", flexWrap: "wrap", gap: "1rem", ...rv(inP) }}>
+        <div ref={refP} style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "2.5rem", flexWrap: "wrap", gap: "1rem", ...revealStyle(inP) }}>
           <div>
             <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".65rem", letterSpacing: ".18em", color: C.red, textTransform: "uppercase", marginBottom: ".5rem" }}>02 / Selected Work</div>
             <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(2.5rem,6vw,5rem)", color: C.dark, letterSpacing: ".02em", lineHeight: .92 }}>Projects.</div>
@@ -724,7 +839,7 @@ function HomePage() {
 
       {/* ── Contact ── */}
       <section id="contact" style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr" }}>
-        <div ref={refC} style={{ background: C.green, padding: `3.5rem ${pad}`, display: "flex", flexDirection: "column", justifyContent: "center", position: "relative", overflow: "hidden", ...rv(inC) }}>
+        <div ref={refC} style={{ background: C.green, padding: `3.5rem ${pad}`, display: "flex", flexDirection: "column", justifyContent: "center", position: "relative", overflow: "hidden", ...revealStyle(inC) }}>
           <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: mobile ? "6rem" : "12rem", color: "rgba(255,255,255,.05)", position: "absolute", bottom: "-1rem", left: "-1rem", lineHeight: 1, pointerEvents: "none" }}>HELLO</div>
           <div style={{ fontFamily: "'DM Mono', monospace", fontSize: ".65rem", letterSpacing: ".2em", color: "rgba(242,242,242,.5)", textTransform: "uppercase", marginBottom: ".8rem", position: "relative" }}>03 / Contact</div>
           <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem,6vw,5.5rem)", color: "#F2F2F2", lineHeight: .92, letterSpacing: ".02em", marginBottom: "1.5rem", position: "relative" }}>
@@ -761,7 +876,7 @@ function ProjectsPage() {
   const pad = mobile ? "1.5rem" : "3rem";
 
   return (
-  <div style={{ paddingTop: 60, minHeight: "100vh", background: C.bg }}>
+  <div style={{ paddingTop: NAV_HEIGHT, minHeight: "100vh", background: C.bg }}>
     <div style={{ background: C.dark, padding: `4rem ${pad} 3rem` }}>
       <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".65rem", letterSpacing: ".2em", color: C.red, textTransform: "uppercase", marginBottom: ".8rem" }}>02 / Work</div>
       <h1 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(3rem,8vw,7rem)", color: "#F2F2F2", lineHeight: .92, letterSpacing: ".02em" }}>All Projects.</h1>
@@ -797,12 +912,39 @@ function ProjectsPage() {
 function AboutSection({ s, i, mobile }) {
   const [ref, inV] = useInView();
   return (
-    <div ref={ref} style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "160px 1fr", gap: mobile ? "1rem" : "3rem", marginBottom: "3rem", borderTop: `1px solid ${C.border2}`, paddingTop: "2rem", ...rv(inV, i * .1) }}>
+    <div ref={ref} style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "160px 1fr", gap: mobile ? "1rem" : "3rem", marginBottom: "3rem", borderTop: `1px solid ${C.border2}`, paddingTop: "2rem", ...revealStyle(inV, i * .1) }}>
       <div>
         <div style={{ width: 24, height: 3, background: s.accent, marginBottom: ".8rem" }} />
-        <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "1.3rem", color: C.dark, letterSpacing: ".02em" }}>{s.heading}</div>
+        <div style={{ fontFamily: T.display, fontSize: "1.3rem", color: C.dark, letterSpacing: ".02em" }}>{s.heading}</div>
       </div>
-      <p style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: "1rem", color: C.mid, lineHeight: 1.85, fontStyle: "italic" }}>{s.body}</p>
+      {s.body
+        ? <p style={{ fontFamily: T.serif, fontSize: "1rem", color: C.mid, lineHeight: 1.85, fontStyle: "italic" }}>{s.body}</p>
+        : <ExperienceBlock mobile={mobile} />
+      }
+    </div>
+  );
+}
+
+function ExperienceBlock({ mobile }) {
+  const [ref, inV] = useInView();
+  return (
+    <div ref={ref} style={{ ...revealStyle(inV) }}>
+      {EXPERIENCE.map((job, ji) => (
+        <div key={job.company} style={{ borderBottom: `1px solid ${C.border2}`, padding: "1.5rem 0" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: ".5rem", marginBottom: ".8rem" }}>
+            <div>
+              <div style={{ fontFamily: T.serif, fontSize: "1rem", color: C.dark, fontStyle: "italic", marginBottom: ".2rem" }}>{job.role}</div>
+              <div style={{ fontFamily: T.mono, fontSize: ".68rem", color: C.muted }}>{job.company} · {job.loc}</div>
+            </div>
+            <div style={{ fontFamily: T.mono, fontSize: ".62rem", color: C.green, flexShrink: 0 }}>{job.dates}</div>
+          </div>
+          <ul style={{ paddingLeft: "1.1rem", margin: 0 }}>
+            {job.bullets.map((b, bi) => (
+              <li key={bi} style={{ fontFamily: T.serif, fontSize: ".92rem", color: C.mid, lineHeight: 1.75, fontStyle: "italic", marginBottom: ".3rem" }}>{b}</li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   );
 }
@@ -810,20 +952,17 @@ function AboutSection({ s, i, mobile }) {
 function EducationBlock({ mobile }) {
   const [ref, inV] = useInView();
   return (
-    <div ref={ref} style={{ marginTop: "2rem", ...rv(inV) }}>
-      <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".62rem", letterSpacing: ".2em", color: C.green, textTransform: "uppercase", marginBottom: "1.5rem" }}>Education</div>
-      {[
-        { deg: "MS Computer Science", school: "Northeastern University", loc: "Boston, MA", year: "Expected May 2027", gpa: "4.0", col: C.green },
-        { deg: "BTech Electronics & Communication Engineering", school: "Institute of Engineering and Management", loc: "Kolkata, India", year: "Apr 2023", gpa: "9.38/10", col: C.red },
-      ].map(e => (
+    <div ref={ref} style={{ marginTop: "2rem", ...revealStyle(inV) }}>
+      <div style={{ fontFamily: T.mono, fontSize: ".62rem", letterSpacing: ".2em", color: C.green, textTransform: "uppercase", marginBottom: "1.5rem" }}>Education</div>
+      {EDUCATION.map(e => (
         <div key={e.school} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: `1px solid ${C.border2}`, padding: "1.5rem 0", flexWrap: mobile ? "wrap" : "nowrap", gap: "1rem" }}>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: "1.05rem", color: C.dark, fontStyle: "italic", marginBottom: ".3rem" }}>{e.deg}</div>
-            <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".7rem", color: C.muted }}>{e.school} · {e.loc}</div>
+            <div style={{ fontFamily: T.serif, fontSize: "1.05rem", color: C.dark, fontStyle: "italic", marginBottom: ".3rem" }}>{e.deg}</div>
+            <div style={{ fontFamily: T.mono, fontSize: ".7rem", color: C.muted }}>{e.school} · {e.loc}</div>
           </div>
           <div style={{ textAlign: "right", flexShrink: 0 }}>
-            <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "1.4rem", color: e.col }}>{e.gpa}</div>
-            <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".62rem", color: C.muted }}>{e.year}</div>
+            <div style={{ fontFamily: T.display, fontSize: "1.4rem", color: e.col }}>{e.gpa}</div>
+            <div style={{ fontFamily: T.mono, fontSize: ".62rem", color: C.muted }}>{e.year}</div>
           </div>
         </div>
       ))}
@@ -834,7 +973,7 @@ function EducationBlock({ mobile }) {
 function ResumeBlock({ mobile }) {
   const [ref, inV] = useInView();
   return (
-    <div ref={ref} style={{ marginTop: "4rem", padding: mobile ? "1.5rem" : "2.5rem", background: C.dark, display: "flex", alignItems: mobile ? "flex-start" : "center", justifyContent: "space-between", flexDirection: mobile ? "column" : "row", gap: "1.5rem", ...rv(inV) }}>
+    <div ref={ref} style={{ marginTop: "4rem", padding: mobile ? "1.5rem" : "2.5rem", background: C.dark, display: "flex", alignItems: mobile ? "flex-start" : "center", justifyContent: "space-between", flexDirection: mobile ? "column" : "row", gap: "1.5rem", ...revealStyle(inV) }}>
       <div>
         <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "1.8rem", color: "#F2F2F2", letterSpacing: ".02em" }}>Want the full picture?</div>
         <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".7rem", color: "rgba(242,242,242,.5)", marginTop: ".3rem" }}>Download my résumé for complete work history and publications.</div>
@@ -854,15 +993,10 @@ function AboutPage() {
   const mobile = useMobile();
   const pad = mobile ? "1.5rem" : "3rem";
 
-  const sections = [
-    { heading: "Background", body: "I'm a Master's student in Computer Science at Northeastern University (GPA: 4.0), specialising in NLP and generative AI. My undergraduate background in Electronics and Communication Engineering gives me an unusually hardware-aware perspective on software systems.", accent: C.green },
-    { heading: "What I Build", body: "I work across two axes — machine learning systems and interactive 3D environments. On the ML side I design retrieval and generation pipelines; on the game side I build physics-driven experiences in Unity and Unreal. The overlap between the two — intelligent, simulated worlds — is where I want to go.", accent: C.red },
-    { heading: "Experience", body: "At SMS India I spent nearly two years in simulation and software testing, building MATLAB/Simulink models and doing hardware-software integration. Before that I worked on full-stack web apps at Caravel Labs (TypeScript, React, Azure) and Android development at Applex.in.", accent: C.green },
-    { heading: "Publications", body: "I've presented at IEEE IEMENTech (Automated Hybrid Stair Climber for Physically Challenged People) and published in the International Journal of Innovative Research in Physics on Quantum Computing.", accent: C.red },
-  ];
+  const sections = ABOUT_SECTIONS;
 
   return (
-    <div style={{ paddingTop: 60, minHeight: "100vh", background: C.bg }}>
+    <div style={{ paddingTop: NAV_HEIGHT, minHeight: "100vh", background: C.bg }}>
       <div style={{ background: C.dark, padding: `4rem ${pad} 3rem` }}>
         <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".65rem", letterSpacing: ".2em", color: C.red, textTransform: "uppercase", marginBottom: ".8rem" }}>01 / About</div>
         <h1 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(3rem,8vw,7rem)", color: "#F2F2F2", lineHeight: .92, letterSpacing: ".02em" }}>About Me.</h1>
