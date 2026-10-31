@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { C } from "../theme";
 import { useInView, useMobile } from "../hooks";
+import RichText from "./RichText";
+import ProjLinks from "./ProjLinks";
 
 // ── Project Card — list layout (projects page, full width stacked) ────────────
 export default function ProjCardFull({ p, i }) {
@@ -20,7 +22,7 @@ export default function ProjCardFull({ p, i }) {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem", flexWrap: "wrap", gap: ".5rem" }}>
         <div style={{ display: "inline-flex", alignItems: "center", gap: ".4rem", padding: ".22rem .7rem", background: p.statusBg, border: `1px solid ${(p.statusDot || p.statusColor) + "44"}` }}>
           <span style={{ width: 5, height: 5, borderRadius: "50%", background: p.statusDot || p.statusColor, display: "inline-block" }} />
-          <span style={{ fontFamily: "'DM Mono',monospace", fontSize: ".58rem", letterSpacing: ".1em", color: p.statusColor }}>{p.status} · {p.year}</span>
+          <span style={{ fontFamily: "'DM Mono',monospace", fontSize: ".58rem", letterSpacing: ".1em", color: p.statusColor }}>{p.status ? `${p.status} · ${p.year}` : p.year}</span>
         </div>
         <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "2.5rem", color: hov ? C.border : C.border2, lineHeight: 1, transition: "color .3s" }}>{p.num}</div>
       </div>
@@ -33,15 +35,8 @@ export default function ProjCardFull({ p, i }) {
           </div>
         </div>
         <div>
-          <p style={{ fontFamily: "Georgia,serif", fontSize: ".9rem", lineHeight: 1.8, color: C.muted, marginBottom: "1.3rem" }}>{p.desc}</p>
-          {p.links.length > 0 && (
-            <div style={{ display: "flex", gap: "1.2rem", flexWrap: "wrap" }}>
-              {p.links.map(l => (
-                <a key={l.label} href={l.href} target="_blank" rel="noreferrer"
-                  style={{ fontFamily: "'DM Mono',monospace", fontSize: ".68rem", letterSpacing: ".1em", textTransform: "uppercase", color: l.color, display: "inline-flex", alignItems: "center", gap: ".35rem", textDecoration: "none" }}>{l.label} ↗</a>
-              ))}
-            </div>
-          )}
+          <p style={{ fontFamily: "Georgia,serif", fontSize: ".9rem", lineHeight: 1.8, color: C.muted, marginBottom: "1.3rem" }}><RichText value={p.desc} /></p>
+          {p.links.length > 0 && <ProjLinks links={p.links} />}
         </div>
       </div>
       <div style={{ position: "absolute", bottom: 0, left: 0, width: hov ? "100%" : "0%", height: 3, background: p.accent, transition: "width .4s ease" }} />

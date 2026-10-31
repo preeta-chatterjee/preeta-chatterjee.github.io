@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { C, revealStyle } from "../theme";
 import { useInView, useMobile } from "../hooks";
-import { SITE, HERO, HOME_INTRO, STATS, CONTACT_BLURB, SKILLS, PROJECTS, PUBLICATIONS } from "../content";
+import { SITE, HERO, HOME_INTRO, STATS, CONTACT_BLURB, SKILLS, PROJECTS, FEATURED_PROJECT_IDS, PUBLICATIONS } from "../content";
 import HeroCanvas from "../components/HeroCanvas";
 import Marquee from "../components/Marquee";
 import ProjCard from "../components/ProjCard";
@@ -21,8 +21,8 @@ export default function HomePage() {
   const [refC, inC] = useInView();
   const pad = mobile ? "1.5rem" : "3rem";
 
-  // Only show first 3 projects on homepage
-  const featuredProjects = PROJECTS.slice(0, 3);
+  // Featured projects, in the order listed in FEATURED_PROJECT_IDS
+  const featuredProjects = FEATURED_PROJECT_IDS.map(id => PROJECTS.find(p => p.id === id));
 
   return (
     <>
@@ -109,7 +109,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Featured Projects (first 3 only) ── */}
+      {/* ── Featured Projects ── */}
       <section id="projects" style={{ padding: `4rem ${pad}`, background: C.surface }}>
         <div ref={refP} style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "2.5rem", flexWrap: "wrap", gap: "1rem", ...revealStyle(inP) }}>
           <div>
@@ -127,7 +127,8 @@ export default function HomePage() {
           </Link>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: "1.5px", background: C.border }}>
-          {featuredProjects.map((p, i) => <ProjCard key={p.id} p={p} i={i} />)}
+          {/* Number by position on the home page, not by place in the full list */}
+          {featuredProjects.map((p, i) => <ProjCard key={p.id} p={{ ...p, num: String(i + 1).padStart(2, "0") }} i={i} />)}
         </div>
       </section>
 
