@@ -8,12 +8,14 @@ This file is the source of truth for the site restructure. Follow the rules and 
 
 - Vite + React 19, react-router-dom with `HashRouter` (routes look like `/#/about`). Styling is inline style objects; `src/index.css` is only a reset.
 - Layout of `src/`:
-  - `content.js`: all site copy and data (SITE, HERO, CANVAS_LABS, MARQUEE_ITEMS, HOME_INTRO, STATS, CONTACT_BLURB, SKILLS, PROJECTS, PUBLICATIONS, ABOUT_QUOTE, ABOUT_SECTIONS, EXPERIENCE, EDUCATION). Content edits go here.
+  - `content.js`: all site copy and data (SITE, HERO, CANVAS_LABS, MARQUEE_ITEMS, HOME_INTRO, STATS, CONTACT_BLURB, SKILLS, PROJECT_GROUPS, FEATURED_PROJECT_IDS, PROJECTS, PUBLICATIONS, ABOUT_QUOTE, ABOUT_SECTIONS, EXPERIENCE, EDUCATION, CASE_STUDIES). Content edits go here.
   - `theme.js`: colors (`C`), fonts (`T`), layout constants, shared style helpers. `hooks.js`: `useInView`, `useMobile`.
-  - `components/`: one component per file. `pages/`: HomePage, ProjectsPage, AboutPage. `App.jsx`: router. `main.jsx` mounts `App`.
+  - `components/`: one component per file. `pages/`: HomePage, ProjectsPage, AboutPage, CaseStudyPage. `App.jsx`: router. `main.jsx` mounts `App`.
+  - Case studies: add an entry to `CASE_STUDIES` keyed by slug and it renders at `/#/projects/<slug>`. Link to it from a project with `links: [{ label: "Case Study", to: "/projects/<slug>" }]`.
   - UI chrome (section labels like "02 / Selected Work", button text, form labels) still lives inline in components and pages.
 - Meta, Open Graph and Twitter tags are in `index.html`.
 - Static files (résumé PDF, paper PDF, favicon) live in `public/` and are copied to the build as-is.
+- Project images: deployed WebP files live in `public/projects/<slug>/` (`<name>.webp` max 1600px wide for display, `<name>-full.webp` for the lightbox). Original PNGs are kept in `assets-src/<slug>/`, which is not deployed.
 - Contact form uses Formspree. The ID comes from `VITE_FORMSPREE_ID`, with a hardcoded fallback in `src/components/ContactForm.jsx`.
 - Commands: `npm ci`, `npm run dev`, `npm run build`, `npm run lint`, `npm run preview`.
 - Deployment: `.github/workflows/deploy.yml` builds and deploys to GitHub Pages on every push to `main` (requires Settings → Pages → Source set to "GitHub Actions"). The old manual path (`npm run deploy`, which pushes `dist/` to the `gh-pages` branch) is kept as a fallback. Do not delete either.
@@ -26,7 +28,7 @@ This file is the source of truth for the site restructure. Follow the rules and 
 ### PR status
 
 - [x] PR 1: CLAUDE.md + automatic deployment (merged)
-- [ ] PR 2: Refactor with zero visual change
+- [x] PR 2: Refactor with zero visual change (merged)
 - [ ] PR 3: Projects
 - [ ] PR 4: Copy, metadata, experience, skills, about
 - [ ] PR 5: Visuals and cleanup

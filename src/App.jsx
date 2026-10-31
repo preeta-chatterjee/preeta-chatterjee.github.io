@@ -8,6 +8,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
 import ProjectsPage from "./pages/ProjectsPage";
+import CaseStudyPage from "./pages/CaseStudyPage";
 
 // ── App ────────────────────────────────────────────────────────────────────────
 export default function App() {
@@ -31,6 +32,7 @@ export default function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/projects/:slug" element={<CaseStudyPage />} />
         </Routes>
       </div>
     </HashRouter>
