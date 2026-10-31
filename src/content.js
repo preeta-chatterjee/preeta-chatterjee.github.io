@@ -8,27 +8,29 @@ export const SITE = {
   email: "chatterjee.pre@northeastern.edu",
   linkedin: "linkedin.com/in/preeta-chatterjee",
   resume: "/Preeta_Chatterjee_Resume.pdf",
-  availability: "summer 2026",
-  copyrightYear: "2025",
+  availability: "January–August 2027",
 };
 
 // ── Home: hero ────────────────────────────────────────────────────────────────
 export const HERO = {
   badge: "MS CS · Northeastern · 4.0 GPA · 2 Publications",
-  tagline: "Building intelligent systems and playable worlds where AI meets real-time 3D.",
+  // [TODO: Preeta] pick a tagline; options are listed in the PR 6 summary (option A shown)
+  tagline: "Building computer vision systems, simulations, and game engines, with long-term interests in physical AI and digital twins.",
   // [label, variant] — variant "green" / "red" is a filled chip, "o" is outlined
-  chips: [["ML Engineer", "green"], ["Game Developer", "red"], ["NLP", "o"], ["Unity", "o"], ["Simulation", "o"]],
+  chips: [["Computer Vision", "green"], ["Simulation", "red"], ["Game Engines", "o"]],
 };
 
-// Floating labels drawn on the hero canvas (x/y are fractions of canvas size, s is font px)
+// Floating labels drawn on the hero canvas (x/y are fractions of canvas size, s is font px).
+// Text comes only from SKILLS.
 export const CANVAS_LABS = [
-  { t: "UNITY",   x: .55, y: .2,  s: 11 }, { t: "C#",     x: .8,  y: .35, s: 13 },
-  { t: "PYTHON",  x: .58, y: .62, s: 10 }, { t: "NLP",    x: .74, y: .74, s: 12 },
-  { t: "PyTorch", x: .5,  y: .44, s: 10 }, { t: "FAISS",  x: .84, y: .54, s: 9  },
-  { t: "RAG",     x: .62, y: .82, s: 11 },
+  { t: "UNREAL",  x: .55, y: .2,  s: 11 }, { t: "C++",    x: .8,  y: .35, s: 13 },
+  { t: "PYTHON",  x: .58, y: .62, s: 10 }, { t: "ECS",    x: .74, y: .74, s: 12 },
+  { t: "PyTorch", x: .5,  y: .44, s: 10 }, { t: "SDL3",   x: .84, y: .54, s: 9  },
+  { t: "UNITY",   x: .62, y: .82, s: 11 },
 ];
 
-export const MARQUEE_ITEMS = ["NLP", "✦", "Game Development", "✦", "Machine Learning", "✦", "Unity", "✦", "RAG Pipelines", "✦", "Simulation", "✦", "C++", "✦", "Real-Time Systems", "✦"];
+// Marquee text comes only from SKILLS.
+export const MARQUEE_ITEMS = ["Unreal Engine", "✦", "PyTorch", "✦", "C++", "✦", "Unity", "✦", "Python", "✦", "SDL3", "✦", "Behavior Trees", "✦", "MATLAB/Simulink", "✦", "ECS Architecture", "✦", "Lua Scripting", "✦"];
 
 // ── Home: about strip ─────────────────────────────────────────────────────────
 // Headline renders as: lead + accent (green), line break, tail (red)
@@ -37,18 +39,17 @@ export const HOME_INTRO = {
   blurb: "Master's student at Northeastern building at the intersection of intelligent systems and interactive experiences.",
 };
 
-// [value, label, colour]
-export const STATS = [["4.0", "GPA", C.green], ["3+", "Projects Shipped", C.redMid], ["2", "Publications", C.greenMid], ["5+", "Years Coding", C.redMid]];
+// [value, label, colour]. [TODO: Preeta] two stats to choose; options are listed in the PR 6 summary.
+export const STATS = [["4.0", "GPA", C.green], ["TODO", "[TODO: Preeta]", C.redMid], ["2", "Publications", C.greenMid], ["TODO", "[TODO: Preeta]", C.redMid]];
 
 // ── Home: contact ─────────────────────────────────────────────────────────────
-export const CONTACT_BLURB = `Open to co-op and internship opportunities in AI/ML, game development, and simulation. Boston-based, available ${SITE.availability}.`;
+export const CONTACT_BLURB = `Open to co-op and internship opportunities in computer vision, ML, simulation, and game engines. Boston-based, available ${SITE.availability}.`;
 
 export const SKILLS = [
-  { name: "Languages", tags: ["Python", "C++", "C#", "Java", "MATLAB", "TypeScript"] },
-  { name: "3D & Graphics", tags: ["Unity", "Unreal Engine", "Simulink", "OpenGL"] },
-  { name: "ML / AI", tags: ["PyTorch", "Hugging Face", "FAISS", "scikit-learn"] },
-  { name: "Concepts", tags: ["RAG", "NLP", "Simulation Modeling", "Real-Time Systems", "OOP"] },
-  { name: "Tools", tags: ["Git", "Azure Cosmos DB", "React.js", "CI/CD"] },
+  { name: "Languages", tags: ["Python", "C++", "C#", "Java", "MATLAB/Simulink"] },
+  { name: "ML/AI", tags: ["PyTorch", "NumPy", "Hugging Face Transformers", "scikit-learn", "FAISS", "vector search"] },
+  { name: "Game Engines/Simulation", tags: ["Unreal Engine (Blueprints, Behavior Trees)", "Unity", "SDL3", "ECS architecture", "Lua scripting"] },
+  { name: "Tools & Practices", tags: ["Git/GitHub", "CI/CD", "unit & property testing", "React.js", "Azure Cosmos DB", "Agile/Scrum"] },
 ];
 
 // ── Projects ──────────────────────────────────────────────────────────────────
@@ -154,9 +155,9 @@ export const PUBLICATIONS = [
     id: "p1", num: "P1",
     title: "Automated Hybrid Stair Climber for Physically Challenged People",
     authors: "P. Chatterjee; N. Lahiri; A. Bhattacharjee; A. Chakraborty",
-    venue: "IEEE 5th IEMENTech 2021",
+    venue: "IEEE IEMENTech 2021",
     type: "Conference Paper",
-    desc: "Survey and proposal of a cost-effective hybrid stair-climbing device for people with neurological disorders, combining wheel clusters, tracks, and rotating legs. Aimed at making stair navigation safe and accessible for users across different financial backgrounds in India.",
+    desc: "Survey and proposal of a cost-effective hybrid stair-climbing device for people with neurological disorders, combining wheel clusters, tracks, and rotating legs. Aimed at making stair navigation safe and accessible for users across different financial backgrounds in India. The research was later built into a physical prototype and presented as my final-year B.Tech project (2023).",
     links: [
       { label: "IEEE Xplore", href: "https://ieeexplore.ieee.org/document/9614713", color: C.green },
       { label: "PDF", href: "/Hybrid_Stair_Climber.pdf", color: C.red },
@@ -168,7 +169,7 @@ export const PUBLICATIONS = [
     authors: "P. Chatterjee, R. Chakraborty",
     venue: "International Journal of Innovative Research in Physics (IJIIP), Vol. 1, Issue 4, 2020, pp. 58–63",
     type: "Journal Article",
-    desc: "Overview of quantum computing fundamentals including qubits, quantum parallelism, and experimental realisation methods such as ion trap and quantum dot technologies. Examines limitations of classical computers and the trajectory of quantum computing toward practical applications.",
+    desc: "Overview of quantum computing fundamentals including qubits, quantum parallelism, and experimental realization methods such as ion trap and quantum dot technologies. Examines limitations of classical computers and the trajectory of quantum computing toward practical applications.",
     links: [
 	  { label: "PDF", href: "https://ijiip.smartsociety.org/vol1_issue4/issue4_paper7.pdf", color: C.red },
 	],
@@ -176,17 +177,18 @@ export const PUBLICATIONS = [
 ];
 
 // ── About page ────────────────────────────────────────────────────────────────
-export const ABOUT_QUOTE = "I want to build systems that think, and worlds that feel real.";
+// [TODO: Preeta] review the pull quote and sections below (draft, see PR 6 summary).
+export const ABOUT_QUOTE = "I want to build systems that see the world, and simulations that let machines learn from it.";
 
 export const ABOUT_SECTIONS = [
   {
     heading: "Background",
-    body: "I'm a Master's student in Computer Science at Northeastern University (GPA: 4.0), specialising in NLP and generative AI. My undergraduate background in Electronics and Communication Engineering gives me an unusually hardware-aware perspective on software systems.",
+    body: "I'm a Master's student in Computer Science at Northeastern University (GPA 4.0, graduating May 2027), focused on computer vision, simulation, and game engines. My coursework includes Machine Learning, Pattern Recognition & Computer Vision, Natural Language Processing, Algorithms, Building Game Engines, and Building Virtual Environments. My undergraduate degree in Electronics & Communication Engineering gives me a hardware-aware perspective on software systems.",
     accent: C.green,
   },
   {
     heading: "What I Build",
-    body: "I work across two axes — machine learning systems and interactive 3D environments. On the ML side I design retrieval and generation pipelines; on the game side I build physics-driven experiences in Unity and Unreal. The overlap between the two — intelligent, simulated worlds — is where I want to go.",
+    body: "I build perception systems, simulations, and the engines that run them. In computer vision, I'm working on a course project on 3D reconstruction under motion and image degradation, using VGGT as the backbone. On the engine side, I built Stone & Soul, a custom 2D game engine in C++ and SDL3 on an Entity-Component-System architecture, and Hallway Hunters, a survival horror game in Unreal Engine 5.7 with a three-layer enemy AI. In ML, my RAG research engine included a full evaluation framework (Precision@K, Recall@K, MRR, and ROUGE) and an ablation study across three embedding models. Simulation goes back to my first job: building and validating MATLAB/Simulink models for rolling mill automation at SMS India. Long term, I'm interested in physical AI and digital twins.",
     accent: C.red,
   },
   {
@@ -196,39 +198,62 @@ export const ABOUT_SECTIONS = [
   },
   {
     heading: "Publications",
-    body: "I've presented at IEEE IEMENTech (Automated Hybrid Stair Climber for Physically Challenged People) and published in the International Journal of Innovative Research in Physics on Quantum Computing.",
+    body: "I've published one IEEE conference paper, \"Automated Hybrid Stair Climber for Physically Challenged People\" (IEEE IEMENTech 2021), and one journal article, \"A Brief Study on Quantum Computing\" (IJIIP, 2020). The stair climber research was later built into a physical prototype and presented as my final-year B.Tech project (2023).",
     accent: C.red,
   },
 ];
 
+// `note` is an optional line under the company.
 export const EXPERIENCE = [
   {
-    role: "Graduate Engineer Trainee — Simulation & Software Testing",
-    company: "SMS India Pvt Ltd.",
-    loc: "Kolkata, India",
-    dates: "Aug 2023 – Jun 2024",
+    role: "Teaching Assistant, CS5800 Algorithms",
+    company: "Northeastern University",
+    loc: "Boston",
+    dates: "Aug 2026–present",
     bullets: [
-      "Built and integrated MATLAB/Simulink models for rolling mill simulation, cutting project commissioning time by 25%.",
-      "Conducted on-site hardware/software testing across client sites; handled customer demos and progress reporting.",
-      "Led technical onboarding of interns, providing hands-on mentorship in simulation workflows.",
-      "Preceded by a 4-month internship (Jan–Apr 2023) focused on rolling mill simulation and hardware-software testing.",
+      "Hold office hours guiding students through dynamic programming, greedy, and graph algorithms",
+      "Grade homework and exams with written feedback on correctness; proctor quizzes and exams",
+    ],
+  },
+  {
+    role: "Notetaker, Disability Accommodation Services",
+    company: "Northeastern University",
+    loc: "Boston",
+    dates: "May–Aug 2026",
+    bullets: [
+      "Provided structured lecture notes for a student in CS5850: Building Game Engines, a graduate C++ course covering rendering pipelines and engine architecture",
+    ],
+  },
+  {
+    role: "Graduate Engineer Trainee (Simulation and Software Testing)",
+    company: "SMS India Pvt Ltd.",
+    loc: "Kolkata",
+    dates: "Aug 2023–Jun 2024",
+    note: "Joined after a 4-month internship, Jan–Apr 2023",
+    bullets: [
+      "Built and validated MATLAB/Simulink mathematical models for rolling mill automation; coordinated cross-departmental simulation outputs, reducing project commissioning time by 25%",
+      "Conducted on-site I/O and integration testing during plant commissioning; troubleshot hardware-software mismatches using system diagrams",
+      "Led recruitment and onboarding of interns; mentored junior team members on simulation workflows",
     ],
   },
   {
     role: "Software Development Intern",
     company: "Caravel Labs Inc.",
     loc: "WA, USA",
-    dates: "Jun 2022 – Aug 2022",
+    dates: "Jun–Aug 2022",
     bullets: [
-      "Built and deployed a full-stack web application in TypeScript and React.js with an Azure Cosmos DB backend.",
-      "Collaborated in weekly Agile sprints using Git, code review, and CI/CD pipelines in a production environment.",
+      "Developed and deployed a full-stack web application using TypeScript and React.js with an Azure Cosmos DB backend in production",
+      "Collaborated in weekly Agile sprints using Git for version control, code review, and CI/CD",
     ],
   },
 ];
 
+// `details` are optional lines under the school (coursework, awards).
 export const EDUCATION = [
-  { deg: "MS Computer Science", school: "Northeastern University",                    loc: "Boston, MA",    year: "Expected May 2027", gpa: "4.0",     col: C.green },
-  { deg: "BTech Electronics & Communication Engineering", school: "Institute of Engineering and Management", loc: "Kolkata, India", year: "Apr 2023",          gpa: "9.38/10", col: C.red },
+  { deg: "MS Computer Science", school: "Northeastern University", loc: "Boston, MA", year: "Expected May 2027", gpa: "4.0", col: C.green,
+    details: ["Coursework: Machine Learning, Pattern Recognition & Computer Vision, Natural Language Processing, Algorithms, Building Game Engines, Building Virtual Environments"] },
+  { deg: "B.Tech Electronics & Communication Engineering", school: "Institute of Engineering & Management", loc: "Kolkata", year: "Apr 2023", gpa: "3.75", col: C.red,
+    details: ["Mrs. Maya Chakraborty Award for Academic Excellence (2023)"] },
 ];
 
 // ── Case studies ──────────────────────────────────────────────────────────────
