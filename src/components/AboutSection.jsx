@@ -13,7 +13,7 @@ export default function AboutSection({ s, i, mobile }) {
       </div>
       {s.body
         ? <p style={{ fontFamily: T.serif, fontSize: "1rem", color: C.mid, lineHeight: 1.85, fontStyle: "italic" }}>{s.body}</p>
-        : <ExperienceBlock mobile={mobile} />
+        : <ExperienceBlock />
       }
     </div>
   );
