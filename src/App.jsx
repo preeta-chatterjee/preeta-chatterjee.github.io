@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import { C } from "./theme";
 import { SITE } from "./content";
+import { CONTACT_PATH } from "./routes";
 import Cursor from "./components/Cursor";
 import Nav from "./components/Nav";
 import ScrollToTop from "./components/ScrollToTop";
@@ -30,6 +31,7 @@ export default function App() {
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path={CONTACT_PATH} element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/projects/:slug" element={<CaseStudyPage />} />

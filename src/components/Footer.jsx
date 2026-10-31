@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { C } from "../theme";
 import { SITE } from "../content";
+import { CONTACT_PATH } from "../routes";
 
 // ── Footer ────────────────────────────────────────────────────────────────────
 export default function Footer() {
@@ -14,9 +15,9 @@ export default function Footer() {
         <Link to="/projects" style={{ fontFamily: "'DM Mono',monospace", fontSize: ".6rem", letterSpacing: ".12em", textTransform: "uppercase", color: "rgba(242,242,242,.3)", textDecoration: "none", transition: "color .2s" }}
           onMouseEnter={e => e.currentTarget.style.color = "rgba(242,242,242,.8)"}
           onMouseLeave={e => e.currentTarget.style.color = "rgba(242,242,242,.3)"}>Projects</Link>
-        <a href="/#contact" style={{ fontFamily: "'DM Mono',monospace", fontSize: ".6rem", letterSpacing: ".12em", textTransform: "uppercase", color: "rgba(242,242,242,.3)", textDecoration: "none", transition: "color .2s" }}
+        <Link to={CONTACT_PATH} style={{ fontFamily: "'DM Mono',monospace", fontSize: ".6rem", letterSpacing: ".12em", textTransform: "uppercase", color: "rgba(242,242,242,.3)", textDecoration: "none", transition: "color .2s" }}
           onMouseEnter={e => e.currentTarget.style.color = "rgba(242,242,242,.8)"}
-          onMouseLeave={e => e.currentTarget.style.color = "rgba(242,242,242,.3)"}>Contact</a>
+          onMouseLeave={e => e.currentTarget.style.color = "rgba(242,242,242,.3)"}>Contact</Link>
       </div>
     </footer>
   );
