@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { C, revealStyle } from "../theme";
+import { Link, useLocation } from "react-router-dom";
+import { C, NAV_HEIGHT, revealStyle } from "../theme";
 import { useInView, useMobile } from "../hooks";
 import { SITE, HERO, HOME_INTRO, STATS, CONTACT_BLURB, SKILLS, PROJECTS, FEATURED_PROJECT_IDS, PUBLICATIONS } from "../content";
 import HeroCanvas from "../components/HeroCanvas";
@@ -8,6 +8,7 @@ import Marquee from "../components/Marquee";
 import ProjCard from "../components/ProjCard";
 import ContactForm from "../components/ContactForm";
 import Footer from "../components/Footer";
+import { CONTACT_PATH } from "../routes";
 
 // ══════════════════════════════════════════════════════════════════════════════
 // PAGE: HOME
@@ -20,6 +21,17 @@ export default function HomePage() {
   const [refP, inP] = useInView();
   const [refC, inC] = useInView();
   const pad = mobile ? "1.5rem" : "3rem";
+
+  // On /contact, scroll to the contact section. Keyed on the whole location so a repeat
+  // click on Contact (same path, new history entry) scrolls again.
+  const location = useLocation();
+  useEffect(() => {
+    if (location.pathname !== CONTACT_PATH) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const id = requestAnimationFrame(() =>
+      document.getElementById("contact")?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" }));
+    return () => cancelAnimationFrame(id);
+  }, [location]);
 
   // Featured projects, in the order listed in FEATURED_PROJECT_IDS
   const featuredProjects = FEATURED_PROJECT_IDS.map(id => PROJECTS.find(p => p.id === id));
@@ -49,9 +61,9 @@ export default function HomePage() {
             <a href="#projects" style={{ display: "inline-block", padding: ".75rem 1.8rem", background: C.dark, color: C.bg, fontFamily: "'DM Mono',monospace", fontSize: ".7rem", letterSpacing: ".12em", textTransform: "uppercase", border: `2px solid ${C.dark}`, transition: "all .2s", textDecoration: "none" }}
               onMouseEnter={e => { e.target.style.background = "transparent"; e.target.style.color = C.dark; }}
               onMouseLeave={e => { e.target.style.background = C.dark; e.target.style.color = C.bg; }}>Explore Work</a>
-            <a href="#contact" style={{ display: "inline-block", padding: ".75rem 1.8rem", background: C.red, color: "#F2F2F2", fontFamily: "'DM Mono',monospace", fontSize: ".7rem", letterSpacing: ".12em", textTransform: "uppercase", border: `2px solid ${C.red}`, transition: "all .2s", textDecoration: "none" }}
+            <Link to={CONTACT_PATH} style={{ display: "inline-block", padding: ".75rem 1.8rem", background: C.red, color: "#F2F2F2", fontFamily: "'DM Mono',monospace", fontSize: ".7rem", letterSpacing: ".12em", textTransform: "uppercase", border: `2px solid ${C.red}`, transition: "all .2s", textDecoration: "none" }}
               onMouseEnter={e => { e.target.style.background = "transparent"; e.target.style.color = C.red; }}
-              onMouseLeave={e => { e.target.style.background = C.red; e.target.style.color = "#F2F2F2"; }}>Get in Touch</a>
+              onMouseLeave={e => { e.target.style.background = C.red; e.target.style.color = "#F2F2F2"; }}>Get in Touch</Link>
           </div>
         </div>
 
@@ -133,7 +145,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Contact ── */}
-      <section id="contact" style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr" }}>
+      <section id="contact" style={{ scrollMarginTop: NAV_HEIGHT, display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr" }}>
         <div ref={refC} style={{ background: C.green, padding: `3.5rem ${pad}`, display: "flex", flexDirection: "column", justifyContent: "center", position: "relative", overflow: "hidden", ...revealStyle(inC) }}>
           <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: mobile ? "6rem" : "12rem", color: "rgba(255,255,255,.05)", position: "absolute", bottom: "-1rem", left: "-1rem", lineHeight: 1, pointerEvents: "none" }}>HELLO</div>
           <div style={{ fontFamily: "'DM Mono', monospace", fontSize: ".65rem", letterSpacing: ".2em", color: "rgba(242,242,242,.5)", textTransform: "uppercase", marginBottom: ".8rem", position: "relative" }}>03 / Contact</div>

@@ -12,6 +12,7 @@ This file is the source of truth for the site restructure. Follow the rules and 
   - `theme.js`: colors (`C`), fonts (`T`), layout constants, shared style helpers. `hooks.js`: `useInView`, `useMobile`.
   - `components/`: one component per file. `pages/`: HomePage, ProjectsPage, AboutPage, CaseStudyPage. `App.jsx`: router. `main.jsx` mounts `App`.
   - Case studies: add an entry to `CASE_STUDIES` keyed by slug and it renders at `/#/projects/<slug>`. Link to it from a project with `links: [{ label: "Case Study", to: "/projects/<slug>" }]`.
+  - `routes.js`: shared route paths (`CONTACT_PATH`). Link to the contact section with `<Link to={CONTACT_PATH}>`; plain `#id` anchors don't work under HashRouter.
   - UI chrome (section labels like "02 / Selected Work", button text, form labels) still lives inline in components and pages.
 - Meta, Open Graph and Twitter tags are in `index.html`.
 - Static files (résumé PDF, paper PDF, favicon) live in `public/` and are copied to the build as-is.
@@ -29,9 +30,11 @@ This file is the source of truth for the site restructure. Follow the rules and 
 
 - [x] PR 1: CLAUDE.md + automatic deployment (merged)
 - [x] PR 2: Refactor with zero visual change (merged)
-- [ ] PR 3: Projects
-- [ ] PR 4: Copy, metadata, experience, skills, about
-- [ ] PR 5: Visuals and cleanup
+- [x] PR 3: Projects (merged)
+- [x] PR 4: Fix the 5 existing lint problems (merged)
+- [ ] PR 5: Fix Contact links
+- [ ] PR 6: Copy, metadata, experience, skills, about
+- [ ] PR 7: Visuals and cleanup
 
 ## Rules for all work
 
@@ -143,7 +146,18 @@ Then the embedded project walkthrough video: https://youtu.be/LqsOFARvTSs
 - "Implementation should serve design. A looping timeline would have been quicker for the flickering lights, but randomized recursion creates the unpredictability horror needs."
 - "Building the full pipeline from perception to Behavior Tree to Animation Blueprint taught me game AI at the systems level. Understanding why the three layers are separated made debugging much faster after the rebuild."
 
-## PR 4: Copy, metadata, experience, skills, about
+## PR 4: Fix the 5 existing lint problems (done)
+
+- Fix only the lint problems; no visible or behavioral changes. `npm run lint` must report 0 problems.
+
+## PR 5: Fix Contact links
+
+- Every Contact link (desktop nav, mobile menu, footer, hero "Get in Touch") goes to the home page and scrolls smoothly to the contact section, from every page.
+- Clicking Contact while already on the home page just scrolls: no blank page, no reload.
+- Shareable route `/#/contact` renders the home page and scrolls to the contact section, including on a fresh page load and with back/forward.
+- The mobile menu still closes after tapping Contact. No other visible or behavioral changes.
+
+## PR 6: Copy, metadata, experience, skills, about
 
 **index.html** (title, description, og:*, twitter:*):
 
@@ -196,7 +210,7 @@ Then the embedded project walkthrough video: https://youtu.be/LqsOFARvTSs
 
 **Footer:** make the © year dynamic.
 
-## PR 5: Visuals and cleanup
+## PR 7: Visuals and cleanup
 
 - Add optional `media` (image or video embed) support to project cards. Move gameplay.png into public/ (compressed to WebP, max ~1600px wide) and use it on the most fitting card. Ask Preeta which one.
 - Create public/og-preview.png (1200×630): name plus the three focus areas, matching the site's fonts and colors.
