@@ -18,7 +18,13 @@ export default function Nav() {
     return () => window.removeEventListener("scroll", h);
   }, []);
 
-  useEffect(() => { setMenuOpen(false); }, [location]);
+  // Close the menu on every navigation. Comparing during render (instead of in an
+  // effect) avoids an extra render pass: https://react.dev/learn/you-might-not-need-an-effect
+  const [prevLocation, setPrevLocation] = useState(location);
+  if (location !== prevLocation) {
+    setPrevLocation(location);
+    setMenuOpen(false);
+  }
 
   const navBg = scrolled || !isHome || menuOpen ? "rgba(242,242,242,.97)" : "transparent";
   const navBorder = scrolled || !isHome ? `1px solid ${C.border}` : "none";

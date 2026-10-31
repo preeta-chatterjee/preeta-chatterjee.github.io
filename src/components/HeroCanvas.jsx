@@ -58,7 +58,7 @@ export default function HeroCanvas() {
   const ref = useRef(null);
   useEffect(() => {
     const canvas = ref.current, ctx = canvas.getContext("2d");
-    let balls = [], frame = 0, mouse = { x: -999, y: -999 };
+    let balls = [], frame = 0;
 
     const resize = () => {
       if (canvas.offsetWidth > 0 && canvas.offsetHeight > 0) {
@@ -76,8 +76,6 @@ export default function HeroCanvas() {
 
     const getPos = e => getTouchOrMousePos(e, canvas.getBoundingClientRect());
 
-    const onMv = e => { mouse = getPos(e); };
-    const onLv = () => { mouse = { x: -999, y: -999 }; };
     const onCl = e => {
       const { x: cx, y: cy } = getPos(e);
       let hit = false;
@@ -105,8 +103,6 @@ export default function HeroCanvas() {
     // preventing each tap from firing both touchstart and click (double-score bug).
     const onTouch = e => { e.preventDefault(); onCl(e); };
 
-    canvas.addEventListener("mousemove", onMv);
-    canvas.addEventListener("mouseleave", onLv);
     canvas.addEventListener("click", onCl);
     canvas.addEventListener("touchstart", onTouch, { passive: false });
 
@@ -157,8 +153,6 @@ export default function HeroCanvas() {
     draw();
     return () => {
       cancelAnimationFrame(raf);
-      canvas.removeEventListener("mousemove", onMv);
-      canvas.removeEventListener("mouseleave", onLv);
       canvas.removeEventListener("click", onCl);
       canvas.removeEventListener("touchstart", onTouch);
       ro.disconnect();
