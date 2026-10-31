@@ -32,7 +32,7 @@ This file is the source of truth for the site restructure. Follow the rules and 
 - [x] PR 2: Refactor with zero visual change (merged)
 - [x] PR 3: Projects (merged)
 - [x] PR 4: Fix the 5 existing lint problems (merged)
-- [ ] PR 5: Fix Contact links
+- [x] PR 5: Fix Contact links (merged)
 - [ ] PR 6: Copy, metadata, experience, skills, about
 - [ ] PR 7: Visuals and cleanup
 

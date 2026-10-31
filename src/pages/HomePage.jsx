@@ -58,9 +58,9 @@ export default function HomePage() {
             ))}
           </div>
           <div style={{ display: "flex", gap: ".75rem", flexWrap: "wrap", ...f(.5) }}>
-            <a href="#projects" style={{ display: "inline-block", padding: ".75rem 1.8rem", background: C.dark, color: C.bg, fontFamily: "'DM Mono',monospace", fontSize: ".7rem", letterSpacing: ".12em", textTransform: "uppercase", border: `2px solid ${C.dark}`, transition: "all .2s", textDecoration: "none" }}
+            <Link to="/projects" style={{ display: "inline-block", padding: ".75rem 1.8rem", background: C.dark, color: C.bg, fontFamily: "'DM Mono',monospace", fontSize: ".7rem", letterSpacing: ".12em", textTransform: "uppercase", border: `2px solid ${C.dark}`, transition: "all .2s", textDecoration: "none" }}
               onMouseEnter={e => { e.target.style.background = "transparent"; e.target.style.color = C.dark; }}
-              onMouseLeave={e => { e.target.style.background = C.dark; e.target.style.color = C.bg; }}>Explore Work</a>
+              onMouseLeave={e => { e.target.style.background = C.dark; e.target.style.color = C.bg; }}>Explore Work</Link>
             <Link to={CONTACT_PATH} style={{ display: "inline-block", padding: ".75rem 1.8rem", background: C.red, color: "#F2F2F2", fontFamily: "'DM Mono',monospace", fontSize: ".7rem", letterSpacing: ".12em", textTransform: "uppercase", border: `2px solid ${C.red}`, transition: "all .2s", textDecoration: "none" }}
               onMouseEnter={e => { e.target.style.background = "transparent"; e.target.style.color = C.red; }}
               onMouseLeave={e => { e.target.style.background = C.red; e.target.style.color = "#F2F2F2"; }}>Get in Touch</Link>
