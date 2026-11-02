@@ -17,7 +17,7 @@ This file is the source of truth for the site restructure. Follow the rules and 
 - Meta, Open Graph and Twitter tags are in `index.html`.
 - Static files (résumé PDF, paper PDF, favicon) live in `public/` and are copied to the build as-is.
 - Project images: deployed WebP files live in `public/projects/<slug>/` (`<name>.webp` max 1600px wide for display, `<name>-full.webp` for the lightbox). Original PNGs are kept in `assets-src/<slug>/`, which is not deployed.
-- Project card images: set `media` on a PROJECTS entry (`{ type: "image", src, alt, width, height }` or `{ type: "video", id, title }`). Cards without `media` show no image area. On the home grid, cards with media always take a full row (image beside the text); text-only cards pair up.
+- Project card images: set `media` on a PROJECTS entry (`{ type: "image", src, alt, width, height, position? }` or `{ type: "video", id, title }`). Cards without `media` show no image area. `position` (CSS object-position) picks which part survives the crop. On the home grid, cards with media always take a full row (image beside the text); text-only cards pair up.
 - `og-preview.png` (1200×630) is generated from `assets-src/og-preview/og-preview.html`; see README.
 - Contact form uses Formspree. The ID comes from `VITE_FORMSPREE_ID`, with a hardcoded fallback in `src/components/ContactForm.jsx`.
 - Commands: `npm ci`, `npm run dev`, `npm run build`, `npm run lint`, `npm run preview`.
@@ -236,3 +236,4 @@ Then the embedded project walkthrough video: https://youtu.be/LqsOFARvTSs
 - Replace README.md with a short description, the stack, local dev commands, and how deployment works.
 - Don't touch public/Preeta_Chatterjee_Resume.pdf. Preeta will replace it.
 - Final decisions: Roll-a-Ball card uses gameplay.png; Stone & Soul uses stone-soul-game.png; Hallway Hunters uses ai-debugger (the YouTube thumbnail hosts are blocked by the session's network policy; swap to the gameplay video thumbnail if that host is allowed later). All other cards have no image.
+- Follow-up: the Hallway Hunters card now uses Preeta's `hallway-hunters-thumb.png` (original in `assets-src/hallway-hunters/`), cropped to its left 1322×941 so the title stays intact and the Objective HUD box is excluded, with `position: "left center"`. ai-debugger stays in the case-study gallery.
