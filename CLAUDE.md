@@ -34,7 +34,7 @@ This file is the source of truth for the site restructure. Follow the rules and 
 - [x] PR 4: Fix the 5 existing lint problems (merged)
 - [x] PR 5: Fix Contact links (merged)
 - [x] PR 6: Copy, metadata, experience, skills, about (merged)
-- [ ] PR 7: Home "About strip" copy
+- [x] PR 7: Home "About strip" copy
 - [ ] PR 8: Visuals and cleanup
 
 ## Rules for all work
@@ -224,6 +224,7 @@ Then the embedded project walkthrough video: https://youtu.be/LqsOFARvTSs
 - Separate small PR, after PR 6 is merged and before the visuals PR.
 - Update the home page About strip (HOME_INTRO: the "ML meets game dev & beyond." headline and its blurb) to match the positioning: computer vision, simulation, game engines.
 - Starting point: headline "Vision meets simulation & game engines.", blurb "Master's student at Northeastern building computer vision systems, simulations, and game engines." Offer Preeta 2 options in the PR and use the one Preeta picks.
+- Final decision: headline "Vision meets simulation & game engines." (option A); blurb (verbatim): "Master's student at Northeastern. I came to software through electronics engineering and industrial simulation, and now work on 3D reconstruction, NLP retrieval systems, and game AI in Unreal Engine."
 
 ## PR 8: Visuals and cleanup
 
