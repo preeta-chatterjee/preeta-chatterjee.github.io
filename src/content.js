@@ -34,8 +34,8 @@ export const MARQUEE_ITEMS = ["Unreal Engine", "✦", "PyTorch", "✦", "C++", "
 // ── Home: about strip ─────────────────────────────────────────────────────────
 // Headline renders as: lead + accent (green), line break, tail (red)
 export const HOME_INTRO = {
-  headline: { lead: "ML meets ", accent: "game dev", tail: "& beyond." },
-  blurb: "Master's student at Northeastern building at the intersection of intelligent systems and interactive experiences.",
+  headline: { lead: "Vision meets ", accent: "simulation", tail: "& game engines." },
+  blurb: "Master's student at Northeastern. I came to software through electronics engineering and industrial simulation, and now work on 3D reconstruction, NLP retrieval systems, and game AI in Unreal Engine.",
 };
 
 // [value, label, colour]
