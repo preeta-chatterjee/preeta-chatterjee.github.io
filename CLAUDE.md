@@ -32,9 +32,10 @@ This file is the source of truth for the site restructure. Follow the rules and 
 - [x] PR 2: Refactor with zero visual change (merged)
 - [x] PR 3: Projects (merged)
 - [x] PR 4: Fix the 5 existing lint problems (merged)
-- [ ] PR 5: Fix Contact links
+- [x] PR 5: Fix Contact links (merged)
 - [ ] PR 6: Copy, metadata, experience, skills, about
-- [ ] PR 7: Visuals and cleanup
+- [ ] PR 7: Home "About strip" copy
+- [ ] PR 8: Visuals and cleanup
 
 ## Rules for all work
 
@@ -210,7 +211,21 @@ Then the embedded project walkthrough video: https://youtu.be/LqsOFARvTSs
 
 **Footer:** make the © year dynamic.
 
-## PR 7: Visuals and cleanup
+**Final decisions (from Preeta's review):**
+
+- Hero tagline: option A, "Building computer vision systems, simulations, and game engines, with long-term interests in physical AI and digital twins."
+- Home stats: "4.0" GPA, "7+" Projects Built, "2" Publications, "10+" Years Coding.
+- About: draft approved, with "In NLP, my RAG research engine..." in What I Build. Pull quote: "I want to build systems that see the world, and simulations that let machines learn from it."
+- Locations: use "India" for India-based entries (SMS India, B.Tech); keep US locations as written.
+- Publications order: IEEE paper first, then IJIIP.
+
+## PR 7: Home "About strip" copy
+
+- Separate small PR, after PR 6 is merged and before the visuals PR.
+- Update the home page About strip (HOME_INTRO: the "ML meets game dev & beyond." headline and its blurb) to match the positioning: computer vision, simulation, game engines.
+- Starting point: headline "Vision meets simulation & game engines.", blurb "Master's student at Northeastern building computer vision systems, simulations, and game engines." Offer Preeta 2 options in the PR and use the one Preeta picks.
+
+## PR 8: Visuals and cleanup
 
 - Add optional `media` (image or video embed) support to project cards. Move gameplay.png into public/ (compressed to WebP, max ~1600px wide) and use it on the most fitting card. Ask Preeta which one.
 - Create public/og-preview.png (1200×630): name plus the three focus areas, matching the site's fonts and colors.

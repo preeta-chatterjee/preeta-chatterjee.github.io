@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import { C } from "./theme";
-import { SITE } from "./content";
 import { CONTACT_PATH } from "./routes";
 import Cursor from "./components/Cursor";
 import Nav from "./components/Nav";
@@ -20,7 +19,6 @@ export default function App() {
       link.href = "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap";
       document.head.appendChild(link);
     }
-    document.title = SITE.name;
   }, []);
 
   return (

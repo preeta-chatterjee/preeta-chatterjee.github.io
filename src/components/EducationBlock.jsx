@@ -12,6 +12,7 @@ export default function EducationBlock({ mobile }) {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontFamily: T.serif, fontSize: "1.05rem", color: C.dark, fontStyle: "italic", marginBottom: ".3rem" }}>{e.deg}</div>
             <div style={{ fontFamily: T.mono, fontSize: ".7rem", color: C.muted }}>{e.school} · {e.loc}</div>
+            {e.details?.map(d => <div key={d} style={{ fontFamily: T.serif, fontSize: ".88rem", color: C.mid, fontStyle: "italic", lineHeight: 1.6, marginTop: ".5rem" }}>{d}</div>)}
           </div>
           <div style={{ textAlign: "right", flexShrink: 0 }}>
             <div style={{ fontFamily: T.display, fontSize: "1.4rem", color: e.col }}>{e.gpa}</div>
