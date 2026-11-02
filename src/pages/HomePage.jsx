@@ -33,8 +33,16 @@ export default function HomePage() {
     return () => cancelAnimationFrame(id);
   }, [location]);
 
-  // Featured projects, in the order listed in FEATURED_PROJECT_IDS
-  const featuredProjects = FEATURED_PROJECT_IDS.map(id => PROJECTS.find(p => p.id === id));
+  // Featured projects, in the order listed in FEATURED_PROJECT_IDS. Cards with media always take
+  // a full row (image beside the text); cards without media pair up, and an unpaired one takes a
+  // full row. So an image card never shares a row with a text-only card.
+  const featuredProjects = FEATURED_PROJECT_IDS.map(id => PROJECTS.find(p => p.id === id)).map((p, i, all) => {
+    if (p.media) return { ...p, full: true };
+    let run = 0; // position of this card within its run of consecutive media-less cards
+    for (let j = i - 1; j >= 0 && !all[j].media; j--) run++;
+    const pairable = run % 2 === 1 || (i + 1 < all.length && !all[i + 1].media);
+    return { ...p, full: !pairable };
+  });
 
   return (
     <>
