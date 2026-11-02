@@ -14,7 +14,6 @@ export const SITE = {
 // ── Home: hero ────────────────────────────────────────────────────────────────
 export const HERO = {
   badge: "MS CS · Northeastern · 4.0 GPA · 2 Publications",
-  // [TODO: Preeta] pick a tagline; options are listed in the PR 6 summary (option A shown)
   tagline: "Building computer vision systems, simulations, and game engines, with long-term interests in physical AI and digital twins.",
   // [label, variant] — variant "green" / "red" is a filled chip, "o" is outlined
   chips: [["Computer Vision", "green"], ["Simulation", "red"], ["Game Engines", "o"]],
@@ -39,8 +38,8 @@ export const HOME_INTRO = {
   blurb: "Master's student at Northeastern building at the intersection of intelligent systems and interactive experiences.",
 };
 
-// [value, label, colour]. [TODO: Preeta] two stats to choose; options are listed in the PR 6 summary.
-export const STATS = [["4.0", "GPA", C.green], ["TODO", "[TODO: Preeta]", C.redMid], ["2", "Publications", C.greenMid], ["TODO", "[TODO: Preeta]", C.redMid]];
+// [value, label, colour]
+export const STATS = [["4.0", "GPA", C.green], ["7+", "Projects Built", C.redMid], ["2", "Publications", C.greenMid], ["10+", "Years Coding", C.redMid]];
 
 // ── Home: contact ─────────────────────────────────────────────────────────────
 export const CONTACT_BLURB = `Open to co-op and internship opportunities in computer vision, ML, simulation, and game engines. Boston-based, available ${SITE.availability}.`;
@@ -177,7 +176,6 @@ export const PUBLICATIONS = [
 ];
 
 // ── About page ────────────────────────────────────────────────────────────────
-// [TODO: Preeta] review the pull quote and sections below (draft, see PR 6 summary).
 export const ABOUT_QUOTE = "I want to build systems that see the world, and simulations that let machines learn from it.";
 
 export const ABOUT_SECTIONS = [
@@ -188,7 +186,7 @@ export const ABOUT_SECTIONS = [
   },
   {
     heading: "What I Build",
-    body: "I build perception systems, simulations, and the engines that run them. In computer vision, I'm working on a course project on 3D reconstruction under motion and image degradation, using VGGT as the backbone. On the engine side, I built Stone & Soul, a custom 2D game engine in C++ and SDL3 on an Entity-Component-System architecture, and Hallway Hunters, a survival horror game in Unreal Engine 5.7 with a three-layer enemy AI. In ML, my RAG research engine included a full evaluation framework (Precision@K, Recall@K, MRR, and ROUGE) and an ablation study across three embedding models. Simulation goes back to my first job: building and validating MATLAB/Simulink models for rolling mill automation at SMS India. Long term, I'm interested in physical AI and digital twins.",
+    body: "I build perception systems, simulations, and the engines that run them. In computer vision, I'm working on a course project on 3D reconstruction under motion and image degradation, using VGGT as the backbone. On the engine side, I built Stone & Soul, a custom 2D game engine in C++ and SDL3 on an Entity-Component-System architecture, and Hallway Hunters, a survival horror game in Unreal Engine 5.7 with a three-layer enemy AI. In NLP, my RAG research engine included a full evaluation framework (Precision@K, Recall@K, MRR, and ROUGE) and an ablation study across three embedding models. Simulation goes back to my first job: building and validating MATLAB/Simulink models for rolling mill automation at SMS India. Long term, I'm interested in physical AI and digital twins.",
     accent: C.red,
   },
   {
@@ -227,7 +225,7 @@ export const EXPERIENCE = [
   {
     role: "Graduate Engineer Trainee (Simulation and Software Testing)",
     company: "SMS India Pvt Ltd.",
-    loc: "Kolkata",
+    loc: "India",
     dates: "Aug 2023–Jun 2024",
     note: "Joined after a 4-month internship, Jan–Apr 2023",
     bullets: [
@@ -252,7 +250,7 @@ export const EXPERIENCE = [
 export const EDUCATION = [
   { deg: "MS Computer Science", school: "Northeastern University", loc: "Boston, MA", year: "Expected May 2027", gpa: "4.0", col: C.green,
     details: ["Coursework: Machine Learning, Pattern Recognition & Computer Vision, Natural Language Processing, Algorithms, Building Game Engines, Building Virtual Environments"] },
-  { deg: "B.Tech Electronics & Communication Engineering", school: "Institute of Engineering & Management", loc: "Kolkata", year: "Apr 2023", gpa: "3.75", col: C.red,
+  { deg: "B.Tech Electronics & Communication Engineering", school: "Institute of Engineering & Management", loc: "India", year: "Apr 2023", gpa: "3.75", col: C.red,
     details: ["Mrs. Maya Chakraborty Award for Academic Excellence (2023)"] },
 ];
 
