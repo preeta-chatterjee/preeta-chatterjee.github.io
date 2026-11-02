@@ -66,7 +66,7 @@ export const FEATURED_PROJECT_IDS = ["hallway-hunters", "stone-and-soul", "recon
 // `status` is optional: when omitted, the badge shows only the dates.
 // `desc` is a string, or an array of strings and { text, to } internal links.
 // A link with `to` is an in-site route; a link with `href` opens in a new tab.
-// `media` is optional: { type: "image", src, alt, width, height } or { type: "video", id, title }
+// `media` is optional: { type: "image", src, alt, width, height, position? } or { type: "video", id, title }
 // (YouTube id). Cards without it show no image area. Images live in public/projects/<id>/.
 export const PROJECTS = [
   {
@@ -108,7 +108,7 @@ export const PROJECTS = [
     desc: "A first-person survival horror game in Unreal Engine 5.7. Trapped on a zombie-infected apartment floor, the player uses doors as tactical barriers to reach a rooftop evacuation before time runs out. Features a three-layer enemy AI (Behavior Tree, Animation Blueprint, Character Blueprint) and was rebuilt from scratch mid-development into a modular codebase.",
     stack: ["Unreal Engine 5.7", "Blueprints", "Behavior Trees", "Niagara", "UMG"],
     links: [{ label: "Case Study", to: "/projects/hallway-hunters", color: C.red }],
-    media: { type: "image", src: "/projects/hallway-hunters/ai-debugger.webp", width: 1600, height: 895, alt: "Hallway Hunters zombie in Unreal's AI debugger during play" },
+    media: { type: "image", src: "/projects/hallway-hunters/hallway-hunters-thumb.webp", width: 1322, height: 941, position: "left center", alt: "Hallway Hunters title art: a dark, blood-stained apartment hallway" },
     accent: C.red,
   },
   {
