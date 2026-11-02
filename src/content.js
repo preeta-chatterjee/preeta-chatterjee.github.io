@@ -33,9 +33,10 @@ export const MARQUEE_ITEMS = ["Unreal Engine", "✦", "PyTorch", "✦", "C++", "
 
 // ── Home: about strip ─────────────────────────────────────────────────────────
 // Headline renders as: lead + accent (green), line break, tail (red)
+// [TODO: Preeta] pick option A (shown) or B; both are in the PR 7 summary.
 export const HOME_INTRO = {
-  headline: { lead: "ML meets ", accent: "game dev", tail: "& beyond." },
-  blurb: "Master's student at Northeastern building at the intersection of intelligent systems and interactive experiences.",
+  headline: { lead: "Vision meets ", accent: "simulation", tail: "& game engines." },
+  blurb: "Master's student at Northeastern building computer vision systems, simulations, and game engines.",
 };
 
 // [value, label, colour]
