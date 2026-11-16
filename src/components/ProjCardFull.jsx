@@ -1,13 +1,14 @@
 import { C, S_BODY } from "../theme";
-import { useInView, useMobile } from "../hooks";
+import { useReveal, useMobile } from "../hooks";
 import RichText from "./RichText";
 import ProjLinks from "./ProjLinks";
 import ProjMedia from "./ProjMedia";
 import CardCta from "./CardCta";
 
 // ── Project Card — list layout (projects page, full width stacked) ────────────
-export default function ProjCardFull({ p, i }) {
-  const [ref, inV] = useInView();
+export default function ProjCardFull({ p }) {
+  // Reveal fades the card's content only; the card surface itself is drawn at once
+  const ref = useReveal();
   const mobile = useMobile();
   return (
     <div ref={ref} className="ix-card" style={{
@@ -15,10 +16,9 @@ export default function ProjCardFull({ p, i }) {
       padding: mobile ? "1.8rem 1.5rem" : "2.5rem 3rem",
       position: "relative", overflow: "hidden",
       borderBottom: `1.5px solid ${C.border}`,
-      opacity: inV ? 1 : 0, transform: inV ? "none" : "translateY(28px)",
-      transition: `background .3s, translate .25s ease, box-shadow .25s ease, outline-color .25s, opacity .7s ease ${i * .1}s, transform .7s ease ${i * .1}s`,
+      transition: "background .3s, translate .25s ease, box-shadow .25s ease, outline-color .25s",
     }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem", flexWrap: "wrap", gap: ".5rem" }}>
+      <div className="rv" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem", flexWrap: "wrap", gap: ".5rem" }}>
         <div style={{ display: "inline-flex", alignItems: "center", gap: ".4rem", padding: ".22rem .7rem", background: p.statusBg, border: `1px solid ${(p.statusDot || p.statusColor) + "44"}` }}>
           <span style={{ width: 5, height: 5, borderRadius: "50%", background: p.statusDot || p.statusColor, display: "inline-block" }} />
           <span style={{ fontFamily: "'DM Mono',monospace", fontSize: ".58rem", letterSpacing: ".1em", color: p.statusColor }}>{p.status ? `${p.status} · ${p.year}` : p.year}</span>
@@ -27,7 +27,7 @@ export default function ProjCardFull({ p, i }) {
       </div>
       {p.media ? (
         // With media: image on the left, all text on the right
-        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 2fr", gap: mobile ? "1.2rem" : "3rem", alignItems: "start" }}>
+        <div className="rv" style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 2fr", gap: mobile ? "1.2rem" : "3rem", alignItems: "start" }}>
           <div style={{ border: `1px solid ${C.border}` }}><ProjMedia media={p.media} to={p.links.find(l => l.to)?.to} /></div>
           <div>
             <h3 style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: "1.55rem", color: C.dark, lineHeight: 1.15, marginBottom: ".4rem", fontWeight: 400 }}>{p.title}</h3>
@@ -40,7 +40,7 @@ export default function ProjCardFull({ p, i }) {
           </div>
         </div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 2fr", gap: mobile ? "1rem" : "3rem", alignItems: "start" }}>
+        <div className="rv" style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 2fr", gap: mobile ? "1rem" : "3rem", alignItems: "start" }}>
           <div>
             <h3 style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: "1.55rem", color: C.dark, lineHeight: 1.15, marginBottom: ".4rem", fontWeight: 400 }}>{p.title}</h3>
             <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".63rem", letterSpacing: ".14em", color: C.muted, textTransform: "uppercase", marginBottom: "1rem" }}>{p.sub}</div>

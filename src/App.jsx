@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import { C } from "./theme";
 import { CONTACT_PATH } from "./routes";
@@ -12,15 +11,7 @@ import CaseStudyPage from "./pages/CaseStudyPage";
 
 // ── App ────────────────────────────────────────────────────────────────────────
 export default function App() {
-  useEffect(() => {
-    if (!document.querySelector('link[href*="fonts.googleapis.com"]')) {
-      const link = document.createElement("link");
-      link.rel = "stylesheet";
-      link.href = "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400&display=swap";
-      document.head.appendChild(link);
-    }
-  }, []);
-
+  // Fonts are self-hosted and declared/preloaded in index.html (see the loading rules in CLAUDE.md).
   return (
     <HashRouter>
       <div style={{ background: C.bg, minHeight: "100vh", overflowX: "hidden" }}>

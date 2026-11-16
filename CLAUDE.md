@@ -6,10 +6,10 @@ This file is the source of truth for the site restructure. Follow the rules and 
 
 ## Repo orientation
 
-- Vite + React 19, react-router-dom with `HashRouter` (routes look like `/#/about`). Styling is inline style objects; `src/index.css` is only a reset. Hover, `:active` and `:focus-visible` states live in `src/interactions.css` (`ix-*` classes; Phase 2 PR 5), not in onMouseEnter handlers.
+- Vite + React 19, react-router-dom with `HashRouter` (routes look like `/#/about`). Styling is inline style objects; `src/index.css` is only a reset. Hover, `:active` and `:focus-visible` states live in `src/interactions.css` (`ix-*` classes; Phase 2 PR 5), not in onMouseEnter handlers. Scroll reveals use `useReveal` (`src/hooks.js`) with `src/reveal.css`; follow the Loading rules below.
 - Layout of `src/`:
   - `content.js`: all site copy and data (SITE, CANVAS_LABS, HOME_INTRO, STATS, CONTACT_BLURB, SKILLS, PROJECT_GROUPS, FEATURED_PROJECT_IDS, PROJECTS, PUBLICATIONS, ABOUT_QUOTE, ABOUT_SECTIONS, EXPERIENCE, EDUCATION, CASE_STUDIES). Content edits go here.
-  - `theme.js`: colors (`C`), fonts (`T`), layout constants, shared style helpers, and the home themes (`HOME_THEMES`, `TAG_TONES`, `homeThemeVars`). `hooks.js`: `useInView`, `useMobile`.
+  - `theme.js`: colors (`C`), fonts (`T`), layout constants, shared style helpers, and the home themes (`HOME_THEMES`, `TAG_TONES`, `homeThemeVars`). `hooks.js`: `useReveal`, `useMobile`.
   - Home theme: `SITE.theme` in `content.js` ("dark" or "light") is the only switch. `HomeGrid` (the 2×2 top of the home page) applies it as CSS variables (`--home-fade-x`, `--about-green`, etc.).
   - `components/`: one component per file. `pages/`: HomePage, ProjectsPage, AboutPage, CaseStudyPage. `App.jsx`: router. `main.jsx` mounts `App`.
   - Case studies: add an entry to `CASE_STUDIES` keyed by slug and it renders at `/#/projects/<slug>`. Link to it from a project with `links: [{ label: "Case Study", to: "/projects/<slug>" }]`.
@@ -17,6 +17,7 @@ This file is the source of truth for the site restructure. Follow the rules and 
   - UI chrome (section labels like "02 / Selected Work", button text, form labels) still lives inline in components and pages.
 - Meta, Open Graph and Twitter tags are in `index.html`.
 - Static files (paper PDF, favicon, `og-preview.png`) live in `public/` and are copied to the build as-is.
+- Fonts are self-hosted in `public/fonts/` (latin-subset woff2 from Fontsource, SIL OFL; license texts alongside) and declared and preloaded inline in `index.html`. There is no Google Fonts request.
 - Project images: deployed WebP files live in `public/projects/<slug>/` (`<name>.webp` max 1600px wide for display, `<name>-full.webp` for the lightbox). Original PNGs are kept in `assets-src/<slug>/`, which is not deployed.
 - Project card images: set `media` on a PROJECTS entry (`{ type: "image", src, alt, width, height, position? }` or `{ type: "video", id, title }`). Cards without `media` show no image area. `position` (CSS object-position) picks which part survives the crop. On the home grid, cards with media always take a full row (image beside the text); text-only cards pair up.
 - `og-preview.png` (1200×630) is generated from `assets-src/og-preview/og-preview.html`; see README.
@@ -256,9 +257,36 @@ All Phase 1 rules still apply: no invented content, verbatim text exactly as giv
 - [x] Typography PR: DM Sans body text, larger Technical Arsenal (merged, plus the description-color follow-up)
 - [x] Dependency PR: `npm audit fix` (no `--force`) (merged)
 - [x] PR 4: Bubble game (merged, plus the tap-highlight fix)
-- [ ] PR 5: Hover and focus states
+- [x] PR 5: Hover and focus states (merged)
+- [ ] Loading fix: no first-screen entrance animations, self-hosted fonts
 - [ ] PR 6: Project thumbnails
 - [ ] PR 7: Home projects carousel
+
+## Loading rules (all pages, all future sections)
+
+Added after a real-phone bug: the home grid's boxes appeared separately during load, so the shared top-band fade showed half-drawn, and every heading jumped when the fonts arrived. These rules apply to every page and every new section.
+
+1. Nothing visible in the first screen on load (check 1440×900, 1280×800, 390×844, 360×780) has an entrance animation. It renders immediately. This also applies after client-side navigation: `ScrollToTop` resets the scroll in a layout effect, before the new page measures itself.
+2. Never animate backgrounds or shared surfaces (the top-band gradient, the dark about panel, card surfaces, the contact panels, section backgrounds). Only the content inside them may fade.
+3. Elements that share a surface appear together as one unit: one `useReveal` per surface, with `className="rv"` on the content inside it. The name box and about box have no animation at all.
+4. Below the fold, an optional short fade-up on scroll: 0.45s, 12px, never staggered (no per-item delays). Use `const ref = useReveal()` on the element to measure and `className="rv"` on the content to fade (`src/reveal.css`). `useReveal` decides in a layout effect, before the first paint: if the element is on screen it does nothing; otherwise it sets `data-reveal="hidden"` and then `"shown"` when it scrolls into view. Never put `rv` on an element that paints a background.
+5. `prefers-reduced-motion`: no reveal at all. The hook does nothing, and `reveal.css` forces `.rv` visible.
+6. Fonts: self-hosted in `public/fonts/` and declared inline in `index.html`. The faces used in the first screen are preloaded with `font-display: block`, so the first render is already in the right font and the browser caps any wait at about 3s. Those faces are Bebas Neue 400, DM Mono 400, DM Sans 400 and DM Serif Display italic. Faces used only below the fold use `swap` and aren't preloaded: DM Mono 500 (canvas text) and DM Serif Display upright (project titles). A new font or weight in the first screen must be added to the preloads. Don't go back to a JS-injected Google Fonts link.
+7. Check new sections with a throttled load: Fast 3G (562.5ms RTT, ~1.6 Mbps) plus 4× CPU on a production build (`npm run build`, then serve `dist/`). Filmstrip at 100ms steps at 390 and 1440: the first screen must appear in one frame, in its final fonts.
+
+Implementation notes (loading fix PR):
+
+- Entrance/reveal animations found and what happened to each:
+  - HomeGrid mount animation (name 0.15s, about panel 0.3s, buttons 0.4s delays; on phone the about panel's dark background faded too): removed.
+  - Featured project cards (`ProjCard`, stagger i×0.1s, whole card including its background): now content-only, no stagger.
+  - Projects page cards (`ProjCardFull`, stagger) and publication cards (`PubCard`, stagger): same.
+  - About page sections (`AboutSection`, stagger i×0.1s): no stagger.
+  - `ExperienceBlock` faded again inside its About section: its own reveal removed.
+  - `EducationBlock`, case-study sections (`CaseSection`) and the home "Projects." header: kept as below-fold reveals, first screen exempt.
+  - Contact row: previously only the green panel faded, background included. Now both panels' content shares one reveal and the panel backgrounds never fade.
+  - `revealStyle` and `useInView` were removed.
+- Fonts before: the Google Fonts stylesheet was injected by JS after React mounted (`App.jsx`), so the first render always used fallback fonts. On Fast 3G + 4× CPU the real fonts arrived about 2s after first paint, and every heading visibly jumped (about 5.4s vs 3.3s at 390). After: self-hosted, preloaded faces (66KB total). The first screen appears at about 3.6–3.7s in its final fonts, with no later change. The final rendering is pixel-identical to the Google-served fonts at 1440 and 390.
+- `html, body { background: #F2F2F2 }` inline in `index.html`, so the frames before the app renders are the page color, not white.
 
 ## Phase 2 PR 1: Analytics
 

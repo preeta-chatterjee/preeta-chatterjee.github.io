@@ -1,11 +1,10 @@
-import { C, T, S_BODY, revealStyle } from "../theme";
-import { useInView } from "../hooks";
+import { C, T, S_BODY } from "../theme";
 import { EXPERIENCE } from "../content";
 
 export default function ExperienceBlock() {
-  const [ref, inV] = useInView();
+  // No reveal of its own: it sits inside an AboutSection, which fades as one unit
   return (
-    <div ref={ref} style={{ ...revealStyle(inV) }}>
+    <div>
       {EXPERIENCE.map(job => (
         <div key={`${job.role} · ${job.company}`} style={{ borderBottom: `1px solid ${C.border2}`, padding: "1.5rem 0" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: ".5rem", marginBottom: ".8rem" }}>

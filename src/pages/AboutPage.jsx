@@ -28,8 +28,8 @@ export default function AboutPage() {
             </p>
           </div>
 
-          {sections.map((s, i) => (
-            <AboutSection key={s.heading} s={s} i={i} mobile={mobile} />
+          {sections.map(s => (
+            <AboutSection key={s.heading} s={s} mobile={mobile} />
           ))}
 
           <EducationBlock mobile={mobile} />

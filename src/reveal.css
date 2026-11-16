@@ -1,0 +1,9 @@
+/* ── Scroll reveal (see useReveal in hooks.js and the loading rules in CLAUDE.md) ──
+   useReveal sets data-reveal on the measured element only when it starts below the fold.
+   .rv marks content that fades: the measured element itself or anything inside it.
+   Never put .rv on an element that paints a background. */
+[data-reveal="hidden"].rv, [data-reveal="hidden"] .rv { opacity: 0; transform: translateY(12px); }
+[data-reveal="shown"].rv, [data-reveal="shown"] .rv { opacity: 1; transform: none; transition: opacity .45s ease, transform .45s ease; }
+@media (prefers-reduced-motion: reduce) {
+  .rv { opacity: 1 !important; transform: none !important; transition: none !important; }
+}

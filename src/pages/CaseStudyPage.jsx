@@ -1,6 +1,6 @@
 import { Link, Navigate, useParams } from "react-router-dom";
-import { C, T, S_BODY, NAV_HEIGHT, revealStyle } from "../theme";
-import { useInView, useMobile } from "../hooks";
+import { C, T, S_BODY, NAV_HEIGHT } from "../theme";
+import { useReveal, useMobile } from "../hooks";
 import { CASE_STUDIES } from "../content";
 import VideoEmbed from "../components/VideoEmbed";
 import ZoomImage from "../components/ZoomImage";
@@ -14,9 +14,9 @@ const S_CAPTION = { ...S_BODY, fontSize: ".95rem", color: C.desc, marginTop: ".8
 const S_TAG = { fontFamily: T.mono, fontSize: ".6rem", letterSpacing: ".07em", color: C.dark, padding: ".18rem .55rem", border: `1px solid ${C.border}`, background: C.surface };
 
 function CaseSection({ s, n, mobile }) {
-  const [ref, inV] = useInView();
+  const ref = useReveal();
   return (
-    <section ref={ref} style={{ borderTop: `1px solid ${C.border2}`, paddingTop: "2.5rem", marginBottom: "3.5rem", ...revealStyle(inV) }}>
+    <section className="rv" ref={ref} style={{ borderTop: `1px solid ${C.border2}`, paddingTop: "2.5rem", marginBottom: "3.5rem" }}>
       <div style={{ fontFamily: T.mono, fontSize: ".62rem", letterSpacing: ".18em", color: C.red, textTransform: "uppercase", marginBottom: ".5rem" }}>{String(n).padStart(2, "0")}</div>
       <h2 style={{ fontFamily: T.display, fontSize: "clamp(1.8rem,4vw,2.8rem)", color: C.dark, letterSpacing: ".02em", lineHeight: 1, fontWeight: 400, marginBottom: "1.5rem" }}>{s.heading}</h2>
 
