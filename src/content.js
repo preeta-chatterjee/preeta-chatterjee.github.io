@@ -8,6 +8,8 @@ export const SITE = {
   email: "chatterjee.pre@northeastern.edu",
   linkedin: "linkedin.com/in/preeta-chatterjee",
   availability: "January–August 2027",
+  // Home page theme: "dark" or "light". Only this value switches it (no visitor toggle).
+  theme: "dark",
 };
 
 // Floating labels drawn on the hero canvas (x/y are fractions of canvas size, s is font px).
@@ -19,24 +21,25 @@ export const CANVAS_LABS = [
   { t: "UNITY",   x: .62, y: .82, s: 11 },
 ];
 
-// ── Home: about strip ─────────────────────────────────────────────────────────
+// ── Home: about panel (top right of the home grid) ───────────────────────────
 // Headline renders as: lead + accent (green), line break, tail (red)
 export const HOME_INTRO = {
   headline: { lead: "Vision meets ", accent: "simulation", tail: "& game engines." },
   blurb: "Master's student at Northeastern. I came to software through electronics engineering and industrial simulation, and now work on 3D reconstruction, NLP retrieval systems, and game AI in Unreal Engine.",
 };
 
-// [value, label, colour]
-export const STATS = [["4.0", "GPA", C.green], ["7+", "Projects Built", C.redMid], ["2", "Publications", C.greenMid], ["10+", "Years Coding", C.redMid]];
+// [value, label, accent]: accent is the theme's "green" or "red"
+export const STATS = [["4.0", "GPA", "green"], ["7+", "Projects Built", "red"], ["2", "Publications", "green"], ["10+", "Years Coding", "red"]];
 
 // ── Home: contact ─────────────────────────────────────────────────────────────
 export const CONTACT_BLURB = `Open to co-op and internship opportunities in computer vision, ML, simulation, and game engines. Boston-based, available ${SITE.availability}.`;
 
+// `tone` colors the row's tags (see TAG_TONES in theme.js)
 export const SKILLS = [
-  { name: "Languages", tags: ["Python", "C++", "C#", "Java", "MATLAB/Simulink"] },
-  { name: "ML/AI", tags: ["PyTorch", "NumPy", "Hugging Face Transformers", "scikit-learn", "FAISS", "vector search"] },
-  { name: "Game Engines/Simulation", tags: ["Unreal Engine (Blueprints, Behavior Trees)", "Unity", "SDL3", "ECS architecture", "Lua scripting"] },
-  { name: "Tools & Practices", tags: ["Git/GitHub", "CI/CD", "unit & property testing", "React.js", "Azure Cosmos DB", "Agile/Scrum"] },
+  { name: "Languages", tone: "maroon", tags: ["Python", "C++", "C#", "Java", "MATLAB/Simulink"] },
+  { name: "ML/AI", tone: "green", tags: ["PyTorch", "NumPy", "Hugging Face Transformers", "scikit-learn", "FAISS", "vector search"] },
+  { name: "Game Engines/Simulation", tone: "charcoal", tags: ["Unreal Engine (Blueprints, Behavior Trees)", "Unity", "SDL3", "ECS architecture", "Lua scripting"] },
+  { name: "Tools & Practices", tone: "outline", tags: ["Git/GitHub", "CI/CD", "unit & property testing", "React.js", "Azure Cosmos DB", "Agile/Scrum"] },
 ];
 
 // ── Projects ──────────────────────────────────────────────────────────────────
