@@ -256,9 +256,11 @@ export default function HeroCanvas() {
   const chip = { fontFamily: T.mono, fontSize: ".72rem", letterSpacing: ".12em", textTransform: "uppercase", color: "#111111", background: "#FFFFFF", border: "1.5px solid #111111", padding: ".35rem .7rem", pointerEvents: "none" };
 
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+    // Game area only: no mobile tap-highlight flash and no text selection from rapid taps.
+    // Links and buttons elsewhere keep the browser default (PR 5 handles touch/focus states).
+    <div style={{ position: "relative", width: "100%", height: "100%", WebkitTapHighlightColor: "transparent", userSelect: "none", WebkitUserSelect: "none" }}>
       {/* During a round, touch-action none stops taps from scrolling or zooming the page */}
-      <canvas ref={ref} aria-label="Bubble mini game" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", touchAction: playing ? "none" : "manipulation", cursor: "pointer" }} />
+      <canvas ref={ref} aria-label="Bubble mini game" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", touchAction: playing ? "none" : "manipulation", cursor: "pointer", WebkitTapHighlightColor: "transparent" }} />
 
       {playing && (
         <>
@@ -279,7 +281,7 @@ export default function HeroCanvas() {
             {/* Hover swap only where a real hover exists, so a tap on a phone never leaves it inverted */}
             <style>{"@media (hover: hover) { .bubble-start:hover { background: #FFFFFF !important; color: #111111 !important; } }"}</style>
             <button ref={startBtn} type="button" className="bubble-start" onClick={() => game.current.start?.()}
-              style={{ fontFamily: T.mono, fontSize: ".72rem", letterSpacing: ".14em", textTransform: "uppercase", background: "#111111", color: "#FFFFFF", border: "2px solid #111111", padding: ".65rem 1.6rem", cursor: "pointer", transition: "all .2s" }}>
+              style={{ fontFamily: T.mono, fontSize: ".72rem", letterSpacing: ".14em", textTransform: "uppercase", background: "#111111", color: "#FFFFFF", border: "2px solid #111111", padding: ".65rem 1.6rem", cursor: "pointer", transition: "all .2s", WebkitTapHighlightColor: "transparent" }}>
               {phase === "over" ? "Play Again" : "Start"}
             </button>
             <div style={{ fontFamily: T.mono, fontSize: ".68rem", letterSpacing: ".12em", color: C.mid, textTransform: "uppercase", marginTop: ".7rem" }}>Best: {best}</div>

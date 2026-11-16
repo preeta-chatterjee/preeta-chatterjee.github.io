@@ -95,6 +95,7 @@ export default function HomeGrid() {
       position: "relative", overflow: "hidden", height: mobile ? "min(80vw, 340px)" : "auto", minHeight: 0,
       background: `radial-gradient(circle, ${C.border} 1px, transparent 1px)`, backgroundSize: "22px 22px", backgroundColor: "var(--home-base)",
       borderTop: `1px solid ${LINE}`, borderLeft: mobile ? "none" : `1px solid ${LINE}`,
+      WebkitTapHighlightColor: "transparent", // no tap flash over the game box on phones (game only; see HeroCanvas)
     }}>
       <HeroCanvas />
     </div>
