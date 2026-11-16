@@ -51,9 +51,6 @@ export const PROJECT_GROUPS = [
   { id: "other", label: "Other",                     short: "Other",        tab: false },
 ];
 
-// Projects on the home page, in display order.
-export const FEATURED_PROJECT_IDS = ["hallway-hunters", "stone-and-soul", "reconstruction"];
-
 // `status` is optional: when omitted, the badge shows only the dates.
 // `desc` is a string, or an array of strings and { text, to } internal links.
 // A link with `to` is an in-site route; a link with `href` opens in a new tab.

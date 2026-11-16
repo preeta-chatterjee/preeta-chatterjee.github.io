@@ -59,6 +59,13 @@ input:focus-visible, textarea:focus-visible { outline-offset: 4px; }
 @media (hover: hover) { .ix-menu-btn:hover { background: #e8e8e8 !important; } }
 .ix-menu-btn:active { background: #e8e8e8 !important; }
 .ix-menu-link:active { background: #e8e8e8 !important; }
+/* Carousel arrows (outline → filled) and dots (ring darkens/fills) */
+@media (hover: hover) {
+  .ix-arrow:hover { background: #111111 !important; color: #F2F2F2 !important; }
+  .ix-dot:hover span { background: #666666 !important; }
+}
+.ix-arrow:active { background: #111111 !important; color: #F2F2F2 !important; }
+.ix-dot:active span { background: #666666 !important; }
 /* Bubble game Start / Play Again (hover rule lives in HeroCanvas) */
 .bubble-start:active { background: #FFFFFF !important; color: #111111 !important; }
 /* Card image links (case study) */
