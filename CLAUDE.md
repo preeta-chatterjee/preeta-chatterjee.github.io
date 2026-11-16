@@ -258,8 +258,8 @@ All Phase 1 rules still apply: no invented content, verbatim text exactly as giv
 - [x] Dependency PR: `npm audit fix` (no `--force`) (merged)
 - [x] PR 4: Bubble game (merged, plus the tap-highlight fix)
 - [x] PR 5: Hover and focus states (merged)
-- [ ] Loading fix: no first-screen entrance animations, self-hosted fonts
-- [ ] PR 6: Project thumbnails
+- [x] Loading fix: no first-screen entrance animations, self-hosted fonts (merged)
+- [ ] PR 6: Project thumbnails (typographic, no images)
 - [ ] PR 7: Home projects carousel
 
 ## Loading rules (all pages, all future sections)
@@ -400,14 +400,40 @@ Implementation notes (PR 5):
 - Contrast changes: `C.muted` #777777 → #666666 (5.13:1 on #F2F2F2, 5.74:1 on white; lighter than body #595959/#444444). Contact panel labels ("03 / Contact", "Email", "LinkedIn") 45–50% → 70% white (5.15:1 on the green). Dark page-header labels ("01 / About", "02 / Work", "Case Study · …") were #4D1717 on #111111 (1.3:1) → new `C.redOnDark` #CC6260 (4.93:1). Footer © 30% → 60% white (6.5:1), footer links 30% → 70%. The big faint card numbers and the "HELLO" watermark are decorative, so they're `aria-hidden` and left as they are.
 - Checks: every text node on Home, About, Projects and the case study passes AA at 1440 and 390 (except the decorative watermarks); every link, button and card changes on hover; all 71 keyboard focus stops show a 2px ring at 3:1 or better.
 
-## Phase 2 PR 6: Project thumbnails
+## Phase 2 PR 6: Project thumbnails (typographic, no images)
 
-- Preeta adds AI-generated thumbnails to `public/projects/<project>/thumb.*`; convert to WebP and wire them in for the home page carousel only.
-- Project pages and case-study pages stay unchanged.
+Change of plan (Preeta): no image thumbnails. They are built in code, so visitors don't mistake an illustration for the actual project.
+
+- Reusable component `src/components/ProjThumb.jsx` (`variant` prop). A 16:10 card in the project's group color (`GROUP_TONES` in `theme.js`): Computer Vision & ML deep green #1E4D3B, Simulation & Game Engines maroon #5A1A1C, Other charcoal #2F3135.
+- Content: a small DM Mono label with the short group name (`short` on PROJECT_GROUPS: "Vision & ML", "Game Engines", "Other") and the year, the short title (`thumbTitle`) in Bebas Neue, and the `hook` in DM Sans. Content is vertically centered, with no watermark.
+- Titles are always one line (`white-space: nowrap`). Every card uses the same title size, set so the longest title, "3D Reconstruction" (6.59em wide in Bebas Neue), fits: 12cqw for the light and solid cards, 9.2cqw for the split card.
+- Short titles on the thumbnails only: "3D Reconstruction" and "RAG System". The full titles stay everywhere else on the site.
+- Sizes are in container units (`cqw`) with pixel floors for phones (label 10px, hook 13px). Checked at 1440, 1280, 390 and 360: every card is 16:10, nothing is clipped or outside the card, and every title is on one line.
+- Design review (Preeta): round 1 (solid panel, big watermark number) looked heavy and unbalanced. Round 2 compared three variants (light, solid, split). **Final: the light card (variant A)**, with a 6px group-color band on top and a 1px #D6D2CB border plus a soft shadow (reaching about 10px), so cards separate from the off-white page in both themes. Variants B and C were removed. The title and label are in the group color, the hook in #2E2E2E.
+- Contrast (1440/1280/390/360, both themes): titles and labels in the group color on white are 9.63:1 (green), 13.13:1 (maroon) and 13.03:1 (charcoal); the hook is 13.58:1.
+- No image files. The cards are theme-independent, so they read the same in both themes. Follows the loading rules: the card never animates.
+- Used on the home carousel only (PR 7). Project and case-study pages stay unchanged.
+- Temporary review page: `/#/preview/thumbnails` (`ThumbPreviewPage.jsx`), not linked anywhere. It shows a static carousel row (center card clear, neighbors veiled 50%, next ones 82%, the rest hidden), all seven unveiled, and the hook/overview list. Remove it in PR 7. The veil covers the card's shadow too, so it extends about 11px past the card; the carousel needs the same.
+- Content fix: the RAG paper count is 30+ (was 20+), in both the card description and the overview.
+
+### Hook and overview rule (all projects, including future ones)
+
+Each project in `content.js` has `thumbTitle`, `hook` and `overview`.
+
+- `hook` (on the thumbnail) is the one standout technical detail.
+- `overview` (the two-line carousel slide text, PR 7) is what the project is and what it does, drawn only from facts already in content.js.
+- **No repetition:** the hook and overview must not share a key phrase, number or fact. Check every pair for shared words and numbers before handover. Keep overviews to about 160 characters so they fit two lines.
+- Verbatim hooks from Preeta: Hallway Hunters "Three-layer enemy AI in Unreal Engine 5.7", Stone & Soul "A custom C++ engine, built from scratch", 3D Reconstruction "Telling motion apart from image degradation", RAG "Tuned for better answers, not just better matches", Haunted Hallway "Rigged 2D sprite animation". The proposed hooks for Roll-a-Ball ("Real-time rigid-body dynamics") and Job Tracker ("AI-powered prioritization with Google Gemini") and all seven overviews were approved by Preeta in the PR 6 review. Haunted Hallway's overview dropped "2D" (Preeta's decision) so it no longer repeats the hook.
 
 ## Phase 2 PR 7: Home projects carousel (replaces the featured cards)
 
-- All projects. Slow auto-advance with a fade between slides.
-- Pauses on hover, focus, and touch. Stops auto-advancing permanently after any arrow click or swipe. No auto-advance under `prefers-reduced-motion`.
-- Arrows plus dots; swipe on phone.
-- Each slide: thumbnail, two-line overview, tags, and a link to the project or case study.
+Spec updated by Preeta (supersedes the earlier fade-between-slides plan):
+
+- All projects, in a single horizontal row of cards side by side that slides left as it advances.
+- The center card is fully clear. Cards fade progressively with distance from the center: the immediate neighbors are partly veiled with a light off-white cover, and cards leaving the left edge fade out completely while new ones fade in from the right. The fade follows the cards' movement smoothly; it never switches suddenly.
+- Infinite loop: after the last project comes the first again, in both directions, with no visible jump.
+- Safeguards: slow auto-advance; pauses on hover, focus, and touch; stops auto-advancing permanently after any arrow click or swipe; no auto-advance (and no sliding animation) under `prefers-reduced-motion`. Arrows plus dots; swipe on phone.
+- Phone: one card in focus with a sliver of the neighbors visible.
+- Each slide: the `ProjThumb` light card, the two-line `overview`, tags, and a link to the project or case study.
+- Accessibility note from PR 6: the veil deliberately drops neighbor text below AA (50% veil about 2.4–3.1:1, 82% about 1.4:1). Only the center card is meant to be read, so the veiled cards must be hidden from screen readers and keyboard focus (`aria-hidden`, `inert`). Every project is then reached, readable, when it is centered.
+- Follow the loading rules: the carousel is below the fold on desktop, but nothing in it may animate on first paint, and the veils and card surfaces don't fade in on load.
