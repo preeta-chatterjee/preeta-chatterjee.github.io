@@ -252,8 +252,8 @@ All Phase 1 rules still apply: no invented content, verbatim text exactly as giv
 - [x] PR 1: Analytics (Cloudflare Web Analytics) (merged)
 - [x] PR 2: Content cleanup (merged)
 - [x] Deployment cleanup: Actions-only (merged; gh-pages branch deleted by Preeta)
-- [ ] PR 3: Home 2×2 layout with dark and light themes
-- [ ] Typography PR: DM Sans body text, larger Technical Arsenal
+- [x] PR 3: Home 2×2 layout with dark and light themes (merged)
+- [x] Typography PR: DM Sans body text, larger Technical Arsenal (merged, plus the description-color follow-up)
 - [ ] Dependency PR: `npm audit fix` (no `--force`), right after the typography PR is merged
 - [ ] PR 4: Bubble game
 - [ ] PR 5: Hover and focus states
@@ -316,8 +316,8 @@ Implementation notes (PR 3):
 - Covers: home about blurb, contact blurb, About page paragraphs, experience bullets, coursework/award lines, project and publication descriptions, case-study paragraphs, lists and captions (gallery captions .95rem).
 - Role titles 1.15rem (was 1rem) and degree titles 1.2rem (was 1.05rem) so they stay larger than the 17px body text.
 - Technical Arsenal: tags 13px (.8125rem, was .56rem), padding .28rem .65rem, letter spacing .02em, no wrapping inside a tag; category labels 1.1rem (was .95rem), and long labels wrap after the slash ("Game Engines/ Simulation") on desktop; heading .72rem (was .62rem).
-- To keep the 2×2 grid on one screen at 1280×800 (the 17px blurb wraps to 4 lines there): top-row vertical padding 1rem (was 1.5rem), about headline margin .75rem (was 1rem), blurb and Read More gaps .85rem (were 1.25rem), stat cell padding .55rem (was .7rem), skills box vertical padding 1.1rem (was 1.6rem), skills rows .42rem (was .6rem). Phone spacing unchanged. At 1280×800 the about panel has about 2px to spare, so any extra copy there will push the grid past the fold.
-- Contrast: project/publication descriptions and gallery captions use #777777 on #F2F2F2 (4.00:1), below AA for normal text. This predates the font change; left for PR 5 (hover/focus, WCAG AA) or Preeta's call.
+- To keep the 2×2 grid on one screen at 1280×800 (the 17px blurb wraps to 4 lines there): top-row vertical padding 1rem (was 1.5rem), about headline margin .75rem (was 1rem), blurb and Read More gaps .85rem (were 1.25rem), stat cell padding .55rem (was .7rem), skills box vertical padding 1.1rem (was 1.6rem), skills rows .42rem (was .6rem). Phone spacing unchanged. **At 1280×800 the about panel has only ~2px to spare. Any future copy change to the about panel (headline, blurb, stats, Read More) must re-check the 1280×800 and 1440×900 fit in both themes before handover.**
+- Contrast (follow-up, Preeta's decision): project/publication descriptions and case-study gallery captions changed from #777777 (4.00:1 on #F2F2F2, below AA) to #595959 (`C.desc`, 6.26:1 on #F2F2F2, measured), which passes AA. `C.muted` (#777777) is unchanged for other small labels.
 
 ## Dependency PR: `npm audit fix` (right after the typography PR)
 

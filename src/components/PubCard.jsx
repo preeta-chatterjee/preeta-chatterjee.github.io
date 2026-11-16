@@ -32,7 +32,7 @@ export default function PubCard({ p, i }) {
           <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".6rem", color: C.green, letterSpacing: ".06em" }}>{p.venue}</div>
         </div>
         <div>
-          <p style={{ ...S_BODY, color: C.muted, marginBottom: "1.3rem" }}>{p.desc}</p>
+          <p style={{ ...S_BODY, color: C.desc, marginBottom: "1.3rem" }}>{p.desc}</p>
           <div style={{ display: "flex", gap: "1.2rem", flexWrap: "wrap" }}>
             {p.links.map(l => (
               <a key={l.label} href={l.href} target="_blank" rel="noreferrer"
