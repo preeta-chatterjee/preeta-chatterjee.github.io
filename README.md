@@ -16,7 +16,7 @@ Personal portfolio of Preeta Chatterjee: computer vision, simulation, and game e
 | `src/content.js` | All site copy and data: hero, skills, projects, case studies, experience, education, publications. Content edits go here. |
 | `src/components/`, `src/pages/` | One component per file; pages for Home, Projects, About, and case studies. |
 | `src/routes.js` | Shared route paths (e.g. `CONTACT_PATH`). Use router links, not `#id` anchors. |
-| `public/` | Static files served as-is: résumé, paper PDF, favicon, `og-preview.png`, project images in `public/projects/<id>/` (WebP). |
+| `public/` | Static files served as-is: paper PDF, favicon, `og-preview.png`, project images in `public/projects/<id>/` (WebP). |
 | `assets-src/` | Original PNGs and the `og-preview.png` source page. Not deployed. |
 | `index.html` | Page title and Open Graph / Twitter meta tags. |
 

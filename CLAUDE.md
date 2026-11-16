@@ -8,14 +8,14 @@ This file is the source of truth for the site restructure. Follow the rules and 
 
 - Vite + React 19, react-router-dom with `HashRouter` (routes look like `/#/about`). Styling is inline style objects; `src/index.css` is only a reset.
 - Layout of `src/`:
-  - `content.js`: all site copy and data (SITE, HERO, CANVAS_LABS, MARQUEE_ITEMS, HOME_INTRO, STATS, CONTACT_BLURB, SKILLS, PROJECT_GROUPS, FEATURED_PROJECT_IDS, PROJECTS, PUBLICATIONS, ABOUT_QUOTE, ABOUT_SECTIONS, EXPERIENCE, EDUCATION, CASE_STUDIES). Content edits go here.
+  - `content.js`: all site copy and data (SITE, CANVAS_LABS, HOME_INTRO, STATS, CONTACT_BLURB, SKILLS, PROJECT_GROUPS, FEATURED_PROJECT_IDS, PROJECTS, PUBLICATIONS, ABOUT_QUOTE, ABOUT_SECTIONS, EXPERIENCE, EDUCATION, CASE_STUDIES). Content edits go here.
   - `theme.js`: colors (`C`), fonts (`T`), layout constants, shared style helpers. `hooks.js`: `useInView`, `useMobile`.
   - `components/`: one component per file. `pages/`: HomePage, ProjectsPage, AboutPage, CaseStudyPage. `App.jsx`: router. `main.jsx` mounts `App`.
   - Case studies: add an entry to `CASE_STUDIES` keyed by slug and it renders at `/#/projects/<slug>`. Link to it from a project with `links: [{ label: "Case Study", to: "/projects/<slug>" }]`.
   - `routes.js`: shared route paths (`CONTACT_PATH`). Link to the contact section with `<Link to={CONTACT_PATH}>`; plain `#id` anchors don't work under HashRouter.
   - UI chrome (section labels like "02 / Selected Work", button text, form labels) still lives inline in components and pages.
 - Meta, Open Graph and Twitter tags are in `index.html`.
-- Static files (résumé PDF, paper PDF, favicon) live in `public/` and are copied to the build as-is.
+- Static files (paper PDF, favicon, `og-preview.png`) live in `public/` and are copied to the build as-is.
 - Project images: deployed WebP files live in `public/projects/<slug>/` (`<name>.webp` max 1600px wide for display, `<name>-full.webp` for the lightbox). Original PNGs are kept in `assets-src/<slug>/`, which is not deployed.
 - Project card images: set `media` on a PROJECTS entry (`{ type: "image", src, alt, width, height, position? }` or `{ type: "video", id, title }`). Cards without `media` show no image area. `position` (CSS object-position) picks which part survives the crop. On the home grid, cards with media always take a full row (image beside the text); text-only cards pair up.
 - `og-preview.png` (1200×630) is generated from `assets-src/og-preview/og-preview.html`; see README.
@@ -234,7 +234,6 @@ Then the embedded project walkthrough video: https://youtu.be/LqsOFARvTSs
 - Create public/og-preview.png (1200×630): name plus the three focus areas, matching the site's fonts and colors.
 - Delete unused scaffolding: src/assets/hero.png, react.svg, vite.svg.
 - Replace README.md with a short description, the stack, local dev commands, and how deployment works.
-- Don't touch public/Preeta_Chatterjee_Resume.pdf. Preeta will replace it.
 - Final decisions: Roll-a-Ball card uses gameplay.png; Stone & Soul uses stone-soul-game.png; Hallway Hunters uses ai-debugger (the YouTube thumbnail hosts are blocked by the session's network policy; swap to the gameplay video thumbnail if that host is allowed later). All other cards have no image.
 - Follow-up: the Hallway Hunters card now uses Preeta's `hallway-hunters-thumb.png` (original in `assets-src/hallway-hunters/`), cropped to its left 1322×941 so the title stays intact and the Objective HUD box is excluded, with `position: "left center"`. ai-debugger stays in the case-study gallery.
 
@@ -249,7 +248,7 @@ All Phase 1 rules still apply: no invented content, verbatim text exactly as giv
 
 ### Phase 2 PR status
 
-- [ ] PR 1: Analytics (Cloudflare Web Analytics)
+- [x] PR 1: Analytics (Cloudflare Web Analytics) (merged)
 - [ ] PR 2: Content cleanup
 - [ ] PR 3: Home 2×2 layout with dark and light themes
 - [ ] PR 4: Bubble game
@@ -269,6 +268,7 @@ All Phase 1 rules still apply: no invented content, verbatim text exactly as giv
 - Remove the hero chips, the hero tagline, and the hero eyebrow line. The hero keeps only Preeta's name and the two buttons.
 - Remove the résumé from the site entirely: the nav Résumé button, the "Want the full picture?" block, `public/Preeta_Chatterjee_Resume.pdf`, `SITE.resume`, and the Phase 1 rule about not touching the PDF.
 - Experience/education sync: SMS India title is "Graduate Engineer (Simulation and Software Testing)", Aug 2023 – May 2024. B.Tech dates: Aug 2019 – May 2023.
+- These supersede the Phase 1 PR 6 values for the SMS India role and B.Tech. Dates are written in the site's existing style, with no spaces around the en dash ("Aug 2023–May 2024").
 
 ## Phase 2 PR 3: Home layout as a 2×2 grid, with two themes (mockup approved)
 

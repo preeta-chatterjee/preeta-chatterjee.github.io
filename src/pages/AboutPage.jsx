@@ -3,7 +3,6 @@ import { useMobile } from "../hooks";
 import { ABOUT_QUOTE, ABOUT_SECTIONS } from "../content";
 import AboutSection from "../components/AboutSection";
 import EducationBlock from "../components/EducationBlock";
-import ResumeBlock from "../components/ResumeBlock";
 import Footer from "../components/Footer";
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -34,7 +33,6 @@ export default function AboutPage() {
           ))}
 
           <EducationBlock mobile={mobile} />
-          <ResumeBlock mobile={mobile} />
         </div>
       </div>
       <Footer />

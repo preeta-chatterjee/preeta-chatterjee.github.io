@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { C, NAV_HEIGHT } from "../theme";
 import { useMobile } from "../hooks";
-import { SITE } from "../content";
 import { CONTACT_PATH, isHomePath } from "../routes";
 
 // ── Nav ───────────────────────────────────────────────────────────────────────
@@ -63,10 +62,6 @@ export default function Nav() {
               onMouseEnter={e => e.currentTarget.style.color = C.dark}
               onMouseLeave={e => e.currentTarget.style.color = activeColor("/projects")}>Projects</Link>
             <Link to={CONTACT_PATH} style={linkStyle} onMouseEnter={e => e.currentTarget.style.color = C.dark} onMouseLeave={e => e.currentTarget.style.color = C.muted}>Contact</Link>
-            <a href={SITE.resume} target="_blank" rel="noreferrer"
-              style={{ fontFamily: "'DM Mono',monospace", fontSize: ".68rem", letterSpacing: ".16em", textTransform: "uppercase", padding: ".4rem 1rem", border: `1.5px solid ${C.red}`, color: C.red, textDecoration: "none", transition: "all .2s" }}
-              onMouseEnter={e => { e.currentTarget.style.background = C.red; e.currentTarget.style.color = "#F2F2F2"; }}
-              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = C.red; }}>Résumé ↗</a>
           </div>
         )}
       </nav>
@@ -75,10 +70,7 @@ export default function Nav() {
         <div style={{ position: "fixed", top: NAV_HEIGHT, left: 0, right: 0, zIndex: 199, background: "rgba(242,242,242,.97)", backdropFilter: "blur(12px)", padding: "0 1.5rem 1.5rem", borderBottom: `1px solid ${C.border}` }}>
           <Link to="/about" style={mobileLinkStyle} onClick={() => setMenuOpen(false)}>About</Link>
           <Link to="/projects" style={mobileLinkStyle} onClick={() => setMenuOpen(false)}>Projects</Link>
-          <Link to={CONTACT_PATH} style={mobileLinkStyle} onClick={() => setMenuOpen(false)}>Contact</Link>
-          <a href={SITE.resume} target="_blank" rel="noreferrer"
-            style={{ ...mobileLinkStyle, color: C.red, borderBottom: "none" }}
-            onClick={() => setMenuOpen(false)}>Résumé ↗</a>
+          <Link to={CONTACT_PATH} style={{ ...mobileLinkStyle, borderBottom: "none" }} onClick={() => setMenuOpen(false)}>Contact</Link>
         </div>
       )}
     </>

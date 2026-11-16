@@ -2,9 +2,8 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { C, NAV_HEIGHT, revealStyle } from "../theme";
 import { useInView, useMobile } from "../hooks";
-import { SITE, HERO, HOME_INTRO, STATS, CONTACT_BLURB, SKILLS, PROJECTS, FEATURED_PROJECT_IDS, PUBLICATIONS } from "../content";
+import { SITE, HOME_INTRO, STATS, CONTACT_BLURB, SKILLS, PROJECTS, FEATURED_PROJECT_IDS, PUBLICATIONS } from "../content";
 import HeroCanvas from "../components/HeroCanvas";
-import Marquee from "../components/Marquee";
 import ProjCard from "../components/ProjCard";
 import ContactForm from "../components/ContactForm";
 import Footer from "../components/Footer";
@@ -49,23 +48,11 @@ export default function HomePage() {
       {/* ── Hero ── */}
       <section style={{ minHeight: "85vh", display: "grid", gridTemplateColumns: mobile ? "1fr" : "55% 45%", gridTemplateRows: mobile ? "auto 55vw" : "1fr", background: C.bg, overflow: "hidden" }}>
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: mobile ? "5rem 1.5rem 3rem" : "6rem 3rem 5rem", position: "relative", zIndex: 2 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: ".7rem", marginBottom: "1.5rem", ...f(.1) }}>
-            <span style={{ width: 30, height: 1.5, background: `linear-gradient(to right,${C.green},${C.red})`, display: "inline-block", flexShrink: 0 }} />
-            <span style={{ fontFamily: "'DM Mono',monospace", fontSize: ".6rem", letterSpacing: ".18em", color: C.green, textTransform: "uppercase" }}>{HERO.badge}</span>
-          </div>
           <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: mobile ? "clamp(3.5rem,15vw,5rem)" : "clamp(4rem,8.5vw,7.5rem)", lineHeight: .92, letterSpacing: ".02em", ...f(.15) }}>
             <div style={{ color: C.dark }}>{SITE.firstName.toUpperCase()}</div>
             <div style={{ color: C.red }}>{SITE.lastName.toUpperCase()}</div>
           </div>
-          <p style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: "clamp(.9rem,1.8vw,1.2rem)", color: C.mid, lineHeight: 1.65, fontStyle: "italic", margin: "1.5rem 0 1.8rem", maxWidth: 420, ...f(.3) }}>
-            {HERO.tagline}
-          </p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: ".5rem", marginBottom: "2rem", ...f(.4) }}>
-            {HERO.chips.map(([label, t]) => (
-              <span key={label} style={{ fontFamily: "'DM Mono',monospace", fontSize: ".58rem", letterSpacing: ".1em", textTransform: "uppercase", padding: ".3rem .75rem", border: `1.5px solid ${t === "green" ? C.green : t === "red" ? C.red : C.border}`, background: t === "green" ? C.green : t === "red" ? C.red : "transparent", color: t === "o" ? C.mid : "#F2F2F2" }}>{label}</span>
-            ))}
-          </div>
-          <div style={{ display: "flex", gap: ".75rem", flexWrap: "wrap", ...f(.5) }}>
+          <div style={{ display: "flex", gap: ".75rem", flexWrap: "wrap", marginTop: "2rem", ...f(.5) }}>
             <Link to="/projects" style={{ display: "inline-block", padding: ".75rem 1.8rem", background: C.dark, color: C.bg, fontFamily: "'DM Mono',monospace", fontSize: ".7rem", letterSpacing: ".12em", textTransform: "uppercase", border: `2px solid ${C.dark}`, transition: "all .2s", textDecoration: "none" }}
               onMouseEnter={e => { e.target.style.background = "transparent"; e.target.style.color = C.dark; }}
               onMouseLeave={e => { e.target.style.background = C.dark; e.target.style.color = C.bg; }}>Explore Work</Link>
@@ -88,10 +75,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Thin gradient accent rule — bridges hero to marquee */}
+      {/* Thin gradient accent rule — bridges hero to the about strip */}
       <div style={{ height: 3, background: `linear-gradient(to right, ${C.green}, ${C.red})` }} />
 
-      <Marquee />
 
       {/* ── About strip ── */}
       <section style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr" }}>
