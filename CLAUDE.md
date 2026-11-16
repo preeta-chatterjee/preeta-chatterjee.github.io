@@ -255,7 +255,7 @@ All Phase 1 rules still apply: no invented content, verbatim text exactly as giv
 - [x] PR 3: Home 2×2 layout with dark and light themes (merged)
 - [x] Typography PR: DM Sans body text, larger Technical Arsenal (merged, plus the description-color follow-up)
 - [x] Dependency PR: `npm audit fix` (no `--force`) (merged)
-- [ ] PR 4: Bubble game
+- [x] PR 4: Bubble game (merged, plus the tap-highlight fix)
 - [ ] PR 5: Hover and focus states
 - [ ] PR 6: Project thumbnails
 - [ ] PR 7: Home projects carousel
@@ -341,6 +341,8 @@ Implementation notes (PR 4):
 - `prefers-reduced-motion`: nothing moves. Idle labels and bubbles are static; in a round the bubbles sit at random spots and a popped one is replaced at a new spot, with no bursts or rising "+1".
 - The canvas now renders at devicePixelRatio, so bubble text is sharp on retina screens.
 - The Start / Play Again button inverts on hover through a small CSS rule inside `@media (hover: hover)` (class `bubble-start`), so taps on touch screens never leave it stuck inverted.
+- Tap-highlight follow-up (live-site bug on real phones: every tap flashed the browser's light blue tap highlight over the game box): `-webkit-tap-highlight-color: transparent` on the game box (HomeGrid), the HeroCanvas root, the canvas and the Start / Play Again button, plus `user-select: none` on the game area. Scoped to the game only; links and buttons elsewhere keep the browser default until PR 5.
+- Testing note: headless Chromium/Playwright (including device emulation) does not render tap highlights, sticky hover or other native touch feedback, so touch visuals need a check on a real phone (iOS Safari and Android Chrome) before handover.
 - Removed the "tap the bubbles" hint (#777777, 3.97:1, flagged in PR 3); the start card replaces it. Contrast: card text 9.74:1 or better, title/chips/buttons 18.88:1, bubble text 9.63:1 (green) to 13.13:1 (maroon).
 
 ## Phase 2 PR 5: Hover and focus states
