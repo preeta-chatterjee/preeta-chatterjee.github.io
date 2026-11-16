@@ -48,7 +48,7 @@ export const revealStyle = (inView, delay = 0) => ({
 // between `start`% and `stop`% across (desktop) or across a band between them (phone).
 export const HOME_THEMES = {
   dark: {
-    base: "#F2F1EF", end: "#121212", start: 26, stop: 70,
+    base: "#F2F1EF", end: "#121212", start: 26, stop: 60,
     headline: "#F2F1EF", green: "#3D8A66", red: "#C0504F", blurb: "#D9D6D1", statLabel: "#B8B4AE", statBorder: "#4A4C50",
     readMore: "#2F6B50", // darker than the accent green so white button text passes AA
   },
