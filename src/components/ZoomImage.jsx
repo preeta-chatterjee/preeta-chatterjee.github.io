@@ -21,17 +21,17 @@ export default function ZoomImage({ image, thumb = false }) {
 
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)} aria-label={`Enlarge image: ${image.alt}`}
+      <button type="button" onClick={() => setOpen(true)} aria-label={`Enlarge image: ${image.alt}`} className="ix-zoom"
         style={{ display: "block", width: "100%", padding: 0, border: `1px solid ${C.border}`, background: C.dark, cursor: "zoom-in", position: "relative" }}>
         <img src={image.src} alt={image.alt} width={image.width} height={image.height} loading="lazy" decoding="async"
           style={{ display: "block", width: "100%", height: "auto", aspectRatio: thumb ? "16 / 9" : undefined, objectFit: thumb ? "cover" : undefined, objectPosition: "top left" }} />
-        <span style={{ position: "absolute", right: ".6rem", bottom: ".6rem", fontFamily: T.mono, fontSize: ".55rem", letterSpacing: ".12em", textTransform: "uppercase", color: "#F2F2F2", background: "rgba(17,17,17,.75)", padding: ".25rem .5rem" }}>Click to enlarge</span>
+        <span className="ix-zoom-chip" style={{ position: "absolute", right: ".6rem", bottom: ".6rem", fontFamily: T.mono, fontSize: ".55rem", letterSpacing: ".12em", textTransform: "uppercase", color: "#F2F2F2", background: "rgba(17,17,17,.75)", padding: ".25rem .5rem" }}>Click to enlarge</span>
       </button>
       {open && createPortal(
-        <div role="dialog" aria-modal="true" aria-label={image.alt} onClick={() => setOpen(false)}
+        <div role="dialog" aria-modal="true" aria-label={image.alt} onClick={() => setOpen(false)} className="on-dark"
           style={{ position: "fixed", inset: 0, zIndex: 1000, background: "rgba(17,17,17,.92)", display: "flex", alignItems: "center", justifyContent: "center", padding: "3.5rem 1rem 1rem", cursor: "zoom-out" }}>
-          <button type="button" onClick={() => setOpen(false)} autoFocus aria-label="Close"
-            style={{ position: "absolute", top: "1rem", right: "1rem", fontFamily: T.mono, fontSize: ".68rem", letterSpacing: ".14em", textTransform: "uppercase", color: "#F2F2F2", background: "transparent", border: "1.5px solid rgba(242,242,242,.6)", padding: ".4rem .9rem", cursor: "pointer" }}>Close ✕</button>
+          <button type="button" onClick={() => setOpen(false)} autoFocus aria-label="Close" className="ix-close"
+            style={{ transition: "all .2s", position: "absolute", top: "1rem", right: "1rem", fontFamily: T.mono, fontSize: ".68rem", letterSpacing: ".14em", textTransform: "uppercase", color: "#F2F2F2", background: "transparent", border: "1.5px solid rgba(242,242,242,.6)", padding: ".4rem .9rem", cursor: "pointer" }}>Close ✕</button>
           <img src={image.full || image.src} alt={image.alt}
             style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", display: "block" }} />
         </div>,

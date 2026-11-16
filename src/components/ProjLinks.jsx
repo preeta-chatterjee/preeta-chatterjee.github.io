@@ -6,8 +6,8 @@ export default function ProjLinks({ links }) {
   return (
     <div style={{ display: "flex", gap: "1.2rem", flexWrap: "wrap" }}>
       {links.map(l => l.to
-        ? <Link key={l.label} to={l.to} style={style(l.color)}>{l.label} →</Link>
-        : <a key={l.label} href={l.href} target="_blank" rel="noreferrer" style={style(l.color)}>{l.label} ↗</a>
+        ? <Link key={l.label} to={l.to} className="ix-link ix-colored ix-above" style={style(l.color)}>{l.label} →</Link>
+        : <a key={l.label} href={l.href} target="_blank" rel="noreferrer" className="ix-link ix-colored ix-above" style={style(l.color)}>{l.label} ↗</a>
       )}
     </div>
   );

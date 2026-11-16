@@ -23,7 +23,7 @@ export default function ProjectsPage() {
   return (
   <div style={{ paddingTop: NAV_HEIGHT, minHeight: "100vh", background: C.bg }}>
     <div style={{ background: C.dark, padding: `4rem ${pad} 3rem` }}>
-      <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".65rem", letterSpacing: ".2em", color: C.red, textTransform: "uppercase", marginBottom: ".8rem" }}>02 / Work</div>
+      <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".65rem", letterSpacing: ".2em", color: C.redOnDark, textTransform: "uppercase", marginBottom: ".8rem" }}>02 / Work</div>
       <h1 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(3rem,8vw,7rem)", color: "#F2F2F2", lineHeight: .92, letterSpacing: ".02em" }}>All Projects.</h1>
     </div>
 
@@ -32,7 +32,7 @@ export default function ProjectsPage() {
       {tabs.map(t => {
         const on = t.id === active;
         return (
-          <button key={t.id} type="button" aria-pressed={on} onClick={() => setActive(t.id)}
+          <button key={t.id} type="button" aria-pressed={on} onClick={() => setActive(t.id)} className="ix-tab"
             style={{ fontFamily: T.mono, fontSize: ".65rem", letterSpacing: ".12em", textTransform: "uppercase", padding: ".5rem 1rem", border: `1.5px solid ${on ? C.dark : C.border}`, background: on ? C.dark : "transparent", color: on ? C.bg : C.mid, cursor: "pointer", transition: "all .2s" }}>
             {t.label}
           </button>
@@ -67,9 +67,7 @@ export default function ProjectsPage() {
 
     {/* Back to home */}
     <div style={{ padding: `3rem ${pad}`, background: C.surface }}>
-      <Link to="/" style={{ fontFamily: "'DM Mono',monospace", fontSize: ".68rem", letterSpacing: ".12em", textTransform: "uppercase", color: C.muted, textDecoration: "none", transition: "color .2s" }}
-        onMouseEnter={e => e.currentTarget.style.color = C.dark}
-        onMouseLeave={e => e.currentTarget.style.color = C.muted}>← Back to Home</Link>
+      <Link to="/" className="ix-link ix-muted" style={{ fontFamily: "'DM Mono',monospace", fontSize: ".68rem", letterSpacing: ".12em", textTransform: "uppercase", color: C.muted, textDecoration: "none" }}>← Back to Home</Link>
     </div>
 
     <Footer />

@@ -1,0 +1,105 @@
+/* ── Hover, touch and focus states (Phase 2 PR 5) ───────────────────────────────
+   Components set their resting look with inline styles; this file adds the
+   interactive states, so it uses !important to win over those inline values.
+   Hover rules sit inside @media (hover: hover) so they never stick after a tap;
+   the same look is given to :active so taps still get feedback.
+   Colors mirror src/theme.js: dark #111111, bg #F2F2F2, green #174D38,
+   red #4D1717, border #d0d0d0, border2 #e8e8e8. */
+
+/* Native tap flash replaced by the :active states below */
+a, button { -webkit-tap-highlight-color: transparent; }
+
+/* ── Keyboard focus ── */
+:focus-visible { outline: 2px solid #111111; outline-offset: 3px; }
+.on-dark :focus-visible { outline-color: #F2F2F2; }
+.ix-readmore:focus-visible { outline-color: var(--about-headline); }
+/* Media links fill the top of a card that clips overflow: draw the ring inside, light on the image */
+.ix-media:focus-visible { outline-color: #F2F2F2; outline-offset: -4px; }
+input:focus-visible, textarea:focus-visible { outline-offset: 4px; }
+
+/* ── Text links ── */
+.ix-link { transition: color .2s, text-decoration-color .2s; text-underline-offset: 3px; }
+@media (hover: hover) {
+  .ix-link:hover { text-decoration: underline !important; text-decoration-thickness: 1.5px !important; }
+  .ix-muted:hover { color: #111111 !important; }
+  .ix-footer:hover { color: #F2F2F2 !important; }
+  .ix-rich:hover { color: #111111 !important; }
+  .ix-colored:hover { filter: brightness(.6); }
+}
+.ix-link:active { text-decoration: underline !important; }
+.ix-muted:active, .ix-rich:active { color: #111111 !important; }
+.ix-footer:active { color: #F2F2F2 !important; }
+
+/* PC logo (gradient text): darkens */
+@media (hover: hover) { .ix-logo:hover { filter: brightness(.55); } }
+.ix-logo:active { filter: brightness(.55); }
+
+/* ── Buttons ── */
+/* Filled dark → outline (Explore Work) */
+@media (hover: hover) { .ix-btn-dark:hover { background: transparent !important; color: #111111 !important; } }
+.ix-btn-dark:active { background: transparent !important; color: #111111 !important; }
+/* Filled red → outline (Get in Touch) */
+@media (hover: hover) { .ix-btn-red:hover { background: transparent !important; color: #4D1717 !important; } }
+.ix-btn-red:active { background: transparent !important; color: #4D1717 !important; }
+/* Filled green → outline (Send Message) */
+@media (hover: hover) { .ix-btn-green:hover:not(:disabled) { background: transparent !important; color: #174D38 !important; } }
+.ix-btn-green:active:not(:disabled) { background: transparent !important; color: #174D38 !important; }
+/* Outline green → filled (View All) */
+@media (hover: hover) { .ix-btn-outline:hover { background: #174D38 !important; color: #F2F2F2 !important; } }
+.ix-btn-outline:active { background: #174D38 !important; color: #F2F2F2 !important; }
+/* Read More (home about panel): theme green → white with theme-green text */
+@media (hover: hover) { .ix-readmore:hover { background: #FFFFFF !important; color: var(--readmore-bg) !important; } }
+.ix-readmore:active { background: #FFFFFF !important; color: var(--readmore-bg) !important; }
+/* Projects page filter tabs (inactive only) */
+@media (hover: hover) { .ix-tab[aria-pressed="false"]:hover { border-color: #111111 !important; color: #111111 !important; background: #FFFFFF !important; } }
+/* Selected tab: a lighter fill on hover (#F2F2F2 on #333333 is 11.6:1) */
+@media (hover: hover) { .ix-tab[aria-pressed="true"]:hover { background: #333333 !important; border-color: #333333 !important; } }
+.ix-tab[aria-pressed="false"]:active { border-color: #111111 !important; color: #111111 !important; background: #FFFFFF !important; }
+/* Phone menu toggle and links */
+@media (hover: hover) { .ix-menu-btn:hover { background: #e8e8e8 !important; } }
+.ix-menu-btn:active { background: #e8e8e8 !important; }
+.ix-menu-link:active { background: #e8e8e8 !important; }
+/* Bubble game Start / Play Again (hover rule lives in HeroCanvas) */
+.bubble-start:active { background: #FFFFFF !important; color: #111111 !important; }
+/* Card image links (case study) */
+.ix-media img { transition: opacity .2s; }
+@media (hover: hover) { .ix-media:hover img { opacity: .85; } }
+.ix-media:active img { opacity: .85; }
+/* Lightbox: preview button and close */
+.ix-zoom img { transition: opacity .2s; }
+.ix-zoom-chip { transition: background .2s; }
+@media (hover: hover) {
+  .ix-zoom:hover img { opacity: .82; }
+  .ix-zoom:hover .ix-zoom-chip { background: #111111 !important; }
+  .ix-close:hover { background: #F2F2F2 !important; color: #111111 !important; }
+}
+.ix-close:active { background: #F2F2F2 !important; color: #111111 !important; }
+
+/* ── Cards (project and publication) ──
+   Resting: page background. Hover (or keyboard focus inside): white, lifts 4px with a
+   shadow and a 2px accent border (--accent, set inline), the bottom bar fills, and
+   "View project →" fades in. `translate` is used so it doesn't fight the scroll-reveal
+   `transform`. The outline is drawn over the card's content, so images don't hide it. */
+.ix-card { background: #F2F2F2; outline: 2px solid transparent; outline-offset: -2px; }
+.ix-card-bar { width: 0%; }
+.ix-card-num { color: #e8e8e8; }
+.ix-card-cta { opacity: 0; transition: opacity .2s; }
+@media (hover: hover) {
+  .ix-card:hover { background: #FFFFFF; translate: 0 -4px; z-index: 1; box-shadow: 0 12px 28px rgba(17,17,17,.14); outline-color: var(--accent); }
+  .ix-card:hover .ix-card-bar { width: 100%; }
+  .ix-card:hover .ix-card-num { color: #d0d0d0; }
+  .ix-card:hover .ix-card-cta { opacity: 1; }
+  /* The label's link covers the card, so the whole card is clickable; inner links sit above it */
+  .ix-card-cta::after { content: ""; position: absolute; inset: 0; }
+  .ix-card-cta:hover { text-decoration: underline; text-underline-offset: 3px; }
+}
+.ix-card:focus-within { background: #FFFFFF; z-index: 1; box-shadow: 0 12px 28px rgba(17,17,17,.14); outline-color: var(--accent); }
+.ix-card:focus-within .ix-card-bar { width: 100%; }
+.ix-card:focus-within .ix-card-cta { opacity: 1; }
+.ix-above { position: relative; z-index: 2; }
+/* No hover on touch screens: the label (and the card-wide link) stays out of the way */
+@media (hover: none) { .ix-card-cta { display: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .ix-card, .ix-card-bar, .ix-card-cta, .ix-link, .ix-zoom img, .ix-media img { transition: none !important; }
+  .ix-card:hover { translate: none; }
+}

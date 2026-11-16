@@ -1,8 +1,9 @@
 export const C = {
   bg: "#F2F2F2", surface: "#ffffff", border: "#d0d0d0", border2: "#e8e8e8",
   green: "#174D38", greenL: "#1e6347", greenMid: "#2d7a57", greenBg: "#e4ede8",
+  redOnDark: "#CC6260", // labels on the dark #111 page headers (4.93:1); #4D1717 there was 1.3:1
   red: "#4D1717", redL: "#7a2424", redMid: "#8b3a3a", redBg: "#f5e8e8",
-  dark: "#111111", mid: "#444444", muted: "#777777",
+  dark: "#111111", mid: "#444444", muted: "#666666", // small labels: 5.13:1 on #F2F2F2 (AA), still lighter than body text
   desc: "#595959", // project/publication descriptions and captions (6.26:1 on #F2F2F2, passes AA)
   amber: "#b8860b", amberBg: "#fdf3e0", amberDk: "#7a5a08",
 };

@@ -69,7 +69,7 @@ export default function CaseStudyPage() {
   return (
     <div style={{ paddingTop: NAV_HEIGHT, minHeight: "100vh", background: C.bg }}>
       <div style={{ background: C.dark, padding: `4rem ${pad} 3rem` }}>
-        <div style={{ fontFamily: T.mono, fontSize: ".65rem", letterSpacing: ".2em", color: C.red, textTransform: "uppercase", marginBottom: ".8rem" }}>Case Study · {cs.year}</div>
+        <div style={{ fontFamily: T.mono, fontSize: ".65rem", letterSpacing: ".2em", color: C.redOnDark, textTransform: "uppercase", marginBottom: ".8rem" }}>Case Study · {cs.year}</div>
         <h1 style={{ fontFamily: T.display, fontSize: "clamp(3rem,8vw,7rem)", color: "#F2F2F2", lineHeight: .92, letterSpacing: ".02em", fontWeight: 400 }}>{cs.title}</h1>
         {cs.subtitle && <div style={{ fontFamily: T.mono, fontSize: ".72rem", letterSpacing: ".12em", color: "rgba(242,242,242,.55)", textTransform: "uppercase", marginTop: "1rem" }}>{cs.subtitle}</div>}
       </div>
@@ -87,9 +87,7 @@ export default function CaseStudyPage() {
 
           {cs.sections.map((s, i) => <CaseSection key={s.heading} s={s} n={i + 1} mobile={mobile} />)}
 
-          <Link to="/projects" style={{ fontFamily: T.mono, fontSize: ".68rem", letterSpacing: ".12em", textTransform: "uppercase", color: C.muted, textDecoration: "none", transition: "color .2s" }}
-            onMouseEnter={e => e.currentTarget.style.color = C.dark}
-            onMouseLeave={e => e.currentTarget.style.color = C.muted}>← All Projects</Link>
+          <Link to="/projects" className="ix-link ix-muted" style={{ fontFamily: T.mono, fontSize: ".68rem", letterSpacing: ".12em", textTransform: "uppercase", color: C.muted, textDecoration: "none" }}>← All Projects</Link>
         </div>
       </div>
       <Footer />

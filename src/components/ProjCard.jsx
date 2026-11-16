@@ -1,31 +1,29 @@
-import { useState } from "react";
 import { C, S_BODY } from "../theme";
 import { useInView, useMobile } from "../hooks";
 import RichText from "./RichText";
 import ProjLinks from "./ProjLinks";
 import ProjMedia from "./ProjMedia";
+import CardCta from "./CardCta";
 
 // ── Project Card — grid layout (homepage) ─────────────────────────────────────
 export default function ProjCard({ p, i }) {
   const [ref, inV] = useInView();
-  const [hov, setHov] = useState(false);
   const mobile = useMobile();
   // Full-width cards put media beside the text on desktop; other cards put it on top.
   const side = p.media && p.full && !mobile;
   const caseStudy = p.links.find(l => l.to)?.to;
   return (
-    <div ref={ref} style={{
+    <div ref={ref} className="ix-card" style={{
+      "--accent": p.accent,
       gridColumn: mobile ? "span 2" : p.full ? "span 2" : "span 1",
-      background: hov ? "#fff" : C.bg,
       position: "relative", overflow: "hidden",
       display: side ? "grid" : "flex", flexDirection: "column", gridTemplateColumns: side ? "minmax(0, 5fr) minmax(0, 6fr)" : undefined,
       opacity: inV ? 1 : 0, transform: inV ? "none" : "translateY(28px)",
-      transition: `background .3s, opacity .7s ease ${i * .1}s, transform .7s ease ${i * .1}s`,
-    }}
-      onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
+      transition: `background .3s, translate .25s ease, box-shadow .25s ease, outline-color .25s, opacity .7s ease ${i * .1}s, transform .7s ease ${i * .1}s`,
+    }}>
       {p.media && <ProjMedia media={p.media} to={caseStudy} fill={side} />}
       <div style={{ position: "relative", flex: 1, display: "flex", flexDirection: "column", padding: mobile ? "1.5rem" : "2.5rem" }}>
-      <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: mobile ? "3rem" : "4rem", color: hov ? C.border : C.border2, lineHeight: 1, position: "absolute", top: "1rem", right: "1.2rem", transition: "color .3s" }}>{p.num}</div>
+      <div className="ix-card-num" aria-hidden="true" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: mobile ? "3rem" : "4rem", lineHeight: 1, position: "absolute", top: "1rem", right: "1.2rem", transition: "color .3s" }}>{p.num}</div>
       <div style={{ display: "inline-flex", alignSelf: "flex-start", alignItems: "center", gap: ".4rem", padding: ".22rem .7rem", background: p.statusBg, border: `1px solid ${(p.statusDot || p.statusColor) + "44"}`, marginBottom: "1rem" }}>
         <span style={{ width: 5, height: 5, borderRadius: "50%", background: p.statusDot || p.statusColor, display: "inline-block" }} />
         <span style={{ fontFamily: "'DM Mono',monospace", fontSize: ".58rem", letterSpacing: ".1em", color: p.statusColor }}>{p.status ? `${p.status} · ${p.year}` : p.year}</span>
@@ -36,9 +34,14 @@ export default function ProjCard({ p, i }) {
       <div style={{ display: "flex", flexWrap: "wrap", gap: ".35rem", marginTop: "auto", marginBottom: p.links.length ? "1.3rem" : 0 }}>
         {p.stack.map(s => <span key={s} style={{ fontFamily: "'DM Mono',monospace", fontSize: ".6rem", letterSpacing: ".07em", color: C.dark, padding: ".18rem .55rem", border: `1px solid ${C.border}`, background: C.surface }}>{s}</span>)}
       </div>
-      {p.links.length > 0 && <ProjLinks links={p.links} />}
+      {p.links.length > 0 && (
+        <div style={{ display: "flex", alignItems: "center", gap: "1.2rem", flexWrap: "wrap" }}>
+          <ProjLinks links={p.links} />
+          <CardCta p={p} />
+        </div>
+      )}
       </div>
-      <div style={{ position: "absolute", bottom: 0, left: 0, width: hov ? "100%" : "0%", height: 3, background: p.accent, transition: "width .4s ease" }} />
+      <div className="ix-card-bar" style={{ position: "absolute", bottom: 0, left: 0, height: 3, background: p.accent, transition: "width .4s ease" }} />
     </div>
   );
 }

@@ -17,7 +17,7 @@ export default function AboutPage() {
   return (
     <div style={{ paddingTop: NAV_HEIGHT, minHeight: "100vh", background: C.bg }}>
       <div style={{ background: C.dark, padding: `4rem ${pad} 3rem` }}>
-        <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".65rem", letterSpacing: ".2em", color: C.red, textTransform: "uppercase", marginBottom: ".8rem" }}>01 / About</div>
+        <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".65rem", letterSpacing: ".2em", color: C.redOnDark, textTransform: "uppercase", marginBottom: ".8rem" }}>01 / About</div>
         <h1 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(3rem,8vw,7rem)", color: "#F2F2F2", lineHeight: .92, letterSpacing: ".02em" }}>About Me.</h1>
       </div>
       <div style={{ padding: `3rem ${pad}` }}>
