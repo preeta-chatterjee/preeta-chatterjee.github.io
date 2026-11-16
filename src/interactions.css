@@ -61,15 +61,13 @@ input:focus-visible, textarea:focus-visible { outline-offset: 4px; }
 .ix-menu-link:active { background: #e8e8e8 !important; }
 /* ── Home carousel ──
    Arrows sit on the row's edges, over the veiled side cards. Desktop: large, hidden until the
-   carousel is hovered or has keyboard focus. Touch: smaller and subtle, always visible
-   (data-touch-arrows="subtle"), or hidden so swipe is the only control ("none"). */
+   carousel is hovered or has keyboard focus. Touch: smaller and subtle, always visible. */
 .ix-carr-arrow { width: 56px; height: 56px; font-size: 1.25rem; background: #FFFFFF; border: 1.5px solid #111111; box-shadow: 0 2px 10px rgba(17,17,17,.12); }
 @media (hover: hover) {
   .ix-carr-arrow { opacity: 0; }
   .ix-carousel:hover .ix-carr-arrow, .ix-carousel:focus-within .ix-carr-arrow { opacity: 1; }
   .ix-carr-arrow:hover { background: #111111 !important; color: #FFFFFF !important; }
   .ix-dot:hover span { background: #666666 !important; }
-  .ix-carr-toggle:hover { color: #111111 !important; border-color: #111111 !important; }
   /* Whole center card: lifts, its shadow deepens, the destination hint underlines */
   .ix-slide-link:hover { translate: 0 -4px; }
   .ix-slide-link:hover .proj-thumb { box-shadow: 0 10px 26px rgba(17,17,17,.16) !important; }
@@ -77,11 +75,9 @@ input:focus-visible, textarea:focus-visible { outline-offset: 4px; }
 }
 @media (hover: none) {
   .ix-carr-arrow { width: 30px; height: 30px; font-size: .9rem; background: rgba(255,255,255,.9); border-color: #B5B1AB; box-shadow: none; }
-  [data-touch-arrows="none"] .ix-carr-arrow { display: none !important; }
 }
 .ix-carr-arrow:active { background: #111111 !important; color: #FFFFFF !important; }
 .ix-dot:active span { background: #666666 !important; }
-.ix-carr-toggle:active { color: #111111 !important; border-color: #111111 !important; }
 .ix-slide-link:focus-visible { outline-offset: 6px; }
 @media (prefers-reduced-motion: reduce) { .ix-slide-link { transition: none !important; } .ix-slide-link:hover { translate: none; } }
 /* Bubble game Start / Play Again (hover rule lives in HeroCanvas) */

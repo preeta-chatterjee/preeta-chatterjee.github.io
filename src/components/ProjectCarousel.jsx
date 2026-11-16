@@ -19,15 +19,13 @@ import ProjThumb from "./ProjThumb";
 // - Desktop (mouse/keyboard): arrows, dots, arrow keys and side-card clicks also pause it; it resumes
 //   TIMING.resumeAfter ms after the last interaction and the mouse leaving.
 // - Touch: any touch (swipe, tap, arrow, dot) stops it for good.
-// - The pause/play toggle stops it entirely until play is pressed (play also restarts after a touch).
-// - prefers-reduced-motion: no auto-advance and no sliding; the toggle is hidden.
+// - prefers-reduced-motion: no auto-advance and no sliding.
+// - No pause/play toggle: Preeta removed it (PR 7 review); don't add it back.
 // Only the center card is reachable: it is one link (thumbnail + overview + destination hint);
 // the other slides are aria-hidden and contain nothing focusable (their veiled text is below AA by
 // design). Clicking a side card brings it to the center. Loading rules: nothing animates on first
 // paint; the first render already has every offset and veil in place.
-const TIMING = { rest: 3500, slide: 700, resumeAfter: 5000, maxJump: 1400 }; // ms; tune here
-// Touch-device arrows: "subtle" (small, always visible) or "none" (swipe only)
-const TOUCH_ARROWS = "subtle";
+const TIMING = { rest: 1500, slide: 500, resumeAfter: 5000, maxJump: 1000 }; // ms; tune here (about one card every 2s)
 
 const ORDER = CAROUSEL_PROJECT_IDS.map(id => PROJECTS.find(p => p.id === id));
 const N = ORDER.length;
@@ -57,8 +55,7 @@ export default function ProjectCarousel({ mobile }) {
   const { w, step } = metrics(width, mobile);
   // view.cur: slot in focus. view.from: where the row rests (differs from cur only while sliding)
   const [view, setView] = useState({ cur: 0, from: 0 });
-  const [stopped, setStopped] = useState(false);     // touch interaction: no auto-advance until play
-  const [userPaused, setUserPaused] = useState(false); // pause/play toggle
+  const [stopped, setStopped] = useState(false);     // touch interaction: no auto-advance for good
   const [manual, setManual] = useState(false);       // visitor has navigated (live region speaks)
   const [tick, setTick] = useState(0);               // re-evaluates the auto-advance timer
   const [reduce, setReduce] = useState(() => reducedMotion());
@@ -126,7 +123,7 @@ export default function ProjectCarousel({ mobile }) {
   // Auto-advance: one rest per card once it has settled in the center
   const resting = view.from === view.cur;
   useEffect(() => {
-    if (!resting || stopped || userPaused || reduce) return;
+    if (!resting || stopped || reduce) return;
     const pz = paused.current;
     if (pz.hover || pz.focus || pz.offscreen || document.hidden) return;
     const wait = holdUntil.current - clock();
@@ -134,7 +131,7 @@ export default function ProjectCarousel({ mobile }) {
     if (wait > 0) { const id = setTimeout(() => { holdUntil.current = 0; go(view.cur + 1); }, wait); return () => clearTimeout(id); }
     const id = setTimeout(() => go(view.cur + 1), TIMING.rest);
     return () => clearTimeout(id);
-  }, [resting, view.cur, stopped, userPaused, reduce, tick, go]);
+  }, [resting, view.cur, stopped, reduce, tick, go]);
   useEffect(() => {
     const io = new IntersectionObserver(([e]) => setPause("offscreen", e.intersectionRatio < .5), { threshold: [0, .5, 1] });
     io.observe(track.current);
@@ -150,17 +147,11 @@ export default function ProjectCarousel({ mobile }) {
     if (e.key === "ArrowLeft") { e.preventDefault(); userGo(view.cur - 1); }
     if (e.key === "ArrowRight") { e.preventDefault(); userGo(view.cur + 1); }
   };
-  const playing = !stopped && !userPaused;
-  const toggle = () => {
-    if (playing) setUserPaused(true);
-    else { setUserPaused(false); setStopped(false); holdUntil.current = 0; setTick(t => t + 1); }
-  };
 
   // Swipe (touch/pen): the row follows the finger; release past 15% of a card moves one card
   const onPointerDown = e => {
     if (e.pointerType === "mouse") return;
-    // Any touch stops auto-advance for good (play restarts it); the toggle handles itself
-    if (!e.target.closest(".ix-carr-toggle")) setStopped(true);
+    setStopped(true); // any touch stops auto-advance for good
     drag.current = { x: e.clientX, y: e.clientY, id: e.pointerId, start: pos.current, moving: false };
   };
   const onPointerMove = e => {
@@ -202,7 +193,7 @@ export default function ProjectCarousel({ mobile }) {
   );
 
   return (
-    <div role="region" aria-roledescription="carousel" aria-label="Projects" className="ix-carousel" data-touch-arrows={TOUCH_ARROWS}
+    <div role="region" aria-roledescription="carousel" aria-label="Projects" className="ix-carousel"
       onKeyDown={onKeyDown} onPointerDownCapture={onPointerDown}
       onPointerEnter={e => e.pointerType === "mouse" && setPause("hover", true)}
       onPointerLeave={e => { if (e.pointerType === "mouse") { paused.current.hover = false; hold(); } }}
@@ -236,8 +227,8 @@ export default function ProjectCarousel({ mobile }) {
           style={{ ...arrowStyle, top: arrowTop, right: mobile ? 2 : 28 }}>→</button>
       </div>
 
-      {/* Dots (one per project) and the pause/play toggle */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: ".6rem", marginTop: "1rem", padding: "0 1rem" }}>
+      {/* Dots, one per project */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "1rem", padding: "0 1rem" }}>
         <div style={{ display: "flex" }}>
           {ORDER.map((p, i) => (
             <button key={p.id} type="button" className="ix-dot" onClick={e => toProject(i, e.nativeEvent.pointerType)} aria-label={`Show project ${i + 1}: ${p.thumbTitle}`} aria-current={i === active ? "true" : undefined}
@@ -246,15 +237,9 @@ export default function ProjectCarousel({ mobile }) {
             </button>
           ))}
         </div>
-        {!reduce && (
-          <button type="button" className="ix-carr-toggle" onClick={toggle} aria-label={playing ? "Pause carousel" : "Play carousel"}
-            style={{ height: 28, padding: "0 .6rem", display: "inline-flex", alignItems: "center", gap: ".4rem", fontFamily: T.mono, fontSize: ".62rem", letterSpacing: ".12em", textTransform: "uppercase", color: C.muted, background: "transparent", border: `1px solid ${C.border}`, cursor: "pointer", transition: "all .2s" }}>
-            <span aria-hidden="true" style={{ fontSize: ".7rem", letterSpacing: 0 }}>{playing ? "❚❚" : "▶"}</span>{playing ? "Pause" : "Play"}
-          </button>
-        )}
       </div>
       {/* Announces the card in focus once the visitor has taken control (silent while auto-advancing) */}
-      <div aria-live={manual || !playing ? "polite" : "off"} style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap" }}>
+      <div aria-live={manual ? "polite" : "off"} style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap" }}>
         {`Project ${active + 1} of ${N}: ${current.thumbTitle}`}
       </div>
     </div>
