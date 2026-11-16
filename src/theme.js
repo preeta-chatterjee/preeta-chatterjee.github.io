@@ -14,11 +14,14 @@ export const T = {
   mono:    "'DM Mono', monospace",
   serif:   "'DM Serif Display', Georgia, serif",
   display: "'Bebas Neue', sans-serif",
+  sans:    "'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif", // body text
 };
 
 // ── Reusable style patterns ───────────────────────────────────────────────────
 // Tiny monospace label (section numbers, tags, captions)
 export const S_LABEL = { fontFamily: T.mono, fontSize: ".6rem", letterSpacing: ".18em", textTransform: "uppercase" };
+// Body / paragraph text: DM Sans, upright. 17px on desktop, ~16px on phone.
+export const S_BODY = { fontFamily: T.sans, fontSize: "clamp(1rem, .95rem + .25vw, 1.0625rem)", lineHeight: 1.6, fontStyle: "normal", fontWeight: 400 };
 // Standard nav / button mono text
 export const S_MONO_SM = { fontFamily: T.mono, fontSize: ".68rem", letterSpacing: ".14em", textTransform: "uppercase" };
 // Ghost outline button base (colour overridden per use)

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { C } from "../theme";
+import { C, S_BODY } from "../theme";
 import { useInView, useMobile } from "../hooks";
 import RichText from "./RichText";
 import ProjLinks from "./ProjLinks";
@@ -34,7 +34,7 @@ export default function ProjCardFull({ p, i }) {
           <div>
             <h3 style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: "1.55rem", color: C.dark, lineHeight: 1.15, marginBottom: ".4rem", fontWeight: 400 }}>{p.title}</h3>
             <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".63rem", letterSpacing: ".14em", color: C.muted, textTransform: "uppercase", marginBottom: "1rem" }}>{p.sub}</div>
-            <p style={{ fontFamily: "Georgia,serif", fontSize: ".9rem", lineHeight: 1.8, color: C.muted, marginBottom: "1.1rem" }}><RichText value={p.desc} /></p>
+            <p style={{ ...S_BODY, color: C.muted, marginBottom: "1.1rem" }}><RichText value={p.desc} /></p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: ".35rem", marginBottom: p.links.length ? "1.2rem" : 0 }}>
               {p.stack.map(s => <span key={s} style={{ fontFamily: "'DM Mono',monospace", fontSize: ".6rem", letterSpacing: ".07em", color: C.dark, padding: ".18rem .55rem", border: `1px solid ${C.border}`, background: C.surface }}>{s}</span>)}
             </div>
@@ -51,7 +51,7 @@ export default function ProjCardFull({ p, i }) {
             </div>
           </div>
           <div>
-            <p style={{ fontFamily: "Georgia,serif", fontSize: ".9rem", lineHeight: 1.8, color: C.muted, marginBottom: "1.3rem" }}><RichText value={p.desc} /></p>
+            <p style={{ ...S_BODY, color: C.muted, marginBottom: "1.3rem" }}><RichText value={p.desc} /></p>
             {p.links.length > 0 && <ProjLinks links={p.links} />}
           </div>
         </div>

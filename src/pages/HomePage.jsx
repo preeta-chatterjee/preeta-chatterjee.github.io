@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { C, NAV_HEIGHT, revealStyle } from "../theme";
+import { C, S_BODY, NAV_HEIGHT, revealStyle } from "../theme";
 import { useInView, useMobile } from "../hooks";
 import { SITE, CONTACT_BLURB, PROJECTS, FEATURED_PROJECT_IDS, PUBLICATIONS } from "../content";
 import HomeGrid from "../components/HomeGrid";
@@ -75,7 +75,7 @@ export default function HomePage() {
           <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem,6vw,5.5rem)", color: "#F2F2F2", lineHeight: .92, letterSpacing: ".02em", marginBottom: "1.5rem", position: "relative" }}>
             Let's<br />build<br />something.
           </div>
-          <p style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "1rem", color: "rgba(242,242,242,.72)", lineHeight: 1.75, fontStyle: "italic", marginBottom: "2rem", position: "relative" }}>
+          <p style={{ ...S_BODY, color: "rgba(242,242,242,.72)", marginBottom: "2rem", position: "relative" }}>
             {CONTACT_BLURB}
           </p>
           <div style={{ position: "relative" }}>

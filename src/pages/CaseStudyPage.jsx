@@ -1,5 +1,5 @@
 import { Link, Navigate, useParams } from "react-router-dom";
-import { C, T, NAV_HEIGHT, revealStyle } from "../theme";
+import { C, T, S_BODY, NAV_HEIGHT, revealStyle } from "../theme";
 import { useInView, useMobile } from "../hooks";
 import { CASE_STUDIES } from "../content";
 import VideoEmbed from "../components/VideoEmbed";
@@ -9,8 +9,8 @@ import Footer from "../components/Footer";
 // ══════════════════════════════════════════════════════════════════════════════
 // PAGE: PROJECT CASE STUDY  (/#/projects/:slug, data in CASE_STUDIES)
 // ══════════════════════════════════════════════════════════════════════════════
-const S_PARA = { fontFamily: T.serif, fontSize: "1rem", color: C.mid, lineHeight: 1.85 };
-const S_CAPTION = { fontFamily: "Georgia,serif", fontSize: ".86rem", lineHeight: 1.75, color: C.muted, marginTop: ".8rem" };
+const S_PARA = { ...S_BODY, color: C.mid };
+const S_CAPTION = { ...S_BODY, fontSize: ".95rem", color: C.muted, marginTop: ".8rem" };
 const S_TAG = { fontFamily: T.mono, fontSize: ".6rem", letterSpacing: ".07em", color: C.dark, padding: ".18rem .55rem", border: `1px solid ${C.border}`, background: C.surface };
 
 function CaseSection({ s, n, mobile }) {
@@ -26,7 +26,7 @@ function CaseSection({ s, n, mobile }) {
         <div style={{ marginTop: s.body ? "1.8rem" : 0 }}>
           {s.list.heading && <h3 style={{ fontFamily: T.mono, fontSize: ".65rem", letterSpacing: ".18em", color: C.green, textTransform: "uppercase", fontWeight: 400, marginBottom: "1rem" }}>{s.list.heading}</h3>}
           <ul style={{ paddingLeft: "1.1rem", margin: 0 }}>
-            {s.list.items.map((item, i) => <li key={i} style={{ ...S_PARA, fontSize: ".95rem", marginBottom: ".55rem" }}>{item}</li>)}
+            {s.list.items.map((item, i) => <li key={i} style={{ ...S_PARA, marginBottom: ".55rem" }}>{item}</li>)}
           </ul>
         </div>
       )}
@@ -37,7 +37,7 @@ function CaseSection({ s, n, mobile }) {
           {layer.image
             ? <figure style={{ margin: 0 }}>
                 <ZoomImage image={layer.image} />
-                <figcaption style={{ ...S_CAPTION, fontSize: ".92rem", color: C.mid }}>{layer.text}</figcaption>
+                <figcaption style={{ ...S_CAPTION, fontSize: S_BODY.fontSize, color: C.mid }}>{layer.text}</figcaption>
               </figure>
             : <p style={S_PARA}>{layer.text}</p>}
         </div>

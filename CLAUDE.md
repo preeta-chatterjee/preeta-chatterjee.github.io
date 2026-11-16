@@ -253,7 +253,8 @@ All Phase 1 rules still apply: no invented content, verbatim text exactly as giv
 - [x] PR 2: Content cleanup (merged)
 - [x] Deployment cleanup: Actions-only (merged; gh-pages branch deleted by Preeta)
 - [ ] PR 3: Home 2×2 layout with dark and light themes
-- [ ] Dependency PR: `npm audit fix` (no `--force`), right after PR 3 is merged
+- [ ] Typography PR: DM Sans body text, larger Technical Arsenal
+- [ ] Dependency PR: `npm audit fix` (no `--force`), right after the typography PR is merged
 - [ ] PR 4: Bubble game
 - [ ] PR 5: Hover and focus states
 - [ ] PR 6: Project thumbnails
@@ -308,7 +309,17 @@ Implementation notes (PR 3):
 - Final dark palette (Preeta's decisions): accents green #3D8A66 and red #C0504F (headline accents, stat numbers); Read More background #2F6B50 with white text (`readMore` in HOME_THEMES, CSS var `--readmore-bg`). Dark fade: #F2F1EF → #121212 from 26% to 60% across (`start: 26, stop: 60`), 15 smoothstep-eased stops (one every ~2.4%). Light theme unchanged (fade 30% → 60%; its Read More stays #1E4D3B).
 - Contrast (measured against the rendered backgrounds), final palette: light theme passes AA everywhere. Dark theme: on solid #121212 the green is 4.48:1 and the red 4.02:1, so the headline accents and stat numbers pass AA large (3:1) on phone and wherever the fade is fully black; Read More (white on #2F6B50) is 6.29:1 and passes. With the fade ending at 60%, the background where the about text starts (56.7% across) is #181818, so everything in the about panel passes AA at 1440, 1280 and 390: worst cases "& game engines." 3.81:1 and "4.0" 4.41:1 (1440) / 4.37:1 (1280); CHATTERJEE on the fade 6.2:1 (1440) / 6.0:1 (1280). "tap the bubbles" (#777777, 3.97:1) is left for PR 4.
 
-## Dependency PR: `npm audit fix` (right after PR 3)
+## Typography PR (between PR 3 and the dependency PR)
+
+- Fonts: body and paragraph text site-wide uses DM Sans (regular, upright), loaded from Google Fonts with the other fonts in `src/App.jsx`. `T.sans` and the shared `S_BODY` style in `src/theme.js` (17px on desktop, about 16px on phone, line height 1.6). Use `S_BODY` for any new body text.
+- DM Serif Display (italic) stays for headings and labels: skill category names, role and degree titles, project and publication titles, case-study layer headings, the About pull quote and the case-study pitch. Bebas Neue stays for display headings, DM Mono for small labels, tags and buttons.
+- Covers: home about blurb, contact blurb, About page paragraphs, experience bullets, coursework/award lines, project and publication descriptions, case-study paragraphs, lists and captions (gallery captions .95rem).
+- Role titles 1.15rem (was 1rem) and degree titles 1.2rem (was 1.05rem) so they stay larger than the 17px body text.
+- Technical Arsenal: tags 13px (.8125rem, was .56rem), padding .28rem .65rem, letter spacing .02em, no wrapping inside a tag; category labels 1.1rem (was .95rem), and long labels wrap after the slash ("Game Engines/ Simulation") on desktop; heading .72rem (was .62rem).
+- To keep the 2×2 grid on one screen at 1280×800 (the 17px blurb wraps to 4 lines there): top-row vertical padding 1rem (was 1.5rem), about headline margin .75rem (was 1rem), blurb and Read More gaps .85rem (were 1.25rem), stat cell padding .55rem (was .7rem), skills box vertical padding 1.1rem (was 1.6rem), skills rows .42rem (was .6rem). Phone spacing unchanged. At 1280×800 the about panel has about 2px to spare, so any extra copy there will push the grid past the fold.
+- Contrast: project/publication descriptions and gallery captions use #777777 on #F2F2F2 (4.00:1), below AA for normal text. This predates the font change; left for PR 5 (hover/focus, WCAG AA) or Preeta's call.
+
+## Dependency PR: `npm audit fix` (right after the typography PR)
 
 - Run `npm audit fix` (no `--force`). Confirm build, lint, and the site-wide checks pass; report what got updated and list anything still unresolved.
 

@@ -1,4 +1,4 @@
-import { C, T, revealStyle } from "../theme";
+import { C, T, S_BODY, revealStyle } from "../theme";
 import { useInView } from "../hooks";
 import ExperienceBlock from "./ExperienceBlock";
 
@@ -12,7 +12,7 @@ export default function AboutSection({ s, i, mobile }) {
         <div style={{ fontFamily: T.display, fontSize: "1.3rem", color: C.dark, letterSpacing: ".02em" }}>{s.heading}</div>
       </div>
       {s.body
-        ? <p style={{ fontFamily: T.serif, fontSize: "1rem", color: C.mid, lineHeight: 1.85, fontStyle: "italic" }}>{s.body}</p>
+        ? <p style={{ ...S_BODY, color: C.mid }}>{s.body}</p>
         : <ExperienceBlock />
       }
     </div>
