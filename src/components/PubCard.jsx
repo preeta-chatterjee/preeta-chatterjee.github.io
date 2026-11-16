@@ -1,5 +1,6 @@
 import { C, S_BODY } from "../theme";
 import { useInView, useMobile } from "../hooks";
+import CardCta from "./CardCta";
 
 export default function PubCard({ p, i }) {
   const [ref, inV] = useInView();
@@ -30,11 +31,12 @@ export default function PubCard({ p, i }) {
         </div>
         <div>
           <p style={{ ...S_BODY, color: C.desc, marginBottom: "1.3rem" }}>{p.desc}</p>
-          <div style={{ display: "flex", gap: "1.2rem", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "1.2rem", flexWrap: "wrap" }}>
             {p.links.map(l => (
-              <a key={l.label} href={l.href} target="_blank" rel="noreferrer" className="ix-link ix-colored"
+              <a key={l.label} href={l.href} target="_blank" rel="noreferrer" className="ix-link ix-colored ix-above"
                 style={{ fontFamily: "'DM Mono',monospace", fontSize: ".68rem", letterSpacing: ".1em", textTransform: "uppercase", color: l.color, display: "inline-flex", alignItems: "center", gap: ".35rem", textDecoration: "none" }}>{l.label} ↗</a>
             ))}
+            <CardCta p={p} color={C.green} paper />
           </div>
         </div>
       </div>
