@@ -7,16 +7,7 @@ export const SITE = {
   name: "Preeta Chatterjee",
   email: "chatterjee.pre@northeastern.edu",
   linkedin: "linkedin.com/in/preeta-chatterjee",
-  resume: "/Preeta_Chatterjee_Resume.pdf",
   availability: "January–August 2027",
-};
-
-// ── Home: hero ────────────────────────────────────────────────────────────────
-export const HERO = {
-  badge: "MS CS · Northeastern · 4.0 GPA · 2 Publications",
-  tagline: "Building computer vision systems, simulations, and game engines, with long-term interests in physical AI and digital twins.",
-  // [label, variant] — variant "green" / "red" is a filled chip, "o" is outlined
-  chips: [["Computer Vision", "green"], ["Simulation", "red"], ["Game Engines", "o"]],
 };
 
 // Floating labels drawn on the hero canvas (x/y are fractions of canvas size, s is font px).
@@ -27,9 +18,6 @@ export const CANVAS_LABS = [
   { t: "PyTorch", x: .5,  y: .44, s: 10 }, { t: "SDL3",   x: .84, y: .54, s: 9  },
   { t: "UNITY",   x: .62, y: .82, s: 11 },
 ];
-
-// Marquee text comes only from SKILLS.
-export const MARQUEE_ITEMS = ["Unreal Engine", "✦", "PyTorch", "✦", "C++", "✦", "Unity", "✦", "Python", "✦", "SDL3", "✦", "Behavior Trees", "✦", "MATLAB/Simulink", "✦", "ECS Architecture", "✦", "Lua Scripting", "✦"];
 
 // ── Home: about strip ─────────────────────────────────────────────────────────
 // Headline renders as: lead + accent (green), line break, tail (red)
@@ -228,10 +216,10 @@ export const EXPERIENCE = [
     ],
   },
   {
-    role: "Graduate Engineer Trainee (Simulation and Software Testing)",
+    role: "Graduate Engineer (Simulation and Software Testing)",
     company: "SMS India Pvt Ltd.",
     loc: "India",
-    dates: "Aug 2023–Jun 2024",
+    dates: "Aug 2023–May 2024",
     note: "Joined after a 4-month internship, Jan–Apr 2023",
     bullets: [
       "Built and validated MATLAB/Simulink mathematical models for rolling mill automation; coordinated cross-departmental simulation outputs, reducing project commissioning time by 25%",
@@ -255,7 +243,7 @@ export const EXPERIENCE = [
 export const EDUCATION = [
   { deg: "MS Computer Science", school: "Northeastern University", loc: "Boston, MA", year: "Expected May 2027", gpa: "4.0", col: C.green,
     details: ["Coursework: Machine Learning, Pattern Recognition & Computer Vision, Natural Language Processing, Algorithms, Building Game Engines, Building Virtual Environments"] },
-  { deg: "B.Tech Electronics & Communication Engineering", school: "Institute of Engineering & Management", loc: "India", year: "Apr 2023", gpa: "3.75", col: C.red,
+  { deg: "B.Tech Electronics & Communication Engineering", school: "Institute of Engineering & Management", loc: "India", year: "Aug 2019–May 2023", gpa: "3.75", col: C.red,
     details: ["Mrs. Maya Chakraborty Award for Academic Excellence (2023)"] },
 ];
 
