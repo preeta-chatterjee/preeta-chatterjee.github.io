@@ -423,7 +423,7 @@ Each project in `content.js` has `thumbTitle`, `hook` and `overview`.
 - `hook` (on the thumbnail) is the one standout technical detail.
 - `overview` (the two-line carousel slide text, PR 7) is what the project is and what it does, drawn only from facts already in content.js.
 - **No repetition:** the hook and overview must not share a key phrase, number or fact. Check every pair for shared words and numbers before handover. Keep overviews to about 160 characters so they fit two lines.
-- Verbatim hooks from Preeta: Hallway Hunters "Three-layer enemy AI in Unreal Engine 5.7", Stone & Soul "A custom C++ engine, built from scratch", 3D Reconstruction "Telling motion apart from image degradation", RAG "Tuned for better answers, not just better matches", Haunted Hallway "Rigged 2D sprite animation". The proposed hooks for Roll-a-Ball ("Real-time rigid-body dynamics") and Job Tracker ("AI-powered prioritization with Google Gemini") and all seven overviews were approved by Preeta in the PR 6 review.
+- Verbatim hooks from Preeta: Hallway Hunters "Three-layer enemy AI in Unreal Engine 5.7", Stone & Soul "A custom C++ engine, built from scratch", 3D Reconstruction "Telling motion apart from image degradation", RAG "Tuned for better answers, not just better matches", Haunted Hallway "Rigged 2D sprite animation". The proposed hooks for Roll-a-Ball ("Real-time rigid-body dynamics") and Job Tracker ("AI-powered prioritization with Google Gemini") and all seven overviews were approved by Preeta in the PR 6 review. Haunted Hallway's overview dropped "2D" (Preeta's decision) so it no longer repeats the hook.
 
 ## Phase 2 PR 7: Home projects carousel (replaces the featured cards)
 
