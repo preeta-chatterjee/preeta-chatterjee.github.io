@@ -65,6 +65,10 @@ export const TAG_TONES = {
   outline:  { background: "#FFFFFF", color: "#111111", borderColor: "#111111" },
 };
 
+// Typographic project thumbnails (ProjThumb): one solid panel color per project group, white text.
+// White on these is 9.63:1 (green), 13.13:1 (maroon), 13.03:1 (charcoal).
+export const GROUP_TONES = { cv: "#1E4D3B", sim: "#5A1A1C", other: "#2F3135" };
+
 const hexToRgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
 const mixHex = (a, b, t) => {
   const [x, y] = [hexToRgb(a), hexToRgb(b)];

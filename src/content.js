@@ -59,6 +59,9 @@ export const FEATURED_PROJECT_IDS = ["hallway-hunters", "stone-and-soul", "recon
 // A link with `to` is an in-site route; a link with `href` opens in a new tab.
 // `media` is optional: { type: "image", src, alt, width, height, position? } or { type: "video", id, title }
 // (YouTube id). Cards without it show no image area. Images live in public/projects/<id>/.
+// Home carousel (Phase 2 PR 6/7): `thumbTitle` (short title for the typographic thumbnail), `hook` (the one
+// standout technical detail, shown on the thumbnail) and `overview` (two lines: what the project is and does,
+// shown on the slide). The hook and overview must not share a key phrase, number or fact (see CLAUDE.md).
 export const PROJECTS = [
   {
     id: "reconstruction", num: "01", group: "cv", full: false,
@@ -69,6 +72,9 @@ export const PROJECTS = [
     stack: ["VGGT", "VGGT4D", "Easi3R", "3D Reconstruction"],
     links: [],
     accent: C.green,
+    thumbTitle: "When Geometry Breaks",
+    hook: "Telling motion apart from image degradation",
+    overview: "A Pattern Recognition & Computer Vision course project at Northeastern with a classmate, using VGGT as the backbone and VGGT4D and Easi3R as baselines.",
   },
   {
     id: "rag", num: "02", group: "cv", full: false,
@@ -79,6 +85,9 @@ export const PROJECTS = [
     stack: ["Python", "Hugging Face", "FAISS", "PyTorch", "FLAN-T5-XL", "E5-Base-v2", "spaCy"],
     links: [{ label: "GitHub (group repo)", href: "https://github.com/NorthChat/NLP_Final_Project", color: C.green }],
     accent: C.green,
+    thumbTitle: "RAG Research Engine",
+    hook: "Tuned for better answers, not just better matches",
+    overview: "An end-to-end retrieval-augmented generation pipeline for querying 20+ research papers on fairness and bias in LLMs.",
   },
   {
     id: "stone-and-soul", num: "03", group: "sim", full: false,
@@ -90,6 +99,9 @@ export const PROJECTS = [
     links: [],
     media: { type: "image", src: "/projects/stone-and-soul/stone-soul-game.webp", width: 997, height: 731, alt: "Stone & Soul start screen: a tile-based level with villagers and boulders" },
     accent: C.red,
+    thumbTitle: "Stone & Soul",
+    hook: "A custom C++ engine, built from scratch",
+    overview: "A three-level tile-based puzzle game: rescue villagers by pushing boulders, while enemies switch from patrolling to live A* pursuit when you get close.",
   },
   {
     id: "hallway-hunters", num: "04", group: "sim", full: true,
@@ -101,6 +113,9 @@ export const PROJECTS = [
     links: [{ label: "Case Study", to: "/projects/hallway-hunters", color: C.red }],
     media: { type: "image", src: "/projects/hallway-hunters/hallway-hunters-thumb.webp", width: 1322, height: 941, position: "left center", alt: "Hallway Hunters title art: a dark, blood-stained apartment hallway" },
     accent: C.red,
+    thumbTitle: "Hallway Hunters",
+    hook: "Three-layer enemy AI in Unreal Engine 5.7",
+    overview: "A first-person survival horror game. Trapped on a zombie-infected apartment floor, you use doors as barriers to reach a rooftop evacuation before time runs out.",
   },
   {
     id: "roll-a-ball", num: "05", group: "sim", full: false,
@@ -115,6 +130,9 @@ export const PROJECTS = [
     ],
     media: { type: "image", src: "/projects/roll-a-ball/gameplay.webp", width: 1600, height: 1000, alt: "Roll-a-Ball gameplay: the ball rolling through the 3D maze with pickups" },
     accent: C.red,
+    thumbTitle: "Roll-a-Ball",
+    hook: "Real-time rigid-body dynamics",
+    overview: "A 3D ball-maze game built in Unity, with collision handling and game state management. Fully playable and deployed on itch.io.",
   },
   {
     id: "haunted-hallway", num: "06", group: "sim", full: false,
@@ -132,6 +150,9 @@ export const PROJECTS = [
       { label: "GitHub", href: "https://github.com/preeta-chatterjee/HauntedHallway", color: C.green },
     ],
     accent: C.red,
+    thumbTitle: "Haunted Hallway",
+    hook: "Rigged from six separately generated limb sprites",
+    overview: "A 2D browser survival game built in Unity, playable on computers and mobile. Click all thirteen glowing keys before the zombie reaches you.",
   },
   {
     id: "job-tracker", num: "07", group: "other", full: false,
@@ -142,6 +163,9 @@ export const PROJECTS = [
     stack: ["React", "Vite", "Supabase", "PostgreSQL", "Google Gemini", "Vercel", "Resend"],
     links: [{ label: "Live Demo", href: "https://job-tracker-rho-ecru.vercel.app/demo", color: C.green }],
     accent: C.green,
+    thumbTitle: "Job Tracker",
+    hook: "AI-powered prioritization with Google Gemini",
+    overview: "A full-stack job application tracker with auto-fill from job URLs, drag-and-drop reordering, follow-up notifications and a public demo mode.",
   },
 ];
 

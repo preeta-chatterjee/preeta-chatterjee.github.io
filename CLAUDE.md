@@ -258,8 +258,8 @@ All Phase 1 rules still apply: no invented content, verbatim text exactly as giv
 - [x] Dependency PR: `npm audit fix` (no `--force`) (merged)
 - [x] PR 4: Bubble game (merged, plus the tap-highlight fix)
 - [x] PR 5: Hover and focus states (merged)
-- [ ] Loading fix: no first-screen entrance animations, self-hosted fonts
-- [ ] PR 6: Project thumbnails
+- [x] Loading fix: no first-screen entrance animations, self-hosted fonts (merged)
+- [ ] PR 6: Project thumbnails (typographic, no images)
 - [ ] PR 7: Home projects carousel
 
 ## Loading rules (all pages, all future sections)
@@ -400,10 +400,25 @@ Implementation notes (PR 5):
 - Contrast changes: `C.muted` #777777 → #666666 (5.13:1 on #F2F2F2, 5.74:1 on white; lighter than body #595959/#444444). Contact panel labels ("03 / Contact", "Email", "LinkedIn") 45–50% → 70% white (5.15:1 on the green). Dark page-header labels ("01 / About", "02 / Work", "Case Study · …") were #4D1717 on #111111 (1.3:1) → new `C.redOnDark` #CC6260 (4.93:1). Footer © 30% → 60% white (6.5:1), footer links 30% → 70%. The big faint card numbers and the "HELLO" watermark are decorative, so they're `aria-hidden` and left as they are.
 - Checks: every text node on Home, About, Projects and the case study passes AA at 1440 and 390 (except the decorative watermarks); every link, button and card changes on hover; all 71 keyboard focus stops show a 2px ring at 3:1 or better.
 
-## Phase 2 PR 6: Project thumbnails
+## Phase 2 PR 6: Project thumbnails (typographic, no images)
 
-- Preeta adds AI-generated thumbnails to `public/projects/<project>/thumb.*`; convert to WebP and wire them in for the home page carousel only.
-- Project pages and case-study pages stay unchanged.
+Change of plan (Preeta): no image thumbnails. They are built in code, so visitors don't mistake an illustration for the actual project.
+
+- Reusable component `src/components/ProjThumb.jsx`. A solid 16:10 panel in the project's group color (`GROUP_TONES` in `theme.js`): Computer Vision & ML deep green #1E4D3B, Simulation & Game Engines maroon #5A1A1C, Other charcoal #2F3135. White text.
+- Content: a small DM Mono label (group · year), the short title (`thumbTitle`) large in Bebas Neue, and the `hook` in DM Sans. Same layout for every project at any width: sizes are in container units (`cqw`) with pixel floors for phones (label 10px, title 30px, hook 13px minimum). The label stays on one line down to a 312px-wide thumbnail (360 viewport). A decorative project number is cropped into the bottom-right corner at 6% white (`aria-hidden`).
+- No image files. Theme-independent (solid panels), so it reads the same in both themes. Follows the loading rules: the panel never animates.
+- Used on the home carousel only (PR 7). Project and case-study pages stay unchanged.
+- Temporary review page: `/#/preview/thumbnails` (`ThumbPreviewPage.jsx`), not linked anywhere. Remove it in PR 7.
+- Contrast: white title 9.63:1 (green), 13.13:1 (maroon), 13.03:1 (charcoal). Hook (88% white) is at least 6.72:1 and label (80% white) at least 5.89:1, even over the watermark number.
+
+### Hook and overview rule (all projects, including future ones)
+
+Each project in `content.js` has `thumbTitle`, `hook` and `overview`.
+
+- `hook` (on the thumbnail) is the one standout technical detail.
+- `overview` (the two-line carousel slide text, PR 7) is what the project is and what it does, drawn only from facts already in content.js.
+- **No repetition:** the hook and overview must not share a key phrase, number or fact. Check every pair for shared words and numbers before handover. Keep overviews to about 160 characters so they fit two lines.
+- Verbatim hooks from Preeta: Hallway Hunters "Three-layer enemy AI in Unreal Engine 5.7", Stone & Soul "A custom C++ engine, built from scratch", 3D Reconstruction "Telling motion apart from image degradation", RAG "Tuned for better answers, not just better matches". Proposed hooks for Roll-a-Ball, Haunted Hallway and Job Tracker, and all seven overviews, await Preeta's approval in the PR 6 review.
 
 ## Phase 2 PR 7: Home projects carousel (replaces the featured cards)
 
