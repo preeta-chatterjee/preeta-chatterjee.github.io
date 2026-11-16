@@ -21,7 +21,7 @@ This file is the source of truth for the site restructure. Follow the rules and 
 - `og-preview.png` (1200×630) is generated from `assets-src/og-preview/og-preview.html`; see README.
 - Contact form uses Formspree. The ID comes from `VITE_FORMSPREE_ID`, with a hardcoded fallback in `src/components/ContactForm.jsx`.
 - Commands: `npm ci`, `npm run dev`, `npm run build`, `npm run lint`, `npm run preview`.
-- Deployment: `.github/workflows/deploy.yml` builds and deploys to GitHub Pages on every push to `main` (requires Settings → Pages → Source set to "GitHub Actions"). The old manual path (`npm run deploy`, which pushes `dist/` to the `gh-pages` branch) is kept as a fallback. Do not delete either.
+- Deployment is Actions-only: `.github/workflows/deploy.yml` builds and deploys to GitHub Pages on every push to `main` (Settings → Pages → Source is "GitHub Actions"). The manual `npm run deploy` script, the `gh-pages` dev dependency and the `gh-pages` branch were removed in Phase 2.
 
 ## Workflow
 
@@ -66,7 +66,7 @@ Focus: computer vision, simulation and game engines, with long-term interests in
 - Add CLAUDE.md containing this whole plan.
 - Add a GitHub Actions workflow that builds with Vite and deploys to GitHub Pages on every push to main (actions/upload-pages-artifact + actions/deploy-pages).
 - Pass VITE_FORMSPREE_ID from a repository secret if one exists, but keep the existing hardcoded fallback so the contact form works either way.
-- Don't delete the gh-pages branch or the `deploy` npm script. They stay as a fallback.
+- Don't delete the gh-pages branch or the `deploy` npm script. They stay as a fallback. (Superseded in Phase 2: both removed; deployment is Actions-only.)
 - In the summary, remind Preeta to change Settings → Pages → Source to "GitHub Actions" after merging.
 
 ## PR 2: Refactor with zero visual change
@@ -249,7 +249,8 @@ All Phase 1 rules still apply: no invented content, verbatim text exactly as giv
 ### Phase 2 PR status
 
 - [x] PR 1: Analytics (Cloudflare Web Analytics) (merged)
-- [ ] PR 2: Content cleanup
+- [x] PR 2: Content cleanup (merged)
+- [ ] Deployment cleanup: Actions-only (small PR between PR 2 and PR 3)
 - [ ] PR 3: Home 2×2 layout with dark and light themes
 - [ ] PR 4: Bubble game
 - [ ] PR 5: Hover and focus states
@@ -269,6 +270,12 @@ All Phase 1 rules still apply: no invented content, verbatim text exactly as giv
 - Remove the résumé from the site entirely: the nav Résumé button, the "Want the full picture?" block, `public/Preeta_Chatterjee_Resume.pdf`, `SITE.resume`, and the Phase 1 rule about not touching the PDF.
 - Experience/education sync: SMS India title is "Graduate Engineer (Simulation and Software Testing)", Aug 2023 – May 2024. B.Tech dates: Aug 2019 – May 2023.
 - These supersede the Phase 1 PR 6 values for the SMS India role and B.Tech. Dates are written in the site's existing style, with no spaces around the en dash ("Aug 2023–May 2024").
+
+## Phase 2 deployment cleanup (small PR between PR 2 and PR 3)
+
+- Delete the old `gh-pages` branch, the `deploy` npm script, and the `gh-pages` dev dependency (nothing else uses it).
+- Update README and CLAUDE.md to say deployment is Actions-only.
+- Don't rewrite repo history (the old résumé PDF stays in history; it isn't served).
 
 ## Phase 2 PR 3: Home layout as a 2×2 grid, with two themes (mockup approved)
 
@@ -304,6 +311,7 @@ Themes:
 - Site-wide: a clear contrast change on every button, link, and card on hover.
 - Cards lift with an accent border and show "View project →".
 - Visible `:focus-visible` outlines.
+- The open phone menu fully covers the page behind it (currently the hero shows through below the menu items).
 - Works in both themes. Check WCAG AA.
 
 ## Phase 2 PR 6: Project thumbnails
