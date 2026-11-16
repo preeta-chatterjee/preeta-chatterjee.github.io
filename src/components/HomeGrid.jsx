@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { C, T, S_BODY, NAV_HEIGHT, TAG_TONES, homeThemeVars } from "../theme";
 import { useMobile } from "../hooks";
@@ -12,26 +11,21 @@ import HeroCanvas from "./HeroCanvas";
 // Phone: name, a fade band, about, skills, game, stacked.
 const LINE = "#DEDAD4"; // hairline between the boxes
 
-const reducedMotion = () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
 export default function HomeGrid() {
   const mobile = useMobile();
-  const [mounted, setMounted] = useState(reducedMotion());
-  useEffect(() => { if (!mounted) { const id = setTimeout(() => setMounted(true), 120); return () => clearTimeout(id); } }, [mounted]);
-  const f = d => reducedMotion()
-    ? {}
-    : { opacity: mounted ? 1 : 0, transform: mounted ? "translateY(0)" : "translateY(20px)", transition: `opacity .8s ease ${d}s, transform .8s ease ${d}s` };
+  // No entrance animation: the grid is the first screen, and the name and about boxes share
+  // one background, so everything here is drawn at once (loading rules in CLAUDE.md).
 
   const padX = mobile ? "1.5rem" : "3rem";
   const btn = (bg, fg) => ({ display: "inline-block", padding: ".75rem 1.8rem", background: bg, color: fg, fontFamily: T.mono, fontSize: ".7rem", letterSpacing: ".12em", textTransform: "uppercase", border: `2px solid ${bg}`, transition: "all .2s", textDecoration: "none" });
 
   const name = (
     <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: mobile ? `2.5rem ${padX} 1rem` : `1.5rem ${padX}` }}>
-      <h1 style={{ fontFamily: T.display, fontWeight: 400, fontSize: mobile ? "clamp(3.5rem,17vw,5rem)" : "clamp(4rem,8.9vw,8rem)", lineHeight: .9, letterSpacing: ".02em", margin: 0, ...f(.15) }}>
+      <h1 style={{ fontFamily: T.display, fontWeight: 400, fontSize: mobile ? "clamp(3.5rem,17vw,5rem)" : "clamp(4rem,8.9vw,8rem)", lineHeight: .9, letterSpacing: ".02em", margin: 0 }}>
         <span style={{ display: "block", color: "#111111" }}>{SITE.firstName.toUpperCase()}</span>
         <span style={{ display: "block", color: "#5A1A1C" }}>{SITE.lastName.toUpperCase()}</span>
       </h1>
-      <div style={{ display: "flex", gap: ".75rem", flexWrap: "wrap", marginTop: mobile ? "1.5rem" : "1.8rem", ...f(.4) }}>
+      <div style={{ display: "flex", gap: ".75rem", flexWrap: "wrap", marginTop: mobile ? "1.5rem" : "1.8rem" }}>
         <Link to="/projects" className="ix-btn-dark" style={btn(C.dark, C.bg)}>Explore Work</Link>
         <Link to={CONTACT_PATH} className="ix-btn-red" style={btn(C.red, "#F2F2F2")}>Get in Touch</Link>
       </div>
@@ -40,7 +34,7 @@ export default function HomeGrid() {
 
   const about = (
     <div style={{ display: "flex", flexDirection: "column", justifyContent: "center",
-      padding: mobile ? `1rem ${padX} 2.5rem` : `1rem ${padX} 1rem clamp(3rem, 6.67vw, 6rem)`, background: mobile ? "var(--home-end)" : "transparent", ...f(.3) }}>
+      padding: mobile ? `1rem ${padX} 2.5rem` : `1rem ${padX} 1rem clamp(3rem, 6.67vw, 6rem)`, background: mobile ? "var(--home-end)" : "transparent" }}>
       <h2 style={{ fontFamily: T.display, fontWeight: 400, fontSize: mobile ? "clamp(2.2rem,11vw,3rem)" : "clamp(2rem,3.9vw,3.5rem)", lineHeight: .92, letterSpacing: ".02em", margin: mobile ? "0 0 1rem" : "0 0 .75rem" }}>
         <span style={{ color: "var(--about-headline)" }}>{HOME_INTRO.headline.lead}</span>
         <span style={{ color: "var(--about-green)" }}>{HOME_INTRO.headline.accent}</span><br />

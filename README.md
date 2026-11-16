@@ -7,6 +7,7 @@ Personal portfolio of Preeta Chatterjee: computer vision, simulation, and game e
 - [Vite](https://vite.dev) + React 19
 - react-router-dom with `HashRouter` (routes look like `/#/about`, `/#/projects/hallway-hunters`)
 - Inline style objects; colors and fonts in `src/theme.js`
+- Fonts self-hosted in `public/fonts/` (SIL OFL), declared and preloaded in `index.html`
 - Contact form via [Formspree](https://formspree.io)
 
 ## Project layout

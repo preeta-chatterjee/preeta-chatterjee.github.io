@@ -1,11 +1,11 @@
-import { C, T, S_BODY, revealStyle } from "../theme";
-import { useInView } from "../hooks";
+import { C, T, S_BODY } from "../theme";
+import { useReveal } from "../hooks";
 import { EDUCATION } from "../content";
 
 export default function EducationBlock({ mobile }) {
-  const [ref, inV] = useInView();
+  const ref = useReveal();
   return (
-    <div ref={ref} style={{ marginTop: "2rem", ...revealStyle(inV) }}>
+    <div className="rv" ref={ref} style={{ marginTop: "2rem" }}>
       <div style={{ fontFamily: T.mono, fontSize: ".62rem", letterSpacing: ".2em", color: C.green, textTransform: "uppercase", marginBottom: "1.5rem" }}>Education</div>
       {EDUCATION.map(e => (
         <div key={e.school} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: `1px solid ${C.border2}`, padding: "1.5rem 0", flexWrap: mobile ? "wrap" : "nowrap", gap: "1rem" }}>

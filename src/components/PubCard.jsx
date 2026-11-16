@@ -1,9 +1,10 @@
 import { C, S_BODY } from "../theme";
-import { useInView, useMobile } from "../hooks";
+import { useReveal, useMobile } from "../hooks";
 import CardCta from "./CardCta";
 
-export default function PubCard({ p, i }) {
-  const [ref, inV] = useInView();
+export default function PubCard({ p }) {
+  // Reveal fades the card's content only; the card surface itself is drawn at once
+  const ref = useReveal();
   const mobile = useMobile();
 
   return (
@@ -12,18 +13,17 @@ export default function PubCard({ p, i }) {
       padding: mobile ? "1.8rem 1.5rem" : "2.5rem 3rem",
       position: "relative", overflow: "hidden",
       borderBottom: `1.5px solid ${C.border}`,
-      opacity: inV ? 1 : 0, transform: inV ? "none" : "translateY(28px)",
-      transition: `background .3s, translate .25s ease, box-shadow .25s ease, outline-color .25s, opacity .7s ease ${i * .1}s, transform .7s ease ${i * .1}s`,
+      transition: "background .3s, translate .25s ease, box-shadow .25s ease, outline-color .25s",
     }}>
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem", flexWrap: "wrap", gap: ".5rem" }}>
+      <div className="rv" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem", flexWrap: "wrap", gap: ".5rem" }}>
         <div style={{ display: "inline-flex", alignItems: "center", gap: ".4rem", padding: ".22rem .7rem", background: C.greenBg, border: `1px solid ${C.green}44` }}>
           <span style={{ fontFamily: "'DM Mono',monospace", fontSize: ".58rem", letterSpacing: ".1em", color: C.green }}>{p.type}</span>
         </div>
         <div className="ix-card-num" aria-hidden="true" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "2.5rem", lineHeight: 1, transition: "color .3s" }}>{p.num}</div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 2fr", gap: mobile ? "1rem" : "3rem", alignItems: "start" }}>
+      <div className="rv" style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 2fr", gap: mobile ? "1rem" : "3rem", alignItems: "start" }}>
         <div>
           <h3 style={{ fontFamily: "'DM Serif Display',Georgia,serif", fontSize: "1.2rem", color: C.dark, lineHeight: 1.25, marginBottom: ".5rem", fontWeight: 400, fontStyle: "italic" }}>{p.title}</h3>
           <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".62rem", color: C.muted, marginBottom: ".4rem" }}>{p.authors}</div>

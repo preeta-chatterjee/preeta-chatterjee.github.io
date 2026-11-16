@@ -51,7 +51,7 @@ export default function ProjectsPage() {
               ? <h2 style={{ fontFamily: T.display, fontSize: "clamp(1.8rem,4vw,2.8rem)", color: C.dark, letterSpacing: ".02em", lineHeight: 1, fontWeight: 400 }}>{g.label}</h2>
               : <h2 style={{ fontFamily: T.mono, fontSize: ".65rem", letterSpacing: ".18em", color: C.muted, textTransform: "uppercase", fontWeight: 400 }}>{g.label}</h2>}
           </div>
-          {items.map((p, i) => <ProjCardFull key={p.id} p={p} i={i} />)}
+          {items.map(p => <ProjCardFull key={p.id} p={p} />)}
         </section>
       );
     })}
@@ -62,7 +62,7 @@ export default function ProjectsPage() {
       <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(2.5rem,6vw,5rem)", color: C.dark, letterSpacing: ".02em", lineHeight: .92, marginBottom: "2.5rem" }}>Publications.</div>
     </div>
     <div style={{ background: C.surface, borderTop: `1.5px solid ${C.border}` }}>
-      {PUBLICATIONS.map((p, i) => <PubCard key={p.id} p={p} i={i} />)}
+      {PUBLICATIONS.map(p => <PubCard key={p.id} p={p} />)}
     </div>
 
     {/* Back to home */}

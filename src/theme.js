@@ -39,13 +39,6 @@ export const S_BTN_FILLED = (bg, fg = "#F2F2F2") => ({
 
 export const PALETTE = [C.green, C.red, C.greenL, C.redL, "#CBCBCB", C.redMid, C.greenMid];
 
-// Returns inline style for scroll-triggered fade-up animation
-export const revealStyle = (inView, delay = 0) => ({
-  opacity: inView ? 1 : 0,
-  transform: inView ? "translateY(0)" : "translateY(28px)",
-  transition: `opacity 0.7s ease ${delay}s, transform 0.7s ease ${delay}s`,
-});
-
 // ── Home themes (Phase 2) ─────────────────────────────────────────────────────
 // SITE.theme ("dark" | "light") picks one; HomeGrid applies it as CSS variables, so that one
 // setting switches the whole top of the home page on desktop and phone.
