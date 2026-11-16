@@ -10,7 +10,7 @@ import Footer from "../components/Footer";
 // PAGE: PROJECT CASE STUDY  (/#/projects/:slug, data in CASE_STUDIES)
 // ══════════════════════════════════════════════════════════════════════════════
 const S_PARA = { ...S_BODY, color: C.mid };
-const S_CAPTION = { ...S_BODY, fontSize: ".95rem", color: C.muted, marginTop: ".8rem" };
+const S_CAPTION = { ...S_BODY, fontSize: ".95rem", color: C.desc, marginTop: ".8rem" };
 const S_TAG = { fontFamily: T.mono, fontSize: ".6rem", letterSpacing: ".07em", color: C.dark, padding: ".18rem .55rem", border: `1px solid ${C.border}`, background: C.surface };
 
 function CaseSection({ s, n, mobile }) {
