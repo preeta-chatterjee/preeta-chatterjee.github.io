@@ -322,6 +322,7 @@ Implementation notes (PR 3):
 ## Dependency PR: `npm audit fix` (right after the typography PR)
 
 - Run `npm audit fix` (no `--force`). Confirm build, lint, and the site-wide checks pass; report what got updated and list anything still unresolved.
+- Result: 13 vulnerabilities (1 low, 2 moderate, 10 high) fixed, 0 remaining. Only `package-lock.json` changed (package.json ranges already allowed the fixes). Direct dependencies: vite 8.0.3 → 8.3.8, react-router-dom/react-router 7.14.0 → 7.18.5. Transitive: @babel/core, @humanfs/node, baseline-browser-mapping, brace-expansion, browserslist, js-yaml, nanoid, postcss, source-map-js, zod.
 
 ## Phase 2 PR 4: Bubble game
 
@@ -337,6 +338,7 @@ Implementation notes (PR 3):
 - Visible `:focus-visible` outlines.
 - The open phone menu fully covers the page behind it (currently the hero shows through below the menu items).
 - Works in both themes. Check WCAG AA.
+- Contrast pass: the remaining #777777 (`C.muted`) small labels (dates, locations, metadata such as company/school lines, project subtitles and status lines) fail AA at 4.00:1 on #F2F2F2. Darken them to pass AA (4.5:1) while keeping them visually lighter than the body text (#444444 / #595959).
 
 ## Phase 2 PR 6: Project thumbnails
 
