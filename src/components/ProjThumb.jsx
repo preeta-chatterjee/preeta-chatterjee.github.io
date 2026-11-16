@@ -18,7 +18,7 @@ export default function ProjThumb({ p }) {
   const group = PROJECT_GROUPS.find(g => g.id === p.group);
   const tone = GROUP_TONES[p.group];
   return (
-    <div style={{ containerType: "inline-size", width: "100%", aspectRatio: "16 / 10", position: "relative", overflow: "hidden", background: "#FFFFFF", border: `1px solid ${BORDER}`, boxShadow: THUMB_SHADOW }}>
+    <div className="proj-thumb" style={{ containerType: "inline-size", width: "100%", aspectRatio: "16 / 10", position: "relative", overflow: "hidden", background: "#FFFFFF", border: `1px solid ${BORDER}`, boxShadow: THUMB_SHADOW }}>
       <div aria-hidden="true" style={{ position: "absolute", top: 0, left: 0, right: 0, height: 6, background: tone }} />
       <div style={{ position: "absolute", inset: "6px 0 0", display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 7cqw" }}>
         <div style={{ fontFamily: T.mono, fontSize: "max(10px, 2.3cqw)", letterSpacing: ".08em", textTransform: "uppercase", whiteSpace: "nowrap", color: tone }}>

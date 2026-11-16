@@ -59,6 +59,11 @@ export const PROJECT_GROUPS = [
 // Home carousel (Phase 2 PR 6/7): `thumbTitle` (short title for the typographic thumbnail), `hook` (the one
 // standout technical detail, shown on the thumbnail) and `overview` (two lines: what the project is and does,
 // shown on the slide). The hook and overview must not share a key phrase, number or fact (see CLAUDE.md).
+// Home carousel order (carousel only; the Projects page keeps PROJECTS order). Chosen by Preeta so
+// neighbors mostly differ in group color; with four Game Engines projects out of seven, one maroon
+// pair (Stone & Soul → Haunted Hallway) can't be avoided in any loop.
+export const CAROUSEL_PROJECT_IDS = ["rag", "hallway-hunters", "reconstruction", "stone-and-soul", "haunted-hallway", "job-tracker", "roll-a-ball"];
+
 export const PROJECTS = [
   {
     id: "reconstruction", num: "01", group: "cv", full: false,
@@ -112,7 +117,7 @@ export const PROJECTS = [
     accent: C.red,
     thumbTitle: "Hallway Hunters",
     hook: "Three-layer enemy AI in Unreal Engine 5.7",
-    overview: "A first-person survival horror game. Trapped on a zombie-infected apartment floor, you use doors as barriers to reach a rooftop evacuation before time runs out.",
+    overview: "A first-person survival horror game: use doors as barriers to escape a zombie-infected apartment floor before time runs out.",
   },
   {
     id: "roll-a-ball", num: "05", group: "sim", full: false,

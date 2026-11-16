@@ -439,34 +439,44 @@ Spec updated by Preeta (supersedes the earlier fade-between-slides plan):
 - Accessibility note from PR 6: the veil deliberately drops neighbor text below AA (50% veil about 2.4–3.1:1, 82% about 1.4:1). Only the center card is meant to be read, so the veiled cards must be hidden from screen readers and keyboard focus (`aria-hidden`, `inert`). Every project is then reached, readable, when it is centered.
 - Follow the loading rules: the carousel is below the fold on desktop, but nothing in it may animate on first paint, and the veils and card surfaces don't fade in on load.
 
-Implementation notes (PR 7):
+Implementation notes (PR 7, after Preeta's review):
 
 - `src/components/ProjectCarousel.jsx` replaces the featured cards in the home "02 / Selected Work" section; `ProjCard.jsx`, `FEATURED_PROJECT_IDS` and the PR 6 preview page are removed. The section background is #F2F1EF, which is also the veil color.
-- All seven projects in PROJECTS order, starting with the first (3D Reconstruction).
-- Each slide holds the light `ProjThumb`, the `overview` (DM Sans .95rem), up to four `stack` tags and a link from `primaryLink`. 3D Reconstruction and Stone & Soul have no links, so their slides have none (same as their cards).
-- Card width: desktop 46% of the width, max 580px (gap 24px), so the center card sits between two half-veiled neighbors. Phone: 80% of the width (gap 12px), with a sliver of each neighbor.
-- Overview lines: 2 on desktop (1440 and 1280) for every project except Hallway Hunters, whose 160-character overview takes 3. On phone, 4 lines (5 for two projects at 360). Overviews aren't clamped, so no approved text is cut.
-- Motion:
-  - One continuous position (in slots) drives both each card's offset and its veil, so the fade follows the movement exactly.
-  - Veil by distance from the center: 0 → 0, 1 → 50%, 2 → 82%, 2.6+ → 100%, linear in between. The veil extends 11px past the card to cover its shadow.
-  - Slides are keyed by an unbounded slot number, and slot s shows project s mod 7. Looping past the last project is just the next slot, so there's no jump.
-  - Slots are rendered from React state at the resting position. During a slide or a swipe, a requestAnimationFrame loop writes only `transform` and the veil's `opacity`.
-  - All slides share one grid cell, so the row is as tall as its tallest slide.
-- Timing: each card rests 5.5s, then slides for 0.9s (ease-in-out cubic). A dot jump of several cards takes up to 1.6s.
-- Pauses: hover (mouse), keyboard focus inside, a finger down, the carousel less than half on screen, and a hidden tab.
-- Stops for good: any arrow, dot, ArrowLeft/ArrowRight key or swipe.
-- `prefers-reduced-motion`: no auto-advance, and arrows and dots switch instantly.
-- Swipe (touch/pen): the row follows the finger (`touch-action: pan-y` keeps vertical scrolling). Releasing past 15% of a card moves one card.
+- Order (carousel only): `CAROUSEL_PROJECT_IDS` in content.js, starting at RAG System: RAG System, Hallway Hunters, 3D Reconstruction, Stone & Soul, Haunted Hallway, Job Tracker, Roll-a-Ball. With four Game Engines (maroon) projects out of seven, one same-color pair can't be avoided in any loop; here it is Stone & Soul → Haunted Hallway. The Projects page keeps PROJECTS order.
+- Each slide holds the light `ProjThumb`, the `overview` (DM Sans .95rem), up to four `stack` tags and the destination hint from `primaryLink`.
+- Hallway Hunters overview, Preeta's verbatim replacement: "A first-person survival horror game: use doors as barriers to escape a zombie-infected apartment floor before time runs out."
+- Overview lines: every overview fits two lines at 1440 and 1280. Phone: 4 lines (5 for 3D Reconstruction at 360); they aren't clamped.
+- Card width: desktop 46% of the width, max 580px (gap 24px). Phone: 80% (gap 12px), with a sliver of each neighbor.
+- Timing: the `TIMING` object at the top of ProjectCarousel.jsx is the one place to tune it. Rest 3.5s per card, slide 0.7s (ease-in-out cubic), resume 5s after a desktop interaction, multi-card dot jumps capped at 1.4s.
+- Pause and resume:
+  - **Desktop:** hover pauses. Arrow, dot, arrow-key and side-card clicks pause too. Auto-advance resumes 5s after the last interaction and the mouse leaving (it advances straight away then, since the card has already rested). Keyboard focus inside the carousel (`:focus-visible`) pauses until focus leaves, then resumes after 5s. Mouse clicks don't count as focus, so a clicked arrow doesn't freeze it.
+  - **Touch:** any touch (swipe, tap, arrow, dot) stops auto-advance for good.
+  - **Always:** offscreen (less than half visible) and a hidden tab pause it.
+  - **Pause/play toggle**, next to the dots: once paused, it stays paused until Play is pressed. Play also restarts after a touch stop. It's hidden under `prefers-reduced-motion`, where nothing auto-advances and arrows and dots switch instantly.
+- Arrows (Netflix-style): on the row's left and right edges, vertically centered on the card image, over the veiled side cards.
+  - **Desktop:** 56px, white with a #111 border, hidden until the carousel is hovered or has keyboard focus. Hover fills them #111.
+  - **Touch:** no hover, so they're always visible, 30px, white at 90% with a #B5B1AB border. `TOUCH_ARROWS` in the component switches to "none" (swipe only); Preeta to pick.
+  - They clear the center card by 7px at 390 and 4px at 360.
+  - The stylesheet's `display: none` needs `!important` because the arrows set `display` inline.
+- Whole card clickable:
+  - The center slide is one link: thumbnail, overview, tags and the visible destination hint. It opens the case study (Hallway Hunters) or the external link in a new tab. Its accessible name includes the destination, e.g. "RAG System: View on GitHub (opens in a new tab)".
+  - On desktop hover it lifts 4px, the card shadow deepens and the hint underlines.
+  - 3D Reconstruction and Stone & Soul have no destination, so no link, no lift and a default cursor.
+  - Clicking a side card brings it to the center instead of opening it.
+  - The click that follows a swipe is suppressed.
 - Accessibility:
   - The wrapper has `role="region"`, `aria-roledescription="carousel"` and `aria-label="Projects"`. Each slide is a group labelled "N of 7: title".
-  - Every slide except the center is `aria-hidden` and `inert`.
-  - Arrows (44px) and dots (28px targets) have labels, and the active dot has `aria-current`.
-  - A live region announces the current card only after the visitor takes control (it stays silent during auto-advance).
-- Loading rules: the first render already has every offset and veil in place, and nothing moves until the first 5.5s rest ends while the carousel is on screen.
+  - Side slides are `aria-hidden` and contain nothing focusable (they're not `inert`, so they can still be clicked). The center slide's link is the only focus stop inside the row.
+  - Arrows (56/30px) and dots (28px targets) have labels; the active dot has `aria-current`; the toggle's label switches between "Pause carousel" and "Play carousel".
+  - A live region announces the current card once the visitor takes control.
+- Motion:
+  - One continuous position drives both the offset and the veil (0 → 0, 1 → 50%, 2 → 82%, 2.6+ → 100%; the veil extends 11px past the card to cover its shadow).
+  - Slides are keyed by an unbounded slot number (slot s shows project s mod 7), so the loop has no jump.
+  - During a slide or swipe a requestAnimationFrame loop writes only `transform` and the veil's `opacity`.
+- Loading rules: the first render already has every offset and veil in place, and nothing moves until the first rest ends while the carousel is on screen.
+- Testing note: Playwright element screenshots (`locator.screenshot`) override the device metrics and drop touch emulation, so `(hover: none)` styles don't show in them. Use viewport screenshots for touch visuals.
 - Checks:
-  - Auto-advance happens; hover and focus pause it; arrows, dots, keys and swipe stop it for good.
-  - It loops both ways (first ← last, last → first).
-  - Under reduced motion it never auto-advances. Offscreen it doesn't advance.
-  - Only the center slide's link is focusable.
-  - No page scrolls sideways at the four widths; 79 focus stops, 0 failing.
-
+  - Pace measured at about 3.3s to the first advance, then about 4.2s per card.
+  - Hover pause and resume after mouse-leave (about 5.0s), desktop arrow hold, toggle pause/play, keyboard-focus pause, side-card click, center-card click (case study and GitHub in a new tab), touch swipe stop, and reduced motion all verified.
+  - Every overview fits two lines at 1440 and 1280.
+  - 83 focus stops, 0 failing; no page scrolls sideways at the four widths.
