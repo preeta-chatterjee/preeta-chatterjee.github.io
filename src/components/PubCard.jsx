@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { C } from "../theme";
+import { C, S_BODY } from "../theme";
 import { useInView, useMobile } from "../hooks";
 
 export default function PubCard({ p, i }) {
@@ -32,7 +32,7 @@ export default function PubCard({ p, i }) {
           <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".6rem", color: C.green, letterSpacing: ".06em" }}>{p.venue}</div>
         </div>
         <div>
-          <p style={{ fontFamily: "Georgia,serif", fontSize: ".9rem", lineHeight: 1.8, color: C.muted, marginBottom: "1.3rem" }}>{p.desc}</p>
+          <p style={{ ...S_BODY, color: C.muted, marginBottom: "1.3rem" }}>{p.desc}</p>
           <div style={{ display: "flex", gap: "1.2rem", flexWrap: "wrap" }}>
             {p.links.map(l => (
               <a key={l.label} href={l.href} target="_blank" rel="noreferrer"

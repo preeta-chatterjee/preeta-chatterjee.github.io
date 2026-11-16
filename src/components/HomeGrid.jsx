@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { C, T, NAV_HEIGHT, TAG_TONES, homeThemeVars } from "../theme";
+import { C, T, S_BODY, NAV_HEIGHT, TAG_TONES, homeThemeVars } from "../theme";
 import { useMobile } from "../hooks";
 import { SITE, HOME_INTRO, STATS, SKILLS } from "../content";
 import { CONTACT_PATH } from "../routes";
@@ -44,25 +44,25 @@ export default function HomeGrid() {
 
   const about = (
     <div style={{ display: "flex", flexDirection: "column", justifyContent: "center",
-      padding: mobile ? `1rem ${padX} 2.5rem` : `1.5rem ${padX} 1.5rem clamp(3rem, 6.67vw, 6rem)`, background: mobile ? "var(--home-end)" : "transparent", ...f(.3) }}>
-      <h2 style={{ fontFamily: T.display, fontWeight: 400, fontSize: mobile ? "clamp(2.2rem,11vw,3rem)" : "clamp(2rem,3.9vw,3.5rem)", lineHeight: .92, letterSpacing: ".02em", margin: "0 0 1rem" }}>
+      padding: mobile ? `1rem ${padX} 2.5rem` : `1rem ${padX} 1rem clamp(3rem, 6.67vw, 6rem)`, background: mobile ? "var(--home-end)" : "transparent", ...f(.3) }}>
+      <h2 style={{ fontFamily: T.display, fontWeight: 400, fontSize: mobile ? "clamp(2.2rem,11vw,3rem)" : "clamp(2rem,3.9vw,3.5rem)", lineHeight: .92, letterSpacing: ".02em", margin: mobile ? "0 0 1rem" : "0 0 .75rem" }}>
         <span style={{ color: "var(--about-headline)" }}>{HOME_INTRO.headline.lead}</span>
         <span style={{ color: "var(--about-green)" }}>{HOME_INTRO.headline.accent}</span><br />
         <span style={{ color: "var(--about-red)" }}>{HOME_INTRO.headline.tail}</span>
       </h2>
-      <p style={{ fontFamily: T.serif, fontSize: mobile ? ".95rem" : ".92rem", color: "var(--about-blurb)", lineHeight: 1.65, fontStyle: "italic", margin: "0 0 1.25rem", maxWidth: "36rem" }}>
+      <p style={{ ...S_BODY, color: "var(--about-blurb)", margin: mobile ? "0 0 1.25rem" : "0 0 .85rem", maxWidth: "36rem" }}>
         {HOME_INTRO.blurb}
       </p>
       {/* Stats: one row of four on desktop, 2×2 on phone */}
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", borderTop: "1px solid var(--stat-border)", borderLeft: "1px solid var(--stat-border)", maxWidth: "36rem" }}>
         {STATS.map(([n, l, accent]) => (
-          <div key={l} style={{ padding: mobile ? ".8rem 1rem" : ".7rem .9rem", borderRight: "1px solid var(--stat-border)", borderBottom: "1px solid var(--stat-border)" }}>
+          <div key={l} style={{ padding: mobile ? ".8rem 1rem" : ".55rem .9rem", borderRight: "1px solid var(--stat-border)", borderBottom: "1px solid var(--stat-border)" }}>
             <div style={{ fontFamily: T.display, fontSize: mobile ? "2rem" : "1.8rem", color: `var(--about-${accent})`, lineHeight: 1 }}>{n}</div>
             <div style={{ fontFamily: T.mono, fontSize: ".52rem", letterSpacing: ".14em", color: "var(--stat-label)", textTransform: "uppercase", marginTop: ".25rem" }}>{l}</div>
           </div>
         ))}
       </div>
-      <div style={{ marginTop: "1.25rem" }}>
+      <div style={{ marginTop: mobile ? "1.25rem" : ".85rem" }}>
         <Link to="/about" style={{ fontFamily: T.mono, fontSize: ".65rem", letterSpacing: ".12em", textTransform: "uppercase", color: "#FFFFFF", background: "var(--readmore-bg)", border: "1.5px solid var(--readmore-bg)", padding: ".55rem 1.2rem", textDecoration: "none", display: "inline-block", transition: "filter .2s" }}
           onMouseEnter={e => { e.currentTarget.style.filter = "brightness(1.15)"; }}
           onMouseLeave={e => { e.currentTarget.style.filter = "none"; }}>Read More →</Link>
@@ -71,14 +71,17 @@ export default function HomeGrid() {
   );
 
   const skills = (
-    <div style={{ background: "var(--home-base)", padding: mobile ? `2rem ${padX}` : `1.6rem ${padX}`, display: "flex", flexDirection: "column", justifyContent: "center", borderTop: `1px solid ${LINE}` }}>
-      <div style={{ fontFamily: T.mono, fontSize: ".62rem", letterSpacing: ".2em", color: C.green, textTransform: "uppercase", marginBottom: mobile ? "1rem" : ".6rem" }}>Technical Arsenal</div>
+    <div style={{ background: "var(--home-base)", padding: mobile ? `2rem ${padX}` : `1.1rem ${padX}`, display: "flex", flexDirection: "column", justifyContent: "center", borderTop: `1px solid ${LINE}` }}>
+      <div style={{ fontFamily: T.mono, fontSize: ".72rem", letterSpacing: ".2em", color: C.green, textTransform: "uppercase", marginBottom: mobile ? "1rem" : ".45rem" }}>Technical Arsenal</div>
       {SKILLS.map(s => (
-        <div key={s.name} style={{ borderBottom: `1px solid ${LINE}`, padding: mobile ? ".8rem 0" : ".6rem 0", display: "flex", justifyContent: "space-between", alignItems: mobile ? "flex-start" : "center", flexDirection: mobile ? "column" : "row", gap: mobile ? ".5rem" : "1.5rem" }}>
-          <span style={{ fontFamily: T.serif, fontSize: ".95rem", color: C.dark, fontStyle: "italic", flexShrink: 0 }}>{s.name}</span>
-          <div style={{ display: "flex", gap: ".35rem", flexWrap: "wrap", justifyContent: mobile ? "flex-start" : "flex-end" }}>
+        <div key={s.name} style={{ borderBottom: `1px solid ${LINE}`, padding: mobile ? ".8rem 0" : ".42rem 0", display: "flex", justifyContent: "space-between", alignItems: mobile ? "flex-start" : "center", flexDirection: mobile ? "column" : "row", gap: mobile ? ".5rem" : "1.25rem" }}>
+          {/* Long labels may wrap after a slash on desktop (Game Engines/ Simulation) to leave room for the tags */}
+          <span style={{ fontFamily: T.serif, fontSize: "1.1rem", lineHeight: 1.2, color: C.dark, fontStyle: "italic", flexShrink: 0, maxWidth: mobile ? "none" : "9rem" }}>
+            {s.name.split("/").map((part, i) => <span key={part}>{i > 0 && <>/<wbr /></>}{part}</span>)}
+          </span>
+          <div style={{ display: "flex", gap: ".3rem", flexWrap: "wrap", justifyContent: mobile ? "flex-start" : "flex-end" }}>
             {s.tags.map(t => (
-              <span key={t} style={{ fontFamily: T.mono, fontSize: ".56rem", letterSpacing: ".06em", padding: ".22rem .55rem", border: "1px solid", ...TAG_TONES[s.tone] }}>{t}</span>
+              <span key={t} style={{ fontFamily: T.mono, fontSize: ".8125rem", letterSpacing: ".02em", padding: ".28rem .65rem", whiteSpace: "nowrap", border: "1px solid", ...TAG_TONES[s.tone] }}>{t}</span>
             ))}
           </div>
         </div>
