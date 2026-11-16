@@ -36,8 +36,8 @@ This file is the source of truth for the site restructure. Follow the rules and 
 - [x] PR 4: Fix the 5 existing lint problems (merged)
 - [x] PR 5: Fix Contact links (merged)
 - [x] PR 6: Copy, metadata, experience, skills, about (merged)
-- [x] PR 7: Home "About strip" copy
-- [x] PR 8: Visuals and cleanup
+- [x] PR 7: Home "About strip" copy (merged)
+- [x] PR 8: Visuals and cleanup (merged, plus Hallway Hunters thumbnail follow-up)
 
 ## Rules for all work
 
@@ -237,3 +237,83 @@ Then the embedded project walkthrough video: https://youtu.be/LqsOFARvTSs
 - Don't touch public/Preeta_Chatterjee_Resume.pdf. Preeta will replace it.
 - Final decisions: Roll-a-Ball card uses gameplay.png; Stone & Soul uses stone-soul-game.png; Hallway Hunters uses ai-debugger (the YouTube thumbnail hosts are blocked by the session's network policy; swap to the gameplay video thumbnail if that host is allowed later). All other cards have no image.
 - Follow-up: the Hallway Hunters card now uses Preeta's `hallway-hunters-thumb.png` (original in `assets-src/hallway-hunters/`), cropped to its left 1322×941 so the title stays intact and the Objective HUD box is excluded, with `position: "left center"`. ai-debugger stays in the case-study gallery.
+
+# Phase 2
+
+All Phase 1 rules still apply: no invented content, verbatim text exactly as given, no em dashes in visible text, US spelling, `npm run build` and `npm run lint` must pass, one PR at a time, and wait for Preeta to merge before starting the next one.
+
+## Phase 2 rules
+
+- Every PR must work and be checked at desktop (1440, 1280) and phone (390, 360) widths, and respect `prefers-reduced-motion`.
+- Send Preeta screenshots of every visual change at both desktop and phone widths, in both themes once themes exist (PR 3 onward).
+
+### Phase 2 PR status
+
+- [ ] PR 1: Analytics (Cloudflare Web Analytics)
+- [ ] PR 2: Content cleanup
+- [ ] PR 3: Home 2×2 layout with dark and light themes
+- [ ] PR 4: Bubble game
+- [ ] PR 5: Hover and focus states
+- [ ] PR 6: Project thumbnails
+- [ ] PR 7: Home projects carousel
+
+## Phase 2 PR 1: Analytics
+
+- Cloudflare Web Analytics, manual snippet (use exactly this):
+  `<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "f36f9029145d40e5b3996d91cb40e750"}'></script><!-- End Cloudflare Web Analytics -->`
+- Cloudflare doesn't track hash-router navigation, so it only counts initial page loads. That's expected; don't try to work around it.
+
+## Phase 2 PR 2: Content cleanup (no layout changes yet)
+
+- Remove the skills marquee band entirely.
+- Remove the hero chips, the hero tagline, and the hero eyebrow line. The hero keeps only Preeta's name and the two buttons.
+- Remove the résumé from the site entirely: the nav Résumé button, the "Want the full picture?" block, `public/Preeta_Chatterjee_Resume.pdf`, `SITE.resume`, and the Phase 1 rule about not touching the PDF.
+- Experience/education sync: SMS India title is "Graduate Engineer (Simulation and Software Testing)", Aug 2023 – May 2024. B.Tech dates: Aug 2019 – May 2023.
+
+## Phase 2 PR 3: Home layout as a 2×2 grid, with two themes (mockup approved)
+
+Layout:
+
+- Nav: PC logo left; About, Projects, Contact right; no Résumé.
+- Top left: name only (two lines, PREETA dark / CHATTERJEE maroon, ~128px at 1440) plus Explore Work and Get in Touch.
+- Top right: the about panel (headline, blurb, stats, Read more). Stats become one row of four on desktop, 2×2 on phone. Give the about panel extra left padding (~96px at 1440) so its text sits clear of the fade.
+- Bottom left: skills (Technical Arsenal), category label left, tags right.
+- Bottom right: bubble game.
+- At 1440×900, all four boxes fit in one screen. Shrink type and spacing as needed and report what changed.
+- Phone stack order: name, about, skills, game.
+
+Themes:
+
+- Two themes, "dark" and "light", selected by a single setting `SITE.theme` in `src/content.js` (default "dark"). Use CSS variables so one value switches everything, desktop and phone. No visitor-facing toggle; only Preeta chooses the theme, by editing that setting.
+- The name box and about box share one background that fades between them: horizontally on desktop, top-to-bottom on phone (on phone the fade sits between the buttons and the about headline).
+  - dark: off-white #F2F1EF fading smoothly to black #121212 (start the fade ~26% across, fully black by ~70%; use many stops so it's gradual). About text: headline #F2F1EF, accents green #2F6B50 and red #8E3536, blurb #D9D6D1, stat labels #B8B4AE, stat borders #4A4C50.
+  - light: off-white #F2F1EF fading to light grey #DDDAD5 (30% to 60%). About text: headline #111111, accents green #1E4D3B and maroon #5A1A1C, blurb #2E2E2E, stat labels #4A4A4A, stat borders #B5B1AB.
+- Read more: filled button in the theme's green, white text.
+- Skill tags colored by row in both themes: Languages filled maroon #5A1A1C, ML/AI filled green #1E4D3B, Game Engines/Simulation filled charcoal #2F3135 (all white text), Tools & Practices white with #111111 outline.
+- Report contrast for both themes; flag anything below WCAG AA rather than changing Preeta's colors.
+
+## Phase 2 PR 4: Bubble game
+
+- A start card over the canvas: "MINI GAME" / "POP THE SKILLS" / "Pop as many bubbles as you can in 20 seconds." on desktop, "Tap as many bubbles..." on phone / Start button / "Best: 0".
+- While playing: 20-second timer and score. Best score saved in localStorage (wrapped in try/catch).
+- Keep skill names on the bubbles. Works with mouse and touch.
+- The card has a white background, black border, and a solid offset shadow.
+
+## Phase 2 PR 5: Hover and focus states
+
+- Site-wide: a clear contrast change on every button, link, and card on hover.
+- Cards lift with an accent border and show "View project →".
+- Visible `:focus-visible` outlines.
+- Works in both themes. Check WCAG AA.
+
+## Phase 2 PR 6: Project thumbnails
+
+- Preeta adds AI-generated thumbnails to `public/projects/<project>/thumb.*`; convert to WebP and wire them in for the home page carousel only.
+- Project pages and case-study pages stay unchanged.
+
+## Phase 2 PR 7: Home projects carousel (replaces the featured cards)
+
+- All projects. Slow auto-advance with a fade between slides.
+- Pauses on hover, focus, and touch. Stops auto-advancing permanently after any arrow click or swipe. No auto-advance under `prefers-reduced-motion`.
+- Arrows plus dots; swipe on phone.
+- Each slide: thumbnail, two-line overview, tags, and a link to the project or case study.
