@@ -50,7 +50,7 @@ Every push to `main` runs `.github/workflows/deploy.yml`, which builds the site 
 
 The contact form ID comes from the `VITE_FORMSPREE_ID` repository secret when it's set, with a fallback ID in `src/components/ContactForm.jsx`.
 
-The older manual path is kept as a fallback: run `npm run build`, then `npm run deploy`, which pushes `dist/` to the `gh-pages` branch. Pages only serves that branch if **Pages → Source** is switched back to it.
+Deployment is Actions-only: there is no manual deploy script or `gh-pages` branch.
 
 ## Regenerating `og-preview.png`
 
