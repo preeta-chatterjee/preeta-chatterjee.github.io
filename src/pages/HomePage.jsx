@@ -2,9 +2,9 @@ import { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { C, S_BODY, NAV_HEIGHT } from "../theme";
 import { useReveal, useMobile } from "../hooks";
-import { SITE, CONTACT_BLURB, PROJECTS, FEATURED_PROJECT_IDS, PUBLICATIONS } from "../content";
+import { SITE, CONTACT_BLURB, PROJECTS, PUBLICATIONS } from "../content";
 import HomeGrid from "../components/HomeGrid";
-import ProjCard from "../components/ProjCard";
+import ProjectCarousel from "../components/ProjectCarousel";
 import ContactForm from "../components/ContactForm";
 import Footer from "../components/Footer";
 import { CONTACT_PATH } from "../routes";
@@ -31,24 +31,13 @@ export default function HomePage() {
     return () => cancelAnimationFrame(id);
   }, [location]);
 
-  // Featured projects, in the order listed in FEATURED_PROJECT_IDS. Cards with media always take
-  // a full row (image beside the text); cards without media pair up, and an unpaired one takes a
-  // full row. So an image card never shares a row with a text-only card.
-  const featuredProjects = FEATURED_PROJECT_IDS.map(id => PROJECTS.find(p => p.id === id)).map((p, i, all) => {
-    if (p.media) return { ...p, full: true };
-    let run = 0; // position of this card within its run of consecutive media-less cards
-    for (let j = i - 1; j >= 0 && !all[j].media; j--) run++;
-    const pairable = run % 2 === 1 || (i + 1 < all.length && !all[i + 1].media);
-    return { ...p, full: !pairable };
-  });
-
   return (
     <>
       <HomeGrid />
 
-      {/* ── Featured Projects ── */}
-      <section id="projects" style={{ padding: `4rem ${pad}`, background: C.surface }}>
-        <div className="rv" ref={refP} style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "2.5rem", flexWrap: "wrap", gap: "1rem" }}>
+      {/* ── Projects carousel (all projects; off-white surface = the carousel's veil color) ── */}
+      <section id="projects" style={{ padding: "4rem 0 3.5rem", background: "#F2F1EF" }}>
+        <div className="rv" ref={refP} style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "2rem", flexWrap: "wrap", gap: "1rem", padding: `0 ${pad}` }}>
           <div>
             <div style={{ fontFamily: "'DM Mono',monospace", fontSize: ".65rem", letterSpacing: ".18em", color: C.red, textTransform: "uppercase", marginBottom: ".5rem" }}>02 / Selected Work</div>
             <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(2.5rem,6vw,5rem)", color: C.dark, letterSpacing: ".02em", lineHeight: .92 }}>Projects.</div>
@@ -61,10 +50,7 @@ export default function HomePage() {
             View All ({PROJECTS.length + PUBLICATIONS.length}) →
           </Link>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: "1.5px", background: C.border }}>
-          {/* Number by position on the home page, not by place in the full list */}
-          {featuredProjects.map((p, i) => <ProjCard key={p.id} p={{ ...p, num: String(i + 1).padStart(2, "0") }} />)}
-        </div>
+        <ProjectCarousel mobile={mobile} />
       </section>
 
       {/* ── Contact ── */}

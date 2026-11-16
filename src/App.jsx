@@ -8,7 +8,6 @@ import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
 import ProjectsPage from "./pages/ProjectsPage";
 import CaseStudyPage from "./pages/CaseStudyPage";
-import ThumbPreviewPage from "./pages/ThumbPreviewPage";
 
 // ── App ────────────────────────────────────────────────────────────────────────
 export default function App() {
@@ -25,8 +24,6 @@ export default function App() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/projects/:slug" element={<CaseStudyPage />} />
-          {/* Temporary, unlinked review page for the PR 6 thumbnails; remove in PR 7 */}
-          <Route path="/preview/thumbnails" element={<ThumbPreviewPage />} />
         </Routes>
       </div>
     </HashRouter>

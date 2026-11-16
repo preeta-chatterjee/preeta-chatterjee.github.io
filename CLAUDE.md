@@ -8,7 +8,7 @@ This file is the source of truth for the site restructure. Follow the rules and 
 
 - Vite + React 19, react-router-dom with `HashRouter` (routes look like `/#/about`). Styling is inline style objects; `src/index.css` is only a reset. Hover, `:active` and `:focus-visible` states live in `src/interactions.css` (`ix-*` classes; Phase 2 PR 5), not in onMouseEnter handlers. Scroll reveals use `useReveal` (`src/hooks.js`) with `src/reveal.css`; follow the Loading rules below.
 - Layout of `src/`:
-  - `content.js`: all site copy and data (SITE, CANVAS_LABS, HOME_INTRO, STATS, CONTACT_BLURB, SKILLS, PROJECT_GROUPS, FEATURED_PROJECT_IDS, PROJECTS, PUBLICATIONS, ABOUT_QUOTE, ABOUT_SECTIONS, EXPERIENCE, EDUCATION, CASE_STUDIES). Content edits go here.
+  - `content.js`: all site copy and data (SITE, CANVAS_LABS, HOME_INTRO, STATS, CONTACT_BLURB, SKILLS, PROJECT_GROUPS, PROJECTS, PUBLICATIONS, ABOUT_QUOTE, ABOUT_SECTIONS, EXPERIENCE, EDUCATION, CASE_STUDIES). Content edits go here.
   - `theme.js`: colors (`C`), fonts (`T`), layout constants, shared style helpers, and the home themes (`HOME_THEMES`, `TAG_TONES`, `homeThemeVars`). `hooks.js`: `useReveal`, `useMobile`.
   - Home theme: `SITE.theme` in `content.js` ("dark" or "light") is the only switch. `HomeGrid` (the 2×2 top of the home page) applies it as CSS variables (`--home-fade-x`, `--about-green`, etc.).
   - `components/`: one component per file. `pages/`: HomePage, ProjectsPage, AboutPage, CaseStudyPage. `App.jsx`: router. `main.jsx` mounts `App`.
@@ -19,7 +19,8 @@ This file is the source of truth for the site restructure. Follow the rules and 
 - Static files (paper PDF, favicon, `og-preview.png`) live in `public/` and are copied to the build as-is.
 - Fonts are self-hosted in `public/fonts/` (latin-subset woff2 from Fontsource, SIL OFL; license texts alongside) and declared and preloaded inline in `index.html`. There is no Google Fonts request.
 - Project images: deployed WebP files live in `public/projects/<slug>/` (`<name>.webp` max 1600px wide for display, `<name>-full.webp` for the lightbox). Original PNGs are kept in `assets-src/<slug>/`, which is not deployed.
-- Project card images: set `media` on a PROJECTS entry (`{ type: "image", src, alt, width, height, position? }` or `{ type: "video", id, title }`). Cards without `media` show no image area. `position` (CSS object-position) picks which part survives the crop. On the home grid, cards with media always take a full row (image beside the text); text-only cards pair up.
+- Project card images: set `media` on a PROJECTS entry (`{ type: "image", src, alt, width, height, position? }` or `{ type: "video", id, title }`). Cards without `media` show no image area. `position` (CSS object-position) picks which part survives the crop. Media appears on the Projects page cards; the home page uses the typographic carousel (`ProjectCarousel.jsx`) instead.
+- Where a card or slide links (case study, else first link) and its label: `src/projectLinks.js` (`primaryLink`), shared by `CardCta.jsx` and the carousel.
 - `og-preview.png` (1200×630) is generated from `assets-src/og-preview/og-preview.html`; see README.
 - Contact form uses Formspree. The ID comes from `VITE_FORMSPREE_ID`, with a hardcoded fallback in `src/components/ContactForm.jsx`.
 - Commands: `npm ci`, `npm run dev`, `npm run build`, `npm run lint`, `npm run preview`.
@@ -246,7 +247,7 @@ All Phase 1 rules still apply: no invented content, verbatim text exactly as giv
 ## Phase 2 rules
 
 - Every PR must work and be checked at desktop (1440, 1280) and phone (390, 360) widths, and respect `prefers-reduced-motion`.
-- Send Preeta screenshots of every visual change at both desktop and phone widths, in both themes once themes exist (PR 3 onward).
+- Send Preeta screenshots of every visual change at both desktop and phone widths. The theme (`SITE.theme`) only affects the home top band (`HomeGrid`), so both-theme screenshots are needed only when a PR changes that band; otherwise one theme is enough.
 
 ### Phase 2 PR status
 
@@ -259,7 +260,7 @@ All Phase 1 rules still apply: no invented content, verbatim text exactly as giv
 - [x] PR 4: Bubble game (merged, plus the tap-highlight fix)
 - [x] PR 5: Hover and focus states (merged)
 - [x] Loading fix: no first-screen entrance animations, self-hosted fonts (merged)
-- [ ] PR 6: Project thumbnails (typographic, no images)
+- [x] PR 6: Project thumbnails (typographic, no images) (merged)
 - [ ] PR 7: Home projects carousel
 
 ## Loading rules (all pages, all future sections)
@@ -413,7 +414,7 @@ Change of plan (Preeta): no image thumbnails. They are built in code, so visitor
 - Contrast (1440/1280/390/360, both themes): titles and labels in the group color on white are 9.63:1 (green), 13.13:1 (maroon) and 13.03:1 (charcoal); the hook is 13.58:1.
 - No image files. The cards are theme-independent, so they read the same in both themes. Follows the loading rules: the card never animates.
 - Used on the home carousel only (PR 7). Project and case-study pages stay unchanged.
-- Temporary review page: `/#/preview/thumbnails` (`ThumbPreviewPage.jsx`), not linked anywhere. It shows a static carousel row (center card clear, neighbors veiled 50%, next ones 82%, the rest hidden), all seven unveiled, and the hook/overview list. Remove it in PR 7. The veil covers the card's shadow too, so it extends about 11px past the card; the carousel needs the same.
+- Temporary review page (removed in PR 7): `/#/preview/thumbnails` (`ThumbPreviewPage.jsx`), not linked anywhere. It showed a static carousel row (center card clear, neighbors veiled 50%, next ones 82%, the rest hidden), all seven unveiled, and the hook/overview list. Remove it in PR 7. The veil covers the card's shadow too, so it extends about 11px past the card; the carousel needs the same.
 - Content fix: the RAG paper count is 30+ (was 20+), in both the card description and the overview.
 
 ### Hook and overview rule (all projects, including future ones)
@@ -437,3 +438,54 @@ Spec updated by Preeta (supersedes the earlier fade-between-slides plan):
 - Each slide: the `ProjThumb` light card, the two-line `overview`, tags, and a link to the project or case study.
 - Accessibility note from PR 6: the veil deliberately drops neighbor text below AA (50% veil about 2.4–3.1:1, 82% about 1.4:1). Only the center card is meant to be read, so the veiled cards must be hidden from screen readers and keyboard focus (`aria-hidden`, `inert`). Every project is then reached, readable, when it is centered.
 - Follow the loading rules: the carousel is below the fold on desktop, but nothing in it may animate on first paint, and the veils and card surfaces don't fade in on load.
+
+Implementation notes (PR 7, after Preeta's review):
+
+- `src/components/ProjectCarousel.jsx` replaces the featured cards in the home "02 / Selected Work" section; `ProjCard.jsx`, `FEATURED_PROJECT_IDS` and the PR 6 preview page are removed. The section background is #F2F1EF, which is also the veil color.
+- Order (carousel only): `CAROUSEL_PROJECT_IDS` in content.js, starting at RAG System: RAG System, Hallway Hunters, 3D Reconstruction, Stone & Soul, Haunted Hallway, Job Tracker, Roll-a-Ball. With four Game Engines (maroon) projects out of seven, one same-color pair can't be avoided in any loop; here it is Stone & Soul → Haunted Hallway. The Projects page keeps PROJECTS order.
+- Each slide holds the light `ProjThumb`, the `overview` (DM Sans .95rem), up to four `stack` tags and the destination hint from `primaryLink`.
+- Hallway Hunters overview, Preeta's verbatim replacement: "A first-person survival horror game: use doors as barriers to escape a zombie-infected apartment floor before time runs out."
+- Overview lines: every overview fits two lines at 1440 and 1280. Phone: 4 lines (5 for 3D Reconstruction at 360); they aren't clamped.
+- Card width: desktop 46% of the width, max 580px (gap 24px). Phone: 80% (gap 12px), with a sliver of each neighbor.
+- Timing: the `TIMING` object at the top of ProjectCarousel.jsx is the one place to tune it. Rest 1.5s per card and slide 0.5s (ease-in-out cubic), about one card every 2s (Preeta's decision; it was 3.5s + 0.7s). It resumes 5s after a desktop interaction, and multi-card dot jumps are capped at 1s.
+- Pause and resume:
+  - **Desktop:** hover pauses. Arrow, dot, arrow-key and side-card clicks pause too. Auto-advance resumes 5s after the last interaction and the mouse leaving (it advances straight away then, since the card has already rested). Keyboard focus inside the carousel (`:focus-visible`) pauses until focus leaves, then resumes after 5s. Mouse clicks don't count as focus, so a clicked arrow doesn't freeze it.
+  - **Touch:** any touch (swipe, tap, arrow, dot) stops auto-advance for good.
+  - **Always:** offscreen (less than half visible) and a hidden tab pause it.
+  - `prefers-reduced-motion`: nothing auto-advances, and arrows and dots switch instantly.
+  - **No pause/play toggle.** One was added in the review round, then removed by Preeta's decision. Don't add it back; the pauses above (hover, keyboard focus, touch stop, reduced motion) are the controls.
+- Arrows (Netflix-style): on the row's left and right edges, vertically centered on the card image, over the veiled side cards.
+  - **Desktop:** 56px, white with a #111 border, hidden until the carousel is hovered or has keyboard focus. Hover fills them #111.
+  - **Touch:** no hover, so they're always visible, 30px, white at 90% with a #B5B1AB border (Preeta's pick; the swipe-only option was removed).
+  - They clear the center card by 7px at 390 and 4px at 360.
+- Whole card clickable:
+  - The center slide is one link: thumbnail, overview, tags and the visible destination hint. It opens the case study (Hallway Hunters) or the external link in a new tab. Its accessible name includes the destination, e.g. "RAG System: View on GitHub (opens in a new tab)".
+  - On desktop hover it lifts 4px, the card shadow deepens and the hint underlines.
+  - 3D Reconstruction and Stone & Soul have no destination, so no link, no lift and a default cursor.
+  - Clicking a side card brings it to the center instead of opening it.
+  - The click that follows a swipe is suppressed.
+- Accessibility:
+  - The wrapper has `role="region"`, `aria-roledescription="carousel"` and `aria-label="Projects"`. Each slide is a group labelled "N of 7: title".
+  - Side slides are `aria-hidden` and contain nothing focusable (they're not `inert`, so they can still be clicked). The center slide's link is the only focus stop inside the row.
+  - Arrows (56/30px) and dots (28px targets) have labels; the active dot has `aria-current`.
+  - A live region announces the current card once the visitor takes control.
+- Motion:
+  - One continuous position drives both the offset and the veil (0 → 0, 1 → 50%, 2 → 82%, 2.6+ → 100%; the veil extends 11px past the card to cover its shadow).
+  - Slides are keyed by an unbounded slot number (slot s shows project s mod 7), so the loop has no jump.
+  - During a slide or swipe a requestAnimationFrame loop writes only `transform` and the veil's `opacity`.
+- Loading rules: the first render already has every offset and veil in place, and nothing moves until the first rest ends while the carousel is on screen.
+- Testing note: Playwright element screenshots (`locator.screenshot`) override the device metrics and drop touch emulation, so `(hover: none)` styles don't show in them. Use viewport screenshots for touch visuals.
+- Checks:
+  - Pace (after the speed-up): see the PR 7 final checks below.
+  - Hover pause and resume after mouse-leave (about 5.0s), desktop arrow hold, keyboard-focus pause, side-card click, center-card click (case study and GitHub in a new tab), touch swipe stop, and reduced motion all verified.
+  - Every overview fits two lines at 1440 and 1280.
+  - 83 focus stops, 0 failing; no page scrolls sideways at the four widths.
+
+PR 7 final changes and checks (Preeta's last review):
+
+- Pause/play toggle removed (Preeta's decision); don't add it back.
+- Speed: rest 1.5s, slide 0.5s, measured at about 1.3s to the first advance, then 2.0s per card.
+- Phone arrows: the small always-visible ones (30px) are kept; the swipe-only option and its `TOUCH_ARROWS` constant were removed.
+- Kept and re-verified: no auto-advance under `prefers-reduced-motion`; hover pauses; keyboard focus pauses; resumes about 5.0s after the mouse leaves (desktop); a touch swipe stops it for good.
+- 81 keyboard focus stops, 0 failing. No page scrolls sideways at 1440, 1280, 390 or 360.
+
