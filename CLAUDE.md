@@ -9,7 +9,8 @@ This file is the source of truth for the site restructure. Follow the rules and 
 - Vite + React 19, react-router-dom with `HashRouter` (routes look like `/#/about`). Styling is inline style objects; `src/index.css` is only a reset.
 - Layout of `src/`:
   - `content.js`: all site copy and data (SITE, CANVAS_LABS, HOME_INTRO, STATS, CONTACT_BLURB, SKILLS, PROJECT_GROUPS, FEATURED_PROJECT_IDS, PROJECTS, PUBLICATIONS, ABOUT_QUOTE, ABOUT_SECTIONS, EXPERIENCE, EDUCATION, CASE_STUDIES). Content edits go here.
-  - `theme.js`: colors (`C`), fonts (`T`), layout constants, shared style helpers. `hooks.js`: `useInView`, `useMobile`.
+  - `theme.js`: colors (`C`), fonts (`T`), layout constants, shared style helpers, and the home themes (`HOME_THEMES`, `TAG_TONES`, `homeThemeVars`). `hooks.js`: `useInView`, `useMobile`.
+  - Home theme: `SITE.theme` in `content.js` ("dark" or "light") is the only switch. `HomeGrid` (the 2×2 top of the home page) applies it as CSS variables (`--home-fade-x`, `--about-green`, etc.).
   - `components/`: one component per file. `pages/`: HomePage, ProjectsPage, AboutPage, CaseStudyPage. `App.jsx`: router. `main.jsx` mounts `App`.
   - Case studies: add an entry to `CASE_STUDIES` keyed by slug and it renders at `/#/projects/<slug>`. Link to it from a project with `links: [{ label: "Case Study", to: "/projects/<slug>" }]`.
   - `routes.js`: shared route paths (`CONTACT_PATH`). Link to the contact section with `<Link to={CONTACT_PATH}>`; plain `#id` anchors don't work under HashRouter.
@@ -250,8 +251,9 @@ All Phase 1 rules still apply: no invented content, verbatim text exactly as giv
 
 - [x] PR 1: Analytics (Cloudflare Web Analytics) (merged)
 - [x] PR 2: Content cleanup (merged)
-- [ ] Deployment cleanup: Actions-only (small PR between PR 2 and PR 3)
+- [x] Deployment cleanup: Actions-only (merged; gh-pages branch deleted by Preeta)
 - [ ] PR 3: Home 2×2 layout with dark and light themes
+- [ ] Dependency PR: `npm audit fix` (no `--force`), right after PR 3 is merged
 - [ ] PR 4: Bubble game
 - [ ] PR 5: Hover and focus states
 - [ ] PR 6: Project thumbnails
@@ -298,6 +300,16 @@ Themes:
 - Read more: filled button in the theme's green, white text.
 - Skill tags colored by row in both themes: Languages filled maroon #5A1A1C, ML/AI filled green #1E4D3B, Game Engines/Simulation filled charcoal #2F3135 (all white text), Tools & Practices white with #111111 outline.
 - Report contrast for both themes; flag anything below WCAG AA rather than changing Preeta's colors.
+
+Implementation notes (PR 3):
+
+- PREETA is #111111 and CHATTERJEE is maroon #5A1A1C (the maroon from the theme spec). The Explore Work / Get in Touch buttons keep their existing colors.
+- At 1440×900 each of the four boxes is 420px tall and the grid ends exactly at the fold; it also fits 1280×800 (370px boxes). Desktop sizes: name 128px at 1440 (clamp 8.9vw), about headline 56px (was 72px), blurb .92rem / 1.65 line height (was .98rem / 1.8), stat values 1.8rem (was 2.2rem), top-row vertical padding 1.5rem, skills rows .6rem padding.
+- Contrast (measured against the rendered backgrounds): light theme passes AA everywhere. Dark theme below AA: green accent #2F6B50 on #121212 is 2.98:1 and red #8E3536 is 2.42:1 (large text needs 3:1); at 1440 the about text starts at 56.7% across, where the fade isn't fully black yet (it reaches #121212 at 70%), so the worst cases there are 1.30:1 ("& game engines.") and 1.78:1 ("4.0"). "tap the bubbles" (#777777) is 3.97:1 in both themes (small text needs 4.5:1); the game is replaced in PR 4.
+
+## Dependency PR: `npm audit fix` (right after PR 3)
+
+- Run `npm audit fix` (no `--force`). Confirm build, lint, and the site-wide checks pass; report what got updated and list anything still unresolved.
 
 ## Phase 2 PR 4: Bubble game
 
