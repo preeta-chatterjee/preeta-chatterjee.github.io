@@ -50,10 +50,12 @@ export const HOME_THEMES = {
   dark: {
     base: "#F2F1EF", end: "#121212", start: 26, stop: 70,
     headline: "#F2F1EF", green: "#3D8A66", red: "#C0504F", blurb: "#D9D6D1", statLabel: "#B8B4AE", statBorder: "#4A4C50",
+    readMore: "#2F6B50", // darker than the accent green so white button text passes AA
   },
   light: {
     base: "#F2F1EF", end: "#DDDAD5", start: 30, stop: 60,
     headline: "#111111", green: "#1E4D3B", red: "#5A1A1C", blurb: "#2E2E2E", statLabel: "#4A4A4A", statBorder: "#B5B1AB",
+    readMore: "#1E4D3B",
   },
 };
 
@@ -89,6 +91,7 @@ export function homeThemeVars(name) {
     "--home-fade-y": fadeGradient("to bottom", th.base, th.end, 0, 100),
     "--about-headline": th.headline,
     "--about-green": th.green,
+    "--readmore-bg": th.readMore,
     "--about-red": th.red,
     "--about-blurb": th.blurb,
     "--stat-label": th.statLabel,

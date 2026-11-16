@@ -63,7 +63,7 @@ export default function HomeGrid() {
         ))}
       </div>
       <div style={{ marginTop: "1.25rem" }}>
-        <Link to="/about" style={{ fontFamily: T.mono, fontSize: ".65rem", letterSpacing: ".12em", textTransform: "uppercase", color: "#FFFFFF", background: "var(--about-green)", border: "1.5px solid var(--about-green)", padding: ".55rem 1.2rem", textDecoration: "none", display: "inline-block", transition: "filter .2s" }}
+        <Link to="/about" style={{ fontFamily: T.mono, fontSize: ".65rem", letterSpacing: ".12em", textTransform: "uppercase", color: "#FFFFFF", background: "var(--readmore-bg)", border: "1.5px solid var(--readmore-bg)", padding: ".55rem 1.2rem", textDecoration: "none", display: "inline-block", transition: "filter .2s" }}
           onMouseEnter={e => { e.currentTarget.style.filter = "brightness(1.15)"; }}
           onMouseLeave={e => { e.currentTarget.style.filter = "none"; }}>Read More →</Link>
       </div>
