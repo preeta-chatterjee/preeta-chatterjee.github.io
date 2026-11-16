@@ -151,7 +151,7 @@ export const PROJECTS = [
     ],
     accent: C.red,
     thumbTitle: "Haunted Hallway",
-    hook: "Rigged from six separately generated limb sprites",
+    hook: "Rigged 2D sprite animation",
     overview: "A 2D browser survival game built in Unity, playable on computers and mobile. Click all thirteen glowing keys before the zombie reaches you.",
   },
   {

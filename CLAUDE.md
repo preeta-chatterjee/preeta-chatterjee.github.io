@@ -409,14 +409,11 @@ Change of plan (Preeta): no image thumbnails. They are built in code, so visitor
 - Titles are always one line (`white-space: nowrap`). Every card uses the same title size, set so the longest title, "3D Reconstruction" (6.59em wide in Bebas Neue), fits: 12cqw for the light and solid cards, 9.2cqw for the split card.
 - Short titles on the thumbnails only: "3D Reconstruction" and "RAG System". The full titles stay everywhere else on the site.
 - Sizes are in container units (`cqw`) with pixel floors for phones (label 10px, hook 13px). Checked at 1440, 1280, 390 and 360: every card is 16:10, nothing is clipped or outside the card, and every title is on one line.
-- Design review, round 2 (Preeta): the first design (solid panel, big watermark number) looked heavy and unbalanced. Three variants are on the preview page for Preeta to choose from:
-  - A `light`: white card, a top band in the group color, title and label in the group color, hook in #2E2E2E.
-  - B `solid`: solid group color, centered content, white text, generous spacing.
-  - C `split`: a narrow group-color strip on the left with the label (group and year as two vertical columns), text on white on the right.
-- Contrast (clear card, all variants, 1440/1280/390/360, both themes): every title, label and hook passes AA. Lowest: B label 6.84:1, B hook 7.88:1. A and C titles are 9.63:1 or better, and their hooks 13.58:1.
+- Design review (Preeta): round 1 (solid panel, big watermark number) looked heavy and unbalanced. Round 2 compared three variants (light, solid, split). **Final: the light card (variant A)**, with a 6px group-color band on top and a 1px #D6D2CB border plus a soft shadow (reaching about 10px), so cards separate from the off-white page in both themes. Variants B and C were removed. The title and label are in the group color, the hook in #2E2E2E.
+- Contrast (1440/1280/390/360, both themes): titles and labels in the group color on white are 9.63:1 (green), 13.13:1 (maroon) and 13.03:1 (charcoal); the hook is 13.58:1.
 - No image files. The cards are theme-independent, so they read the same in both themes. Follows the loading rules: the card never animates.
 - Used on the home carousel only (PR 7). Project and case-study pages stay unchanged.
-- Temporary review page: `/#/preview/thumbnails` (`ThumbPreviewPage.jsx`), not linked anywhere. Each variant is shown as a static carousel row (center card clear, neighbors veiled 50%, next ones 82%, the rest hidden), followed by all seven unveiled. Remove it in PR 7.
+- Temporary review page: `/#/preview/thumbnails` (`ThumbPreviewPage.jsx`), not linked anywhere. It shows a static carousel row (center card clear, neighbors veiled 50%, next ones 82%, the rest hidden), all seven unveiled, and the hook/overview list. Remove it in PR 7. The veil covers the card's shadow too, so it extends about 11px past the card; the carousel needs the same.
 - Content fix: the RAG paper count is 30+ (was 20+), in both the card description and the overview.
 
 ### Hook and overview rule (all projects, including future ones)
@@ -426,7 +423,7 @@ Each project in `content.js` has `thumbTitle`, `hook` and `overview`.
 - `hook` (on the thumbnail) is the one standout technical detail.
 - `overview` (the two-line carousel slide text, PR 7) is what the project is and what it does, drawn only from facts already in content.js.
 - **No repetition:** the hook and overview must not share a key phrase, number or fact. Check every pair for shared words and numbers before handover. Keep overviews to about 160 characters so they fit two lines.
-- Verbatim hooks from Preeta: Hallway Hunters "Three-layer enemy AI in Unreal Engine 5.7", Stone & Soul "A custom C++ engine, built from scratch", 3D Reconstruction "Telling motion apart from image degradation", RAG "Tuned for better answers, not just better matches". Proposed hooks for Roll-a-Ball, Haunted Hallway and Job Tracker, and all seven overviews, await Preeta's approval in the PR 6 review.
+- Verbatim hooks from Preeta: Hallway Hunters "Three-layer enemy AI in Unreal Engine 5.7", Stone & Soul "A custom C++ engine, built from scratch", 3D Reconstruction "Telling motion apart from image degradation", RAG "Tuned for better answers, not just better matches", Haunted Hallway "Rigged 2D sprite animation". The proposed hooks for Roll-a-Ball ("Real-time rigid-body dynamics") and Job Tracker ("AI-powered prioritization with Google Gemini") and all seven overviews were approved by Preeta in the PR 6 review.
 
 ## Phase 2 PR 7: Home projects carousel (replaces the featured cards)
 
@@ -437,6 +434,6 @@ Spec updated by Preeta (supersedes the earlier fade-between-slides plan):
 - Infinite loop: after the last project comes the first again, in both directions, with no visible jump.
 - Safeguards: slow auto-advance; pauses on hover, focus, and touch; stops auto-advancing permanently after any arrow click or swipe; no auto-advance (and no sliding animation) under `prefers-reduced-motion`. Arrows plus dots; swipe on phone.
 - Phone: one card in focus with a sliver of the neighbors visible.
-- Each slide: the chosen `ProjThumb` variant, the two-line `overview`, tags, and a link to the project or case study.
+- Each slide: the `ProjThumb` light card, the two-line `overview`, tags, and a link to the project or case study.
 - Accessibility note from PR 6: the veil deliberately drops neighbor text below AA (50% veil about 2.4–3.1:1, 82% about 1.4:1). Only the center card is meant to be read, so the veiled cards must be hidden from screen readers and keyboard focus (`aria-hidden`, `inert`). Every project is then reached, readable, when it is centered.
 - Follow the loading rules: the carousel is below the fold on desktop, but nothing in it may animate on first paint, and the veils and card surfaces don't fade in on load.
