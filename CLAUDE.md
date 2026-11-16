@@ -404,12 +404,20 @@ Implementation notes (PR 5):
 
 Change of plan (Preeta): no image thumbnails. They are built in code, so visitors don't mistake an illustration for the actual project.
 
-- Reusable component `src/components/ProjThumb.jsx`. A solid 16:10 panel in the project's group color (`GROUP_TONES` in `theme.js`): Computer Vision & ML deep green #1E4D3B, Simulation & Game Engines maroon #5A1A1C, Other charcoal #2F3135. White text.
-- Content: a small DM Mono label (group · year), the short title (`thumbTitle`) large in Bebas Neue, and the `hook` in DM Sans. Same layout for every project at any width: sizes are in container units (`cqw`) with pixel floors for phones (label 10px, title 30px, hook 13px minimum). The label stays on one line down to a 312px-wide thumbnail (360 viewport). A decorative project number is cropped into the bottom-right corner at 6% white (`aria-hidden`).
-- No image files. Theme-independent (solid panels), so it reads the same in both themes. Follows the loading rules: the panel never animates.
+- Reusable component `src/components/ProjThumb.jsx` (`variant` prop). A 16:10 card in the project's group color (`GROUP_TONES` in `theme.js`): Computer Vision & ML deep green #1E4D3B, Simulation & Game Engines maroon #5A1A1C, Other charcoal #2F3135.
+- Content: a small DM Mono label with the short group name (`short` on PROJECT_GROUPS: "Vision & ML", "Game Engines", "Other") and the year, the short title (`thumbTitle`) in Bebas Neue, and the `hook` in DM Sans. Content is vertically centered, with no watermark.
+- Titles are always one line (`white-space: nowrap`). Every card uses the same title size, set so the longest title, "3D Reconstruction" (6.59em wide in Bebas Neue), fits: 12cqw for the light and solid cards, 9.2cqw for the split card.
+- Short titles on the thumbnails only: "3D Reconstruction" and "RAG System". The full titles stay everywhere else on the site.
+- Sizes are in container units (`cqw`) with pixel floors for phones (label 10px, hook 13px). Checked at 1440, 1280, 390 and 360: every card is 16:10, nothing is clipped or outside the card, and every title is on one line.
+- Design review, round 2 (Preeta): the first design (solid panel, big watermark number) looked heavy and unbalanced. Three variants are on the preview page for Preeta to choose from:
+  - A `light`: white card, a top band in the group color, title and label in the group color, hook in #2E2E2E.
+  - B `solid`: solid group color, centered content, white text, generous spacing.
+  - C `split`: a narrow group-color strip on the left with the label (group and year as two vertical columns), text on white on the right.
+- Contrast (clear card, all variants, 1440/1280/390/360, both themes): every title, label and hook passes AA. Lowest: B label 6.84:1, B hook 7.88:1. A and C titles are 9.63:1 or better, and their hooks 13.58:1.
+- No image files. The cards are theme-independent, so they read the same in both themes. Follows the loading rules: the card never animates.
 - Used on the home carousel only (PR 7). Project and case-study pages stay unchanged.
-- Temporary review page: `/#/preview/thumbnails` (`ThumbPreviewPage.jsx`), not linked anywhere. Remove it in PR 7.
-- Contrast: white title 9.63:1 (green), 13.13:1 (maroon), 13.03:1 (charcoal). Hook (88% white) is at least 6.72:1 and label (80% white) at least 5.89:1, even over the watermark number.
+- Temporary review page: `/#/preview/thumbnails` (`ThumbPreviewPage.jsx`), not linked anywhere. Each variant is shown as a static carousel row (center card clear, neighbors veiled 50%, next ones 82%, the rest hidden), followed by all seven unveiled. Remove it in PR 7.
+- Content fix: the RAG paper count is 30+ (was 20+), in both the card description and the overview.
 
 ### Hook and overview rule (all projects, including future ones)
 
@@ -422,7 +430,13 @@ Each project in `content.js` has `thumbTitle`, `hook` and `overview`.
 
 ## Phase 2 PR 7: Home projects carousel (replaces the featured cards)
 
-- All projects. Slow auto-advance with a fade between slides.
-- Pauses on hover, focus, and touch. Stops auto-advancing permanently after any arrow click or swipe. No auto-advance under `prefers-reduced-motion`.
-- Arrows plus dots; swipe on phone.
-- Each slide: thumbnail, two-line overview, tags, and a link to the project or case study.
+Spec updated by Preeta (supersedes the earlier fade-between-slides plan):
+
+- All projects, in a single horizontal row of cards side by side that slides left as it advances.
+- The center card is fully clear. Cards fade progressively with distance from the center: the immediate neighbors are partly veiled with a light off-white cover, and cards leaving the left edge fade out completely while new ones fade in from the right. The fade follows the cards' movement smoothly; it never switches suddenly.
+- Infinite loop: after the last project comes the first again, in both directions, with no visible jump.
+- Safeguards: slow auto-advance; pauses on hover, focus, and touch; stops auto-advancing permanently after any arrow click or swipe; no auto-advance (and no sliding animation) under `prefers-reduced-motion`. Arrows plus dots; swipe on phone.
+- Phone: one card in focus with a sliver of the neighbors visible.
+- Each slide: the chosen `ProjThumb` variant, the two-line `overview`, tags, and a link to the project or case study.
+- Accessibility note from PR 6: the veil deliberately drops neighbor text below AA (50% veil about 2.4–3.1:1, 82% about 1.4:1). Only the center card is meant to be read, so the veiled cards must be hidden from screen readers and keyboard focus (`aria-hidden`, `inert`). Every project is then reached, readable, when it is centered.
+- Follow the loading rules: the carousel is below the fold on desktop, but nothing in it may animate on first paint, and the veils and card surfaces don't fade in on load.

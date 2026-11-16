@@ -44,11 +44,11 @@ export const SKILLS = [
 
 // ── Projects ──────────────────────────────────────────────────────────────────
 // Groups shown on the Projects page, in order. `tab: true` groups get a filter tab;
-// the others only appear under "All".
+// the others only appear under "All". `short` is the one- or two-word label on the carousel thumbnails.
 export const PROJECT_GROUPS = [
-  { id: "cv",    label: "Computer Vision & ML",      tab: true },
-  { id: "sim",   label: "Simulation & Game Engines", tab: true },
-  { id: "other", label: "Other",                     tab: false },
+  { id: "cv",    label: "Computer Vision & ML",      short: "Vision & ML",  tab: true },
+  { id: "sim",   label: "Simulation & Game Engines", short: "Game Engines", tab: true },
+  { id: "other", label: "Other",                     short: "Other",        tab: false },
 ];
 
 // Projects on the home page, in display order.
@@ -72,7 +72,7 @@ export const PROJECTS = [
     stack: ["VGGT", "VGGT4D", "Easi3R", "3D Reconstruction"],
     links: [],
     accent: C.green,
-    thumbTitle: "When Geometry Breaks",
+    thumbTitle: "3D Reconstruction",
     hook: "Telling motion apart from image degradation",
     overview: "A Pattern Recognition & Computer Vision course project at Northeastern with a classmate, using VGGT as the backbone and VGGT4D and Easi3R as baselines.",
   },
@@ -81,13 +81,13 @@ export const PROJECTS = [
     title: "RAG Research Engine", sub: "NLP · Machine Learning",
     status: "Completed", statusColor: C.green, statusBg: C.greenBg,
     year: "2025",
-    desc: "End-to-end retrieval-augmented generation pipeline querying 20+ research papers on fairness and bias in LLMs. Responsible for the retrieval module (E5-Base-v2 embeddings, FAISS vector indexing, caching), generation module (FLAN-T5-XL, prompt engineering), and the full evaluation framework: Precision@K, Recall@K, MRR, and ROUGE. Ablation study across three embedding models: E5-base achieved the best ROUGE-L (0.154) while BGE-small led on Precision@5 (0.160). Evaluated on 124 custom-annotated QA pairs.",
+    desc: "End-to-end retrieval-augmented generation pipeline querying 30+ research papers on fairness and bias in LLMs. Responsible for the retrieval module (E5-Base-v2 embeddings, FAISS vector indexing, caching), generation module (FLAN-T5-XL, prompt engineering), and the full evaluation framework: Precision@K, Recall@K, MRR, and ROUGE. Ablation study across three embedding models: E5-base achieved the best ROUGE-L (0.154) while BGE-small led on Precision@5 (0.160). Evaluated on 124 custom-annotated QA pairs.",
     stack: ["Python", "Hugging Face", "FAISS", "PyTorch", "FLAN-T5-XL", "E5-Base-v2", "spaCy"],
     links: [{ label: "GitHub (group repo)", href: "https://github.com/NorthChat/NLP_Final_Project", color: C.green }],
     accent: C.green,
-    thumbTitle: "RAG Research Engine",
+    thumbTitle: "RAG System",
     hook: "Tuned for better answers, not just better matches",
-    overview: "An end-to-end retrieval-augmented generation pipeline for querying 20+ research papers on fairness and bias in LLMs.",
+    overview: "An end-to-end retrieval-augmented generation pipeline for querying 30+ research papers on fairness and bias in LLMs.",
   },
   {
     id: "stone-and-soul", num: "03", group: "sim", full: false,
