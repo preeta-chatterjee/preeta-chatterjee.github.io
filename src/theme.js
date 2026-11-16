@@ -49,7 +49,7 @@ export const revealStyle = (inView, delay = 0) => ({
 export const HOME_THEMES = {
   dark: {
     base: "#F2F1EF", end: "#121212", start: 26, stop: 70,
-    headline: "#F2F1EF", green: "#2F6B50", red: "#8E3536", blurb: "#D9D6D1", statLabel: "#B8B4AE", statBorder: "#4A4C50",
+    headline: "#F2F1EF", green: "#3D8A66", red: "#C0504F", blurb: "#D9D6D1", statLabel: "#B8B4AE", statBorder: "#4A4C50",
   },
   light: {
     base: "#F2F1EF", end: "#DDDAD5", start: 30, stop: 60,
