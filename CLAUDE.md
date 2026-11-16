@@ -6,7 +6,7 @@ This file is the source of truth for the site restructure. Follow the rules and 
 
 ## Repo orientation
 
-- Vite + React 19, react-router-dom with `HashRouter` (routes look like `/#/about`). Styling is inline style objects; `src/index.css` is only a reset.
+- Vite + React 19, react-router-dom with `HashRouter` (routes look like `/#/about`). Styling is inline style objects; `src/index.css` is only a reset. Hover, `:active` and `:focus-visible` states live in `src/interactions.css` (`ix-*` classes; Phase 2 PR 5), not in onMouseEnter handlers.
 - Layout of `src/`:
   - `content.js`: all site copy and data (SITE, CANVAS_LABS, HOME_INTRO, STATS, CONTACT_BLURB, SKILLS, PROJECT_GROUPS, FEATURED_PROJECT_IDS, PROJECTS, PUBLICATIONS, ABOUT_QUOTE, ABOUT_SECTIONS, EXPERIENCE, EDUCATION, CASE_STUDIES). Content edits go here.
   - `theme.js`: colors (`C`), fonts (`T`), layout constants, shared style helpers, and the home themes (`HOME_THEMES`, `TAG_TONES`, `homeThemeVars`). `hooks.js`: `useInView`, `useMobile`.
@@ -353,6 +353,18 @@ Implementation notes (PR 4):
 - The open phone menu fully covers the page behind it (currently the hero shows through below the menu items).
 - Works in both themes. Check WCAG AA.
 - Contrast pass: the remaining #777777 (`C.muted`) small labels (dates, locations, metadata such as company/school lines, project subtitles and status lines) fail AA at 4.00:1 on #F2F2F2. Darken them to pass AA (4.5:1) while keeping them visually lighter than the body text (#444444 / #595959).
+
+Implementation notes (PR 5):
+
+- `src/interactions.css` (imported in `main.jsx`) holds every interactive state. Components keep their resting look inline and get `ix-*` classes; the stylesheet uses `!important` to beat the inline values. All the old onMouseEnter/onMouseLeave color swaps are gone (they stuck on after a tap on phones). Hover rules sit in `@media (hover: hover)`; the same look is applied on `:active`, which is the tap feedback on touch screens.
+- Hover per element: nav/back links #666666 → #111111 + underline (active page link gets the underline); colored text links (Case Study, GitHub, itch.io, IEEE, PDF) underline + darken; inline links (Haunted Hallway → Hallway Hunters) red → #111111; footer links 70% → 100% white + underline; PC logo darkens. Filled buttons invert to outline (Explore Work, Get in Touch, Send Message, Start), outline buttons fill (View All), Read More turns white with theme-green text (both themes pass: 6.29:1 dark, light higher). Filter tabs: inactive → white with black border/text; selected → #333333. Phone menu button gets a grey fill. Lightbox preview dims its image and darkens its chip; Close inverts.
+- Cards (`ix-card`, project and publication): white background, lift 4px (`translate`, so it doesn't fight the scroll-reveal `transform`), drop shadow, 2px border in the card's accent (`--accent`, drawn as an outline so images don't cover it), bottom bar fills. Keyboard focus inside a card gives the same look (no lift).
+- "View project →" (`CardCta.jsx`): on project cards only, fades in on hover/focus. It goes to the project's case study if it has one, otherwise its first link (opens in a new tab). On hover screens its link covers the whole card, so clicking anywhere on the card opens the project; inner links, inline links and the media link sit above it (`ix-above`). On touch screens the label and the card-wide link are hidden. Projects with no links (3D reconstruction, Stone & Soul) get the lift but no label. Publication cards lift but get no label.
+- Focus: `:focus-visible` gives a 2px #111111 outline, 3px offset, everywhere; light (#F2F2F2) inside `.on-dark` (footer, lightbox) and on card image links (drawn inside, over the image); Read More uses `var(--about-headline)` so it shows on the dark about panel. Inputs no longer set `outline: none`. YouTube embeds draw the ring on the video box from JS (`VideoEmbed.jsx`), because focus goes straight into the cross-origin player and `:focus-within` doesn't match there; it shows only for keyboard focus.
+- Phone menu: covers the whole screen below the nav with a solid #F2F2F2 background, locks page scroll while open, closes on Escape, link tap and navigation. The toggle has `aria-label` (Open/Close menu), `aria-expanded` and `aria-controls`.
+- Touch: the browser tap highlight is now off for all links and buttons (`a, button { -webkit-tap-highlight-color: transparent }`), replaced by the `:active` states above. Needs a real-phone check (headless tests don't render tap feedback).
+- Contrast changes: `C.muted` #777777 → #666666 (5.13:1 on #F2F2F2, 5.74:1 on white; lighter than body #595959/#444444). Contact panel labels ("03 / Contact", "Email", "LinkedIn") 45–50% → 70% white (5.15:1 on the green). Dark page-header labels ("01 / About", "02 / Work", "Case Study · …") were #4D1717 on #111111 (1.3:1) → new `C.redOnDark` #CC6260 (4.93:1). Footer © 30% → 60% white (6.5:1), footer links 30% → 70%. The big faint card numbers and the "HELLO" watermark are decorative, so they're `aria-hidden` and left as they are.
+- Checks: every text node on Home, About, Projects and the case study passes AA at 1440 and 390 (except the decorative watermarks); every link, button and card changes on hover; all 71 keyboard focus stops show a 2px ring at 3:1 or better.
 
 ## Phase 2 PR 6: Project thumbnails
 

@@ -10,7 +10,7 @@ export default function ContactForm() {
     width: "100%", background: "transparent", border: "none",
     borderBottom: `1.5px solid ${C.border}`, color: C.dark,
     padding: ".7rem 0", fontFamily: "'DM Mono', monospace",
-    fontSize: ".85rem", outline: "none", transition: "border-color .2s",
+    fontSize: ".85rem", transition: "border-color .2s",
     display: "block", marginBottom: "1.4rem",
   };
   if (state.succeeded) return (
@@ -38,16 +38,14 @@ export default function ContactForm() {
           onBlur={e => e.target.style.borderColor = C.border} />
         <ValidationError prefix="Message" field="message" errors={state.errors} style={{ fontFamily: "'DM Mono', monospace", fontSize: ".65rem", color: C.red }} />
       </div>
-      <button type="submit" disabled={state.submitting} style={{
+      <button type="submit" disabled={state.submitting} className="ix-btn-green" style={{
         display: "inline-block", padding: ".85rem 2.5rem",
         background: C.green, color: "#F2F2F2", border: `2px solid ${C.green}`,
         fontFamily: "'DM Mono', monospace", fontSize: ".73rem",
         letterSpacing: ".14em", textTransform: "uppercase",
         cursor: state.submitting ? "not-allowed" : "pointer",
         opacity: state.submitting ? .7 : 1, transition: "all .2s", marginTop: ".5rem",
-      }}
-        onMouseEnter={e => { if (!state.submitting) { e.target.style.background = "transparent"; e.target.style.color = C.green; } }}
-        onMouseLeave={e => { e.target.style.background = C.green; e.target.style.color = "#F2F2F2"; }}>
+      }}>
         {state.submitting ? "Sending..." : "Send Message →"}
       </button>
     </form>

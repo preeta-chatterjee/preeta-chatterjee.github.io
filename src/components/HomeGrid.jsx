@@ -32,12 +32,8 @@ export default function HomeGrid() {
         <span style={{ display: "block", color: "#5A1A1C" }}>{SITE.lastName.toUpperCase()}</span>
       </h1>
       <div style={{ display: "flex", gap: ".75rem", flexWrap: "wrap", marginTop: mobile ? "1.5rem" : "1.8rem", ...f(.4) }}>
-        <Link to="/projects" style={btn(C.dark, C.bg)}
-          onMouseEnter={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = C.dark; }}
-          onMouseLeave={e => { e.currentTarget.style.background = C.dark; e.currentTarget.style.color = C.bg; }}>Explore Work</Link>
-        <Link to={CONTACT_PATH} style={btn(C.red, "#F2F2F2")}
-          onMouseEnter={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = C.red; }}
-          onMouseLeave={e => { e.currentTarget.style.background = C.red; e.currentTarget.style.color = "#F2F2F2"; }}>Get in Touch</Link>
+        <Link to="/projects" className="ix-btn-dark" style={btn(C.dark, C.bg)}>Explore Work</Link>
+        <Link to={CONTACT_PATH} className="ix-btn-red" style={btn(C.red, "#F2F2F2")}>Get in Touch</Link>
       </div>
     </div>
   );
@@ -63,9 +59,7 @@ export default function HomeGrid() {
         ))}
       </div>
       <div style={{ marginTop: mobile ? "1.25rem" : ".85rem" }}>
-        <Link to="/about" style={{ fontFamily: T.mono, fontSize: ".65rem", letterSpacing: ".12em", textTransform: "uppercase", color: "#FFFFFF", background: "var(--readmore-bg)", border: "1.5px solid var(--readmore-bg)", padding: ".55rem 1.2rem", textDecoration: "none", display: "inline-block", transition: "filter .2s" }}
-          onMouseEnter={e => { e.currentTarget.style.filter = "brightness(1.15)"; }}
-          onMouseLeave={e => { e.currentTarget.style.filter = "none"; }}>Read More →</Link>
+        <Link to="/about" className="ix-readmore" style={{ fontFamily: T.mono, fontSize: ".65rem", letterSpacing: ".12em", textTransform: "uppercase", color: "#FFFFFF", background: "var(--readmore-bg)", border: "1.5px solid var(--readmore-bg)", padding: ".55rem 1.2rem", textDecoration: "none", display: "inline-block", transition: "all .2s" }}>Read More →</Link>
       </div>
     </div>
   );

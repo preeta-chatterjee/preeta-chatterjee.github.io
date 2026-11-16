@@ -1,28 +1,25 @@
-import { useState } from "react";
 import { C, S_BODY } from "../theme";
 import { useInView, useMobile } from "../hooks";
 
 export default function PubCard({ p, i }) {
   const [ref, inV] = useInView();
-  const [hov, setHov] = useState(false);
   const mobile = useMobile();
 
   return (
-    <div ref={ref} style={{
-      background: hov ? "#fff" : C.bg,
+    <div ref={ref} className="ix-card" style={{
+      "--accent": C.green,
       padding: mobile ? "1.8rem 1.5rem" : "2.5rem 3rem",
       position: "relative", overflow: "hidden",
       borderBottom: `1.5px solid ${C.border}`,
       opacity: inV ? 1 : 0, transform: inV ? "none" : "translateY(28px)",
-      transition: `background .3s, opacity .7s ease ${i * .1}s, transform .7s ease ${i * .1}s`,
-    }}
-      onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
+      transition: `background .3s, translate .25s ease, box-shadow .25s ease, outline-color .25s, opacity .7s ease ${i * .1}s, transform .7s ease ${i * .1}s`,
+    }}>
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem", flexWrap: "wrap", gap: ".5rem" }}>
         <div style={{ display: "inline-flex", alignItems: "center", gap: ".4rem", padding: ".22rem .7rem", background: C.greenBg, border: `1px solid ${C.green}44` }}>
           <span style={{ fontFamily: "'DM Mono',monospace", fontSize: ".58rem", letterSpacing: ".1em", color: C.green }}>{p.type}</span>
         </div>
-        <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "2.5rem", color: hov ? C.border : C.border2, lineHeight: 1, transition: "color .3s" }}>{p.num}</div>
+        <div className="ix-card-num" aria-hidden="true" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "2.5rem", lineHeight: 1, transition: "color .3s" }}>{p.num}</div>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 2fr", gap: mobile ? "1rem" : "3rem", alignItems: "start" }}>
@@ -35,13 +32,13 @@ export default function PubCard({ p, i }) {
           <p style={{ ...S_BODY, color: C.desc, marginBottom: "1.3rem" }}>{p.desc}</p>
           <div style={{ display: "flex", gap: "1.2rem", flexWrap: "wrap" }}>
             {p.links.map(l => (
-              <a key={l.label} href={l.href} target="_blank" rel="noreferrer"
+              <a key={l.label} href={l.href} target="_blank" rel="noreferrer" className="ix-link ix-colored"
                 style={{ fontFamily: "'DM Mono',monospace", fontSize: ".68rem", letterSpacing: ".1em", textTransform: "uppercase", color: l.color, display: "inline-flex", alignItems: "center", gap: ".35rem", textDecoration: "none" }}>{l.label} ↗</a>
             ))}
           </div>
         </div>
       </div>
-      <div style={{ position: "absolute", bottom: 0, left: 0, width: hov ? "100%" : "0%", height: 3, background: C.green, transition: "width .4s ease" }} />
+      <div className="ix-card-bar" style={{ position: "absolute", bottom: 0, left: 0, height: 3, background: C.green, transition: "width .4s ease" }} />
     </div>
   );
 }

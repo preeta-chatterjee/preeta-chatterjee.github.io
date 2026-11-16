@@ -14,6 +14,6 @@ export default function ProjMedia({ media, to, fill = false }) {
   );
   const box = { display: "block", width: "100%", height: fill ? "100%" : "auto", overflow: "hidden", background: C.dark };
   return to
-    ? <Link to={to} aria-label={`${media.alt} (open case study)`} style={box}>{img}</Link>
+    ? <Link to={to} aria-label={`${media.alt} (open case study)`} className="ix-media ix-above" style={box}>{img}</Link>
     : <div style={box}>{img}</div>;
 }
