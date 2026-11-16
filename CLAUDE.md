@@ -254,7 +254,7 @@ All Phase 1 rules still apply: no invented content, verbatim text exactly as giv
 - [x] Deployment cleanup: Actions-only (merged; gh-pages branch deleted by Preeta)
 - [x] PR 3: Home 2×2 layout with dark and light themes (merged)
 - [x] Typography PR: DM Sans body text, larger Technical Arsenal (merged, plus the description-color follow-up)
-- [ ] Dependency PR: `npm audit fix` (no `--force`), right after the typography PR is merged
+- [x] Dependency PR: `npm audit fix` (no `--force`) (merged)
 - [ ] PR 4: Bubble game
 - [ ] PR 5: Hover and focus states
 - [ ] PR 6: Project thumbnails
@@ -330,6 +330,18 @@ Implementation notes (PR 3):
 - While playing: 20-second timer and score. Best score saved in localStorage (wrapped in try/catch).
 - Keep skill names on the bubbles. Works with mouse and touch.
 - The card has a white background, black border, and a solid offset shadow.
+
+Implementation notes (PR 4):
+
+- All in `src/components/HeroCanvas.jsx`. Idle: the ambient bubbles and canvas labels keep drifting behind the start card (they can still be popped for fun, no score). Start: the ambient layer clears and 7 skill bubbles (5 when the box is under 500px wide) rise from the bottom, swaying slightly and speeding up by up to 60% as time runs out; a bubble that leaves the top respawns at the bottom. A pop scores +1, shows a "+1" and a burst, and spawns a replacement.
+- Bubble labels: the SKILLS tags of 12 characters or fewer plus the CANVAS_LABS names, uppercased and de-duplicated, drawn from a shuffled deck so labels don't repeat back to back. Longer tags (MATLAB/Simulink, Hugging Face Transformers, vector search, Unreal Engine (Blueprints, Behavior Trees), ECS architecture, Lua scripting, unit & property testing, Azure Cosmos DB) don't fit in a bubble; UNREAL and ECS come from CANVAS_LABS. Fills are the tag colors (maroon, green, charcoal) with white text.
+- HUD while playing: "0:20" countdown chip top left and "Score N" chip top right (white, black border). After the round the card returns with "Score: N" and a "Play Again" button (UI chrome added in this PR), and focus moves to that button.
+- Best score: localStorage key `pc-bubble-best`; reads and writes are wrapped in try/catch, and the game works with storage blocked.
+- Input: one `pointerdown` handler for mouse and touch (no double count from synthetic clicks). The canvas uses `touch-action: none` only during a round, so the page still scrolls over the game box otherwise. Touch gets a slightly larger hit radius.
+- `prefers-reduced-motion`: nothing moves. Idle labels and bubbles are static; in a round the bubbles sit at random spots and a popped one is replaced at a new spot, with no bursts or rising "+1".
+- The canvas now renders at devicePixelRatio, so bubble text is sharp on retina screens.
+- The Start / Play Again button inverts on hover through a small CSS rule inside `@media (hover: hover)` (class `bubble-start`), so taps on touch screens never leave it stuck inverted.
+- Removed the "tap the bubbles" hint (#777777, 3.97:1, flagged in PR 3); the start card replaces it. Contrast: card text 9.74:1 or better, title/chips/buttons 18.88:1, bubble text 9.63:1 (green) to 13.13:1 (maroon).
 
 ## Phase 2 PR 5: Hover and focus states
 
