@@ -261,7 +261,8 @@ All Phase 1 rules still apply: no invented content, verbatim text exactly as giv
 - [x] PR 5: Hover and focus states (merged)
 - [x] Loading fix: no first-screen entrance animations, self-hosted fonts (merged)
 - [x] PR 6: Project thumbnails (typographic, no images) (merged)
-- [ ] PR 7: Home projects carousel
+- [x] PR 7: Home projects carousel (merged)
+- [ ] About "Off the Clock" section (in review)
 
 ## Loading rules (all pages, all future sections)
 
@@ -489,3 +490,13 @@ PR 7 final changes and checks (Preeta's last review):
 - Kept and re-verified: no auto-advance under `prefers-reduced-motion`; hover pauses; keyboard focus pauses; resumes about 5.0s after the mouse leaves (desktop); a touch swipe stops it for good.
 - 81 keyboard focus stops, 0 failing. No page scrolls sideways at 1440, 1280, 390 or 360.
 
+
+## About page "Off the Clock" section (small PR after PR 7)
+
+- Personal section at the end of the About page, after Education (Education belongs with the professional record; the personal note closes the page before the footer). Content is `ABOUT_OFF_CLOCK` in content.js: heading "Off the Clock", body verbatim from Preeta ("...and this cover of City of Stars from La La Land is my favorite."), the City of Stars cover (`zelHJKieVto`), and two links: "in2_music on YouTube ↗" (`SITE.youtube`) and "My reads on StoryGraph ↗" (Preeta's verbatim label). Both open in a new tab with `rel="noopener noreferrer"`.
+- Rendered by `AboutSection`. A section with a `video` gets its own layout: from 900px wide, two columns (heading, text and links on the left; the video on the right, max 480px, 16:9). Below 900px it stacks: heading, text, full-width video, links. `rule={false}` skips the top divider, since Education's bottom rule already separates them.
+- Links (Preeta's review): outline buttons, DM Mono 15px, at least 44px tall, .75rem apart. YouTube is red (`ix-btn-outline-red`, new in interactions.css, fills #4D1717 on hover/tap), StoryGraph green (`ix-btn-outline`, like View All). Both labels stay on one line (44px tall) at every width down to 360. Contrast: 12.93:1 (red) and 8.70:1 (green), at rest and when filled.
+- `VideoEmbed` has a `clickToLoad` prop: it shows the YouTube thumbnail (`i.ytimg.com/vi/<id>/hqdefault.jpg`, lazy) with a play button, and loads the youtube-nocookie player (with autoplay) only on click. No player request before the click. If the thumbnail can't load, the dark box with the play button still shows. After a click, focus moves into the player; activated from the keyboard, the box shows the focus ring. The case-study embeds are unchanged (no `clickToLoad`).
+- The play button inverts on hover/tap (`ix-video-play` in interactions.css).
+- Footer: a "YouTube" link to `SITE.youtube` after Contact, new tab. The footer links wrap if needed; at 360 they still fit on one line.
+- The thumbnail host (i.ytimg.com) is blocked in the Claude session sandbox, so local screenshots show the fallback dark box; visitors see the real thumbnail.

@@ -47,6 +47,9 @@ input:focus-visible, textarea:focus-visible { outline-offset: 4px; }
 /* Outline green → filled (View All) */
 @media (hover: hover) { .ix-btn-outline:hover { background: #174D38 !important; color: #F2F2F2 !important; } }
 .ix-btn-outline:active { background: #174D38 !important; color: #F2F2F2 !important; }
+/* Outline red → filled (About "Off the Clock" YouTube link) */
+@media (hover: hover) { .ix-btn-outline-red:hover { background: #4D1717 !important; color: #F2F2F2 !important; } }
+.ix-btn-outline-red:active { background: #4D1717 !important; color: #F2F2F2 !important; }
 /* Read More (home about panel): theme green → white with theme-green text */
 @media (hover: hover) { .ix-readmore:hover { background: #FFFFFF !important; color: var(--readmore-bg) !important; } }
 .ix-readmore:active { background: #FFFFFF !important; color: var(--readmore-bg) !important; }
@@ -80,6 +83,9 @@ input:focus-visible, textarea:focus-visible { outline-offset: 4px; }
 .ix-dot:active span { background: #666666 !important; }
 .ix-slide-link:focus-visible { outline-offset: 6px; }
 @media (prefers-reduced-motion: reduce) { .ix-slide-link { transition: none !important; } .ix-slide-link:hover { translate: none; } }
+/* Click-to-load video preview: the play button inverts */
+@media (hover: hover) { .ix-video-play:hover .ix-video-play-icon { background: #111111 !important; color: #FFFFFF !important; } }
+.ix-video-play:active .ix-video-play-icon { background: #111111 !important; color: #FFFFFF !important; }
 /* Bubble game Start / Play Again (hover rule lives in HeroCanvas) */
 .bubble-start:active { background: #FFFFFF !important; color: #111111 !important; }
 /* Card image links (case study) */

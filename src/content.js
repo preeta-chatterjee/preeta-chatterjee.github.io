@@ -7,6 +7,7 @@ export const SITE = {
   name: "Preeta Chatterjee",
   email: "chatterjee.pre@northeastern.edu",
   linkedin: "linkedin.com/in/preeta-chatterjee",
+  youtube: "https://www.youtube.com/@in2_music",
   availability: "January–August 2027",
   // Home page theme: "dark" or "light". Only this value switches it (no visitor toggle).
   theme: "dark",
@@ -222,6 +223,19 @@ export const ABOUT_SECTIONS = [
     accent: C.red,
   },
 ];
+
+// Personal section at the end of the About page (after Education). Text is Preeta's, verbatim.
+// `video` uses VideoEmbed's click-to-load preview; `links` open in a new tab.
+export const ABOUT_OFF_CLOCK = {
+  heading: "Off the Clock",
+  body: "When I'm not building systems, I sing and read. I post covers on my YouTube channel, and this cover of City of Stars from La La Land is my favorite.",
+  accent: C.green,
+  video: { id: "zelHJKieVto", title: "City of Stars cover (La La Land) on the in2_music YouTube channel" },
+  links: [
+    { label: "in2_music on YouTube ↗", href: SITE.youtube, tone: "red" },
+    { label: "My reads on StoryGraph ↗", href: "https://app.thestorygraph.com/profile/lunos", tone: "green" },
+  ],
+};
 
 // `note` is an optional line under the company.
 export const EXPERIENCE = [
