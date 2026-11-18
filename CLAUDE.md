@@ -261,7 +261,7 @@ All Phase 1 rules still apply: no invented content, verbatim text exactly as giv
 - [x] PR 5: Hover and focus states (merged)
 - [x] Loading fix: no first-screen entrance animations, self-hosted fonts (merged)
 - [x] PR 6: Project thumbnails (typographic, no images) (merged)
-- [ ] PR 7: Home projects carousel
+- [x] PR 7: Home projects carousel (merged)
 
 ## Loading rules (all pages, all future sections)
 
