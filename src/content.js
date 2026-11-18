@@ -233,7 +233,7 @@ export const ABOUT_OFF_CLOCK = {
   video: { id: "zelHJKieVto", title: "City of Stars cover (La La Land) on the in2_music YouTube channel" },
   links: [
     { label: "in2_music on YouTube ↗", href: SITE.youtube, tone: "red" },
-    { label: "What I'm reading on StoryGraph ↗", href: "https://app.thestorygraph.com/profile/lunos", tone: "green" },
+    { label: "My reads on StoryGraph ↗", href: "https://app.thestorygraph.com/profile/lunos", tone: "green" },
   ],
 };
 
