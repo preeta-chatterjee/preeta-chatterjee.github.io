@@ -80,6 +80,9 @@ input:focus-visible, textarea:focus-visible { outline-offset: 4px; }
 .ix-dot:active span { background: #666666 !important; }
 .ix-slide-link:focus-visible { outline-offset: 6px; }
 @media (prefers-reduced-motion: reduce) { .ix-slide-link { transition: none !important; } .ix-slide-link:hover { translate: none; } }
+/* Click-to-load video preview: the play button inverts */
+@media (hover: hover) { .ix-video-play:hover .ix-video-play-icon { background: #111111 !important; color: #FFFFFF !important; } }
+.ix-video-play:active .ix-video-play-icon { background: #111111 !important; color: #FFFFFF !important; }
 /* Bubble game Start / Play Again (hover rule lives in HeroCanvas) */
 .bubble-start:active { background: #FFFFFF !important; color: #111111 !important; }
 /* Card image links (case study) */

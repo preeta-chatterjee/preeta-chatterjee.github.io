@@ -1,6 +1,6 @@
 import { C, NAV_HEIGHT } from "../theme";
 import { useMobile } from "../hooks";
-import { ABOUT_QUOTE, ABOUT_SECTIONS } from "../content";
+import { ABOUT_QUOTE, ABOUT_SECTIONS, ABOUT_OFF_CLOCK } from "../content";
 import AboutSection from "../components/AboutSection";
 import EducationBlock from "../components/EducationBlock";
 import Footer from "../components/Footer";
@@ -33,6 +33,12 @@ export default function AboutPage() {
           ))}
 
           <EducationBlock mobile={mobile} />
+
+          {/* Personal note closes the page, after the professional record (Education). Education's
+              bottom rule already separates them, so this section skips its own top rule. */}
+          <div style={{ marginTop: ".5rem" }}>
+            <AboutSection s={ABOUT_OFF_CLOCK} mobile={mobile} rule={false} />
+          </div>
         </div>
       </div>
       <Footer />

@@ -262,6 +262,7 @@ All Phase 1 rules still apply: no invented content, verbatim text exactly as giv
 - [x] Loading fix: no first-screen entrance animations, self-hosted fonts (merged)
 - [x] PR 6: Project thumbnails (typographic, no images) (merged)
 - [x] PR 7: Home projects carousel (merged)
+- [ ] About "Off the Clock" section (in review)
 
 ## Loading rules (all pages, all future sections)
 
@@ -489,3 +490,12 @@ PR 7 final changes and checks (Preeta's last review):
 - Kept and re-verified: no auto-advance under `prefers-reduced-motion`; hover pauses; keyboard focus pauses; resumes about 5.0s after the mouse leaves (desktop); a touch swipe stops it for good.
 - 81 keyboard focus stops, 0 failing. No page scrolls sideways at 1440, 1280, 390 or 360.
 
+
+## About page "Off the Clock" section (small PR after PR 7)
+
+- Personal section at the end of the About page, after Education (Education belongs with the professional record; the personal note closes the page before the footer). Content is `ABOUT_OFF_CLOCK` in content.js: heading "Off the Clock", body verbatim from Preeta, the La La Land cover (`zelHJKieVto`), and two links: "in2_music on YouTube ↗" (`SITE.youtube`) and "What I'm reading on StoryGraph ↗". Both open in a new tab with `rel="noopener noreferrer"`.
+- Rendered by `AboutSection` (now takes an optional video and links row, plus `rule={false}` so it doesn't draw a second divider under Education's bottom rule).
+- `VideoEmbed` has a `clickToLoad` prop: it shows the YouTube thumbnail (`i.ytimg.com/vi/<id>/hqdefault.jpg`, lazy) with a play button, and loads the youtube-nocookie player (with autoplay) only on click. No player request before the click. If the thumbnail can't load, the dark box with the play button still shows. After a click, focus moves into the player; activated from the keyboard, the box shows the focus ring. The case-study embeds are unchanged (no `clickToLoad`).
+- The play button inverts on hover/tap (`ix-video-play` in interactions.css).
+- Footer: a "YouTube" link to `SITE.youtube` after Contact, new tab. The footer links wrap if needed; at 360 they still fit on one line.
+- The thumbnail host (i.ytimg.com) is blocked in the Claude session sandbox, so local screenshots show the fallback dark box; visitors see the real thumbnail.
