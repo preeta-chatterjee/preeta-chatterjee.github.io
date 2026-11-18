@@ -228,12 +228,12 @@ export const ABOUT_SECTIONS = [
 // `video` uses VideoEmbed's click-to-load preview; `links` open in a new tab.
 export const ABOUT_OFF_CLOCK = {
   heading: "Off the Clock",
-  body: "When I'm not building systems, I sing and read. I post covers on my YouTube channel, and this La La Land cover is my favorite.",
+  body: "When I'm not building systems, I sing and read. I post covers on my YouTube channel, and this cover of City of Stars from La La Land is my favorite.",
   accent: C.green,
-  video: { id: "zelHJKieVto", title: "La La Land cover on the in2_music YouTube channel" },
+  video: { id: "zelHJKieVto", title: "City of Stars cover (La La Land) on the in2_music YouTube channel" },
   links: [
-    { label: "in2_music on YouTube ↗", href: SITE.youtube, color: C.red },
-    { label: "What I'm reading on StoryGraph ↗", href: "https://app.thestorygraph.com/profile/lunos", color: C.green },
+    { label: "in2_music on YouTube ↗", href: SITE.youtube, tone: "red" },
+    { label: "What I'm reading on StoryGraph ↗", href: "https://app.thestorygraph.com/profile/lunos", tone: "green" },
   ],
 };
 
